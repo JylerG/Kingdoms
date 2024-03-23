@@ -14,6 +14,7 @@ import games.kingdoms.kingdoms.admin.CustomNPCs.NPCTabCompleter;
 import games.kingdoms.kingdoms.admin.CustomNPCs.PlayerMovementListener;
 import games.kingdoms.kingdoms.admin.CustomNPCs.managers.NPCManager;
 import games.kingdoms.kingdoms.admin.CustomNPCs.managers.QuestManager;
+import games.kingdoms.kingdoms.admin.CustomNPCs.menus.GuideMenu;
 import games.kingdoms.kingdoms.admin.balance.EconomyCommand;
 import games.kingdoms.kingdoms.admin.balance.EconomyTabCompleter;
 import games.kingdoms.kingdoms.admin.customitems.MerchantCommand;
@@ -48,6 +49,9 @@ import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCMD;
 import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCommandListener;
 import games.kingdoms.kingdoms.rankedcmds.feed.Feed;
 import games.kingdoms.kingdoms.rankedcmds.fly.Fly;
+import me.kodysimpson.simpapi.exceptions.MenuManagerException;
+import me.kodysimpson.simpapi.exceptions.MenuManagerNotSetupException;
+import me.kodysimpson.simpapi.menu.MenuManager;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -89,7 +93,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+        getConfig().options().copyDefaults();
+        saveDefaultConfig();
+
         plugin = this;
+        MenuManager.setup(getServer(), this);
         kingdomsConfig = new KingdomsConfig(this);
         moneyConfig = new MoneyConfig(this);
         staffConfig = new StaffConfig(this);
@@ -149,9 +157,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         //Events
         events();
 
-        //Save Default Config
-        this.saveDefaultConfig();
-
         //Plugin successfully loaded
         MessageManager.consoleGood("Kingdoms successfully Enabled");
     }
@@ -203,6 +208,17 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
                     if (hand == EnumWrappers.Hand.MAIN_HAND && action == EnumWrappers.EntityUseAction.INTERACT) {
                         //Open Guide menu
+
+                        getServer().getScheduler().runTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    MenuManager.openMenu(GuideMenu.class, event.getPlayer());
+                                } catch (MenuManagerException | MenuManagerNotSetupException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
 
                     }
 
