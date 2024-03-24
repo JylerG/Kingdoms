@@ -12,8 +12,7 @@ import com.github.sanctum.labyrinth.data.FileList;
 import com.github.sanctum.panther.file.Configurable;
 import games.kingdoms.kingdoms.admin.CustomNPCs.NPCTabCompleter;
 import games.kingdoms.kingdoms.admin.CustomNPCs.PlayerMovementListener;
-import games.kingdoms.kingdoms.admin.CustomNPCs.managers.NPCManager;
-import games.kingdoms.kingdoms.admin.CustomNPCs.managers.QuestManager;
+import games.kingdoms.kingdoms.admin.CustomNPCs.managers.*;
 import games.kingdoms.kingdoms.admin.CustomNPCs.menus.GuideMenu;
 import games.kingdoms.kingdoms.admin.balance.EconomyCommand;
 import games.kingdoms.kingdoms.admin.balance.EconomyTabCompleter;
@@ -87,6 +86,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private StaffConfig staffConfig;
     private NPCManager npcManager;
     private QuestManager questManager;
+    private ForsakenForgeManager forgeManager;
+    private GlassManager glassManager;
+    private GuideBrotherManager brotherManager;
+    private GuideManager guideManager;
+    //    private MerchantManager merchantManager;
+//    private NatureManager natureManager;
+//    private PostBoxManager postBoxManager;
+//    private SchematicsManager schematicsManager;
     private static Kingdoms plugin;
     private FileList files;
 
@@ -97,7 +104,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveDefaultConfig();
 
         plugin = this;
-        MenuManager.setup(getServer(), this);
         kingdomsConfig = new KingdomsConfig(this);
         moneyConfig = new MoneyConfig(this);
         staffConfig = new StaffConfig(this);
@@ -113,7 +119,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
 
         npcManager = new NPCManager(this);
-        questManager = new QuestManager();
+        managers();
         //Initialize ArrayLists and HashMaps
         files = FileList.search(this);
         npcs = new ArrayList<>();
@@ -161,6 +167,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         MessageManager.consoleGood("Kingdoms successfully Enabled");
     }
 
+    private void managers() {
+        questManager = new QuestManager();
+        forgeManager = new ForsakenForgeManager();
+    }
+
     @Override
     public void onDisable() {
 
@@ -188,6 +199,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void customNPCs() {
+
+        MenuManager.setup(getServer(), this);
 
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
         manager.addPacketListener(new PacketAdapter(this, PacketType.Play.Client.USE_ENTITY) {
@@ -674,287 +687,309 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onCommandSend(PlayerCommandSendEvent event) {
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-
-            if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                notInPlayersKingdomBoard(player);
-
-            } else {
-                notInKingdomBoard(player);
-                return;
-            }
-        }
-    }
-
-    @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        savePluginData(player);
-    }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        String chunkID = player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ();
-        if (!player.hasPlayedBefore()) {
-            notInKingdomBoard(player);
-
-            playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-            money.put(player.getUniqueId().toString(), 0L);
-
+        // Additional logic for handling kingdoms
+        if (kingdoms.containsKey(player.getUniqueId().toString())) {
+            notInPlayersKingdomBoard(player);
         } else {
-            //TODO: Comment the three lines below this out
+            notInKingdomBoard(player);
+        }
+}
+
+@EventHandler
+public void onLeave(PlayerQuitEvent event) {
+    Player player = event.getPlayer();
+    savePluginData(player);
+}
+
+@EventHandler
+public void onJoin(PlayerJoinEvent event) {
+    Player player = event.getPlayer();
+    String chunkID = player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ();
+
+
+    if (!player.hasPlayedBefore()) {
+        notInKingdomBoard(player);
+
+        playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+        money.put(player.getUniqueId().toString(), 0L);
+
+    } else {
+        //TODO: Comment the three lines below this out
 //            money.put(player.getUniqueId().toString(), 0L);
 //            playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
 //            kingdoms.put(player.getUniqueId().toString(), "FallenKingdom");
 
-            restorePluginData(player);
+        restorePluginData(player);
 
-            if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
-                    inPlayersKingdomBoard(player, player.getLocation().getChunk());
-                } else {
-                    notInPlayersKingdomBoard(player);
-                }
-            } else {
-                notInKingdomBoard(player);
+        // Scoreboard
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
+
+        Team admin = board.registerNewTeam("admin");
+        Team jradmin = board.registerNewTeam("jradmin");
+        Team srmod = board.registerNewTeam("srmod");
+        Team mod = board.registerNewTeam("mod");
+        Team jrmod = board.registerNewTeam("jrmod");
+        Team hero = board.registerNewTeam("hero");
+        Team vip = board.registerNewTeam("vip");
+        Team defaultTeam = board.registerNewTeam("default");
+
+        admin.setPrefix("§4§lADMIN ");
+        jradmin.setPrefix("§4§lJRADMIN ");
+        srmod.setPrefix("§6§lSRMOD ");
+        mod.setPrefix("§e§lMOD ");
+        jrmod.setPrefix("§3§lJRMOD ");
+        hero.setPrefix("§b§lHERO ");
+        vip.setPrefix("§a§lVIP ");
+        defaultTeam.setPrefix("");
+
+        // Assuming playerRank is a Map<UUID, String> where UUID is the player's UUID and String is their rank
+        UUID playerId = player.getUniqueId();
+        String playerRank = this.playerRank.get(playerId.toString());
+        if (playerRank != null) {
+            if (playerRank.equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT)) {
+                defaultTeam.addEntry(player.getUniqueId().toString());
+            } else if (playerRank.equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP)) {
+                vip.addEntry(player.getUniqueId().toString());
+            } else if (playerRank.equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO)) {
+                hero.addEntry(player.getUniqueId().toString());
+            } else if (playerRank.equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD)) {
+                jrmod.addEntry(player.getUniqueId().toString());
+            } else if (playerRank.equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD)) {
+                mod.addEntry(player.getUniqueId().toString());
+            } else if (playerRank.equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
+                srmod.addEntry(player.getUniqueId().toString());
+            } else if (playerRank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
+                jradmin.addEntry(player.getUniqueId().toString());
+            } else if (playerRank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
+                admin.addEntry(player.getUniqueId().toString());
             }
         }
-    }
 
+        // Apply the scoreboard to all online players
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.setScoreboard(board);
+        }
 
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-
-        String eventMessage = event.getMessage();
-        Player player = event.getPlayer();
+        //check if player is in a kingdom onJoin
         if (kingdoms.containsKey(player.getUniqueId().toString())) {
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.WHITE + player.getDisplayName() + ": " + ChatColor.WHITE + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(Rank.YOUTUBE.getColor().toString() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + Rank.YOUTUBE.getColor() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName() + " " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
+            if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
+                inPlayersKingdomBoard(player, player.getLocation().getChunk());
+            } else {
+                notInPlayersKingdomBoard(player);
             }
         } else {
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.GRAY + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(Rank.YOUTUBE.getColor().toString() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + Rank.YOUTUBE.getColor() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName() + " " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
-                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + ChatColor.LIGHT_PURPLE + " " + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                event.setFormat(format);
-            }
-        }
-        event.setMessage(eventMessage);
-    }
-
-    // Method to check if a chunk is claimed
-    private boolean isChunkClaimed(Chunk chunk) {
-        String chunkID = chunk.getX() + "," + chunk.getZ();
-        return claimedChunks.containsKey(chunkID);
-    }
-
-    // Method to send a title to a player
-    public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
-    }
-
-
-    public Map<String, String> getPlayerRank() {
-        return playerRank;
-    }
-
-    public HashMap<String, String> getClaims() {
-        return claims;
-    }
-
-    public HashMap<String, String> getClaimedChunks() {
-        return claimedChunks;
-    }
-
-    public HashMap<String, String> getOwner() {
-        return owner;
-    }
-
-    public HashMap<String, String> getMember() {
-        return member;
-    }
-
-    public HashMap<String, String> getStaff() {
-        return staff;
-    }
-
-    public HashMap<String, String> getKingdoms() {
-        return kingdoms;
-    }
-
-    public static Kingdoms getPlugin() {
-        return plugin;
-    }
-
-    public NPCManager getNpcManager() {
-        return npcManager;
-    }
-
-    public QuestManager getQuestManager() {
-        return questManager;
-    }
-
-    public ArrayList<Player> getInvisiblePlayers() {
-        return invisiblePlayers;
-    }
-
-    public HashMap<String, String> getCanClaim() {
-        return canClaim;
-    }
-
-    public HashMap<String, String> getCanUnclaim() {
-        return canUnclaim;
-    }
-
-    public HashMap<String, Location> getKingdomSpawn() {
-        return kingdomSpawn;
-    }
-
-    public HashMap<String, String> getAdmin() {
-        return admin;
-    }
-
-    public HashMap<String, String> getInviteList() {
-        return inviteList;
-    }
-
-    public HashMap<String, Long> getMoney() {
-        return money;
-    }
-
-    public List<ServerPlayer> getNpcs() {
-        return npcs;
-    }
-
-    //TODO: Figure out how to check if the custom config files contain the data
-    public void restorePluginData() {
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-
-//            FileManager kingdomFile = files.get("Kingdoms", "Data", YamlExtension.INSTANCE);
-//            FileManager staffFile = files.get("Staff", "Data", YamlExtension.INSTANCE);
-//            FileManager moneyFile = files.get("Money", "Data", YamlExtension.INSTANCE);
-            Configurable kc = kingdomsConfig.getConfig();
-            Configurable sc = staffConfig.getConfig();
-            Configurable mc = moneyConfig.getConfig();
-
-            if (kc != null) {
-                if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
-                    kingdoms.put(player.getUniqueId().toString(), kc.getNode("kingdoms." + player.getUniqueId().toString()).toPrimitive().getString());
-                }
-                if (kc.getNode("owners").getNode(player.getUniqueId().toString()).exists()) {
-                    owner.put(player.getUniqueId().toString(), kc.getNode("owners." + player.getUniqueId().toString()).toPrimitive().getString());
-                }
-                if (kc.getNode("admins").getNode(player.getUniqueId().toString()).exists()) {
-                    admin.put(player.getUniqueId().toString(), kc.getNode("admins." + player.getUniqueId().toString()).toPrimitive().getString());
-                }
-                if (kc.getNode("members").getNode(player.getUniqueId().toString()).exists()) {
-                    member.put(player.getUniqueId().toString(), kc.getNode("members." + player.getUniqueId().toString()).toPrimitive().getString());
-                }
-                if (kc.getNode("canClaim").getNode(player.getUniqueId().toString()).exists()) {
-                    canClaim.put(player.getUniqueId().toString(), kc.getNode("canClaim." + player.getUniqueId().toString()).toPrimitive().getString());
-                }
-                if (kc.getNode("canUnclaim").getNode(player.getUniqueId().toString()).exists()) {
-                    canUnclaim.put(player.getUniqueId().toString(), kc.getNode("canUnclaim." + player.getUniqueId().toString()).toPrimitive().getString());
-                }
-                if (kc.getNode("spawns").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
-                    kingdomSpawn.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(player.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
-                }
-
-                if (kc.getNode("claims").getNode(claims.get(kingdoms.get(player.getUniqueId().toString()))).exists()) {
-                    if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                        claimedChunks.put(kc.getNode("claims." + claims.get(kingdoms.get(player.getUniqueId().toString()))).toPrimitive().getString(), kingdoms.get(player.getUniqueId().toString()));
-                    }
-                }
-            }
-
-            if (mc != null) {
-                if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
-                    money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
-                } else {
-                    money.put(player.getUniqueId().toString(), 0L);
-                }
-            }
-
-            if (sc != null) {
-                if (sc.getNode("rank").getNode(player.getUniqueId().toString()).exists()) {
-                    playerRank.put(player.getUniqueId().toString(), sc.getNode("rank." + player.getUniqueId().toString()).toPrimitive().getString());
-                } else {
-                    playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-                }
-                if (sc.getNode("staff").getNode(player.getUniqueId().toString()).exists()) {
-                    staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
-                }
-            }
+            notInKingdomBoard(player);
         }
     }
+}
 
-    public void restorePluginData(Player player) {
+
+@EventHandler
+public void onPlayerChat(AsyncPlayerChatEvent event) {
+
+    String eventMessage = event.getMessage();
+    Player player = event.getPlayer();
+    if (kingdoms.containsKey(player.getUniqueId().toString())) {
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.WHITE + player.getDisplayName() + ": " + ChatColor.WHITE + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(Rank.YOUTUBE.getColor().toString() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + Rank.YOUTUBE.getColor() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName() + " " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+    } else {
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.GRAY + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(Rank.YOUTUBE.getColor().toString() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + Rank.YOUTUBE.getColor() + ChatColor.BOLD + Rank.YOUTUBE.getName() + Rank.YOUTUBE.getSecondaryColor() + ChatColor.BOLD + Rank.YOUTUBE.getSecondaryName() + " " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+        if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
+            String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + ChatColor.LIGHT_PURPLE + " " + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+            event.setFormat(format);
+        }
+    }
+    event.setMessage(eventMessage);
+}
+
+// Method to check if a chunk is claimed
+private boolean isChunkClaimed(Chunk chunk) {
+    String chunkID = chunk.getX() + "," + chunk.getZ();
+    return claimedChunks.containsKey(chunkID);
+}
+
+// Method to send a title to a player
+public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+}
+
+
+public Map<String, String> getPlayerRank() {
+    return playerRank;
+}
+
+public HashMap<String, String> getClaims() {
+    return claims;
+}
+
+public HashMap<String, String> getClaimedChunks() {
+    return claimedChunks;
+}
+
+public HashMap<String, String> getOwner() {
+    return owner;
+}
+
+public HashMap<String, String> getMember() {
+    return member;
+}
+
+public HashMap<String, String> getStaff() {
+    return staff;
+}
+
+public HashMap<String, String> getKingdoms() {
+    return kingdoms;
+}
+
+public GlassManager getGlassManager() {
+    return glassManager;
+}
+
+public GuideBrotherManager getBrotherManager() {
+    return brotherManager;
+}
+
+public GuideManager getGuideManager() {
+    return guideManager;
+}
+
+//    public MerchantManager getMerchantManager() {
+//        return merchantManager;
+//    }
+//
+//    public NatureManager getNatureManager() {
+//        return natureManager;
+//    }
+//
+//    public PostBoxManager getPostBoxManager() {
+//        return postBoxManager;
+//    }
+//
+//    public SchematicsManager getSchematicsManager() {
+//        return schematicsManager;
+//    }
+
+public ForsakenForgeManager getForgeManager() {
+    return forgeManager;
+}
+
+public static Kingdoms getPlugin() {
+    return plugin;
+}
+
+public NPCManager getNpcManager() {
+    return npcManager;
+}
+
+public QuestManager getQuestManager() {
+    return questManager;
+}
+
+public ArrayList<Player> getInvisiblePlayers() {
+    return invisiblePlayers;
+}
+
+public HashMap<String, String> getCanClaim() {
+    return canClaim;
+}
+
+public HashMap<String, String> getCanUnclaim() {
+    return canUnclaim;
+}
+
+public HashMap<String, Location> getKingdomSpawn() {
+    return kingdomSpawn;
+}
+
+public HashMap<String, String> getAdmin() {
+    return admin;
+}
+
+public HashMap<String, String> getInviteList() {
+    return inviteList;
+}
+
+public HashMap<String, Long> getMoney() {
+    return money;
+}
+
+public List<ServerPlayer> getNpcs() {
+    return npcs;
+}
+
+//TODO: Figure out how to check if the custom config files contain the data
+public void restorePluginData() {
+
+    for (Player player : Bukkit.getOnlinePlayers()) {
 
 //        FileManager kingdomFile = files.get("Kingdoms", "Data", YamlExtension.INSTANCE);
 //        FileManager staffFile = files.get("Staff", "Data", YamlExtension.INSTANCE);
@@ -986,7 +1021,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 kingdomSpawn.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(player.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
             }
             for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
-                if (kc.getNode("claims").getNode(claimedChunks.get(chunk.getX() + "," + chunk.getZ())).exists()) {
+                if (kc.getNode("claims").getNode(claims.get(kingdoms.get(player.getUniqueId().toString()))).exists()) {
                     if (kingdoms.containsKey(player.getUniqueId().toString())) {
                         claimedChunks.put(kc.getNode("claims." + kingdoms.get(chunk.getX() + "," + chunk.getZ())).toPrimitive().getString(), kingdoms.get(player.getUniqueId().toString()));
                     }
@@ -1013,227 +1048,164 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
         }
     }
+}
 
-    public void savePluginData(Player player) {
-        if (!kingdoms.isEmpty()) {
-            if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
-                        config.set("kingdoms." + player.getUniqueId().toString(), kingdoms.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-        if (!owner.isEmpty()) {
-            if (admin.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> owners : owner.entrySet()) {
-                        config.set("owners." + player.getUniqueId().toString(), owners.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-        if (!admin.isEmpty()) {
-            if (admin.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> admins : admin.entrySet()) {
-                        config.set("admins." + player.getUniqueId().toString(), admins.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-        if (!member.isEmpty()) {
-            if (member.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> members : member.entrySet()) {
-                        config.set("members." + player.getUniqueId().toString(), members.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
+public void restorePluginData(Player player) {
 
-        if (!inviteList.isEmpty()) {
-            if (inviteList.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                        config.set("invites." + player.getUniqueId().toString(), invites.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
+//        FileManager kingdomFile = files.get("Kingdoms", "Data", YamlExtension.INSTANCE);
+//        FileManager staffFile = files.get("Staff", "Data", YamlExtension.INSTANCE);
+//        FileManager moneyFile = files.get("Money", "Data", YamlExtension.INSTANCE);
+    Configurable kc = kingdomsConfig.getConfig();
+    Configurable sc = staffConfig.getConfig();
+    Configurable mc = moneyConfig.getConfig();
 
-        if (!canClaim.isEmpty()) {
-            if (canClaim.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
-                        config.set("canClaim." + player.getUniqueId().toString(), canClaim.getValue());
-                    }
-                }
-                config.save();
-            }
+    if (kc != null) {
+        if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
+            kingdoms.put(player.getUniqueId().toString(), kc.getNode("kingdoms." + player.getUniqueId().toString()).toPrimitive().getString());
         }
-
-        if (!canUnclaim.isEmpty()) {
-            if (canUnclaim.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
-                        config.set("canUnclaim." + player.getUniqueId().toString(), canUnclaim.getValue());
-                    }
-                }
-                config.save();
-            }
+        if (kc.getNode("owners").getNode(player.getUniqueId().toString()).exists()) {
+            owner.put(player.getUniqueId().toString(), kc.getNode("owners." + player.getUniqueId().toString()).toPrimitive().getString());
         }
-
-        if (!kingdomSpawn.isEmpty()) {
-            if (kingdomSpawn.containsKey(kingdoms.get(player.getUniqueId().toString()))) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, Location> spawns : kingdomSpawn.entrySet()) {
-                        config.set("spawns." + kingdoms.get(player.getUniqueId().toString()), spawns.getValue());
-                    }
-                }
-                config.save();
-            }
+        if (kc.getNode("admins").getNode(player.getUniqueId().toString()).exists()) {
+            admin.put(player.getUniqueId().toString(), kc.getNode("admins." + player.getUniqueId().toString()).toPrimitive().getString());
         }
-
-        if (!claimedChunks.isEmpty()) {
-            if (claimedChunks.containsKey(kingdoms.get(player.getUniqueId().toString()))) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> claims : claimedChunks.entrySet()) {
-                        config.set("claims." + claims.getKey(), claims.getValue());
-                    }
-                }
-                config.save();
-            }
+        if (kc.getNode("members").getNode(player.getUniqueId().toString()).exists()) {
+            member.put(player.getUniqueId().toString(), kc.getNode("members." + player.getUniqueId().toString()).toPrimitive().getString());
         }
-
-        if (!money.isEmpty()) {
-            if (money.containsKey(player.getUniqueId().toString())) {
-                Configurable config = moneyConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, Long> money : money.entrySet()) {
-                        config.set("balance." + money.getKey(), money.getValue());
-                    }
-                }
-                config.save();
-            }
+        if (kc.getNode("canClaim").getNode(player.getUniqueId().toString()).exists()) {
+            canClaim.put(player.getUniqueId().toString(), kc.getNode("canClaim." + player.getUniqueId().toString()).toPrimitive().getString());
         }
-
-        if (!playerRank.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-                    config.set("rank." + rank.getKey(), rank.getValue());
-                }
-            }
-            config.save();
+        if (kc.getNode("canUnclaim").getNode(player.getUniqueId().toString()).exists()) {
+            canUnclaim.put(player.getUniqueId().toString(), kc.getNode("canUnclaim." + player.getUniqueId().toString()).toPrimitive().getString());
         }
-
-        if (!staff.isEmpty()) {
-            if (staff.containsKey(player.getUniqueId().toString())) {
-                Configurable config = staffConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> staff : staff.entrySet()) {
-                        config.set("staff." + staff.getKey(), staff.getValue());
-                    }
+        if (kc.getNode("spawns").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+            kingdomSpawn.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(player.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
+        }
+        for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
+            if (kc.getNode("claims").getNode(claims.get(kingdoms.get(player.getUniqueId().toString()))).exists()) {
+                if (kingdoms.containsKey(player.getUniqueId().toString())) {
+                    claimedChunks.put(kc.getNode("claims." + kingdoms.get(chunk.getX() + "," + chunk.getZ())).toPrimitive().getString(), kingdoms.get(player.getUniqueId().toString()));
                 }
-                config.save();
             }
         }
     }
 
-    public void savePluginData() {
-        if (!kingdoms.isEmpty()) {
+    if (mc != null) {
+        if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
+            money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
+        } else {
+            money.put(player.getUniqueId().toString(), 0L);
+        }
+    }
+
+    if (sc != null) {
+        if (sc.getNode("rank").getNode(player.getUniqueId().toString()).exists()) {
+            playerRank.put(player.getUniqueId().toString(), sc.getNode("rank." + player.getUniqueId().toString()).toPrimitive().getString());
+        } else {
+            playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+        }
+        if (sc.getNode("staff").getNode(player.getUniqueId().toString()).exists()) {
+            staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
+        }
+    }
+}
+
+public void savePluginData(Player player) {
+    if (!kingdoms.isEmpty()) {
+        if (kingdoms.containsKey(player.getUniqueId().toString())) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
-                    config.set("kingdoms." + kingdoms.getKey(), kingdoms.getValue());
+                    config.set("kingdoms." + player.getUniqueId().toString(), kingdoms.getValue());
                 }
             }
             config.save();
         }
-        if (!owner.isEmpty()) {
+    }
+    if (!owner.isEmpty()) {
+        if (admin.containsKey(player.getUniqueId().toString())) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> owners : owner.entrySet()) {
-                    config.set("owners." + owners.getKey(), owners.getValue());
+                    config.set("owners." + player.getUniqueId().toString(), owners.getValue());
                 }
             }
             config.save();
         }
-        if (!admin.isEmpty()) {
+    }
+    if (!admin.isEmpty()) {
+        if (admin.containsKey(player.getUniqueId().toString())) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> admins : admin.entrySet()) {
-                    config.set("admins." + admins.getKey(), admins.getValue());
+                    config.set("admins." + player.getUniqueId().toString(), admins.getValue());
                 }
             }
             config.save();
         }
-        if (!member.isEmpty()) {
+    }
+    if (!member.isEmpty()) {
+        if (member.containsKey(player.getUniqueId().toString())) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> members : member.entrySet()) {
-                    config.set("members." + members.getKey(), members.getValue());
+                    config.set("members." + player.getUniqueId().toString(), members.getValue());
                 }
             }
             config.save();
         }
+    }
 
-        if (!inviteList.isEmpty()) {
+    if (!inviteList.isEmpty()) {
+        if (inviteList.containsKey(player.getUniqueId().toString())) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                    config.set("invites." + invites.getKey(), invites.getValue());
+                    config.set("invites." + player.getUniqueId().toString(), invites.getValue());
                 }
             }
             config.save();
         }
+    }
 
-        if (!canClaim.isEmpty()) {
+    if (!canClaim.isEmpty()) {
+        if (canClaim.containsKey(player.getUniqueId().toString())) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
-                    config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
+                    config.set("canClaim." + player.getUniqueId().toString(), canClaim.getValue());
                 }
             }
             config.save();
         }
+    }
 
-        if (!canUnclaim.isEmpty()) {
+    if (!canUnclaim.isEmpty()) {
+        if (canUnclaim.containsKey(player.getUniqueId().toString())) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
-                    config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
+                    config.set("canUnclaim." + player.getUniqueId().toString(), canUnclaim.getValue());
                 }
             }
             config.save();
         }
+    }
 
-        if (!kingdomSpawn.isEmpty()) {
+    if (!kingdomSpawn.isEmpty()) {
+        if (kingdomSpawn.containsKey(kingdoms.get(player.getUniqueId().toString()))) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Location> spawns : kingdomSpawn.entrySet()) {
-                    config.set("spawns." + spawns.getKey(), spawns.getValue());
+                    config.set("spawns." + kingdoms.get(player.getUniqueId().toString()), spawns.getValue());
                 }
             }
             config.save();
         }
+    }
 
-        if (!claimedChunks.isEmpty()) {
+    if (!claimedChunks.isEmpty()) {
+        if (claimedChunks.containsKey(kingdoms.get(player.getUniqueId().toString()))) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> claims : claimedChunks.entrySet()) {
@@ -1242,8 +1214,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
             config.save();
         }
+    }
 
-        if (!money.isEmpty()) {
+    if (!money.isEmpty()) {
+        if (money.containsKey(player.getUniqueId().toString())) {
             Configurable config = moneyConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Long> money : money.entrySet()) {
@@ -1252,18 +1226,20 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
             config.save();
         }
+    }
 
-        if (!playerRank.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-                    config.set("rank." + rank.getKey(), rank.getValue());
-                }
+    if (!playerRank.isEmpty()) {
+        Configurable config = staffConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> rank : playerRank.entrySet()) {
+                config.set("rank." + rank.getKey(), rank.getValue());
             }
-            config.save();
         }
+        config.save();
+    }
 
-        if (!staff.isEmpty()) {
+    if (!staff.isEmpty()) {
+        if (staff.containsKey(player.getUniqueId().toString())) {
             Configurable config = staffConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> staff : staff.entrySet()) {
@@ -1273,14 +1249,134 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             config.save();
         }
     }
+}
 
-    private void events() {
-        Bukkit.getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new WarzoneCommandListener(this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        Bukkit.getServer().getPluginManager().registerEvents(new CustomOreCommand(this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        Bukkit.getServer().getPluginManager().registerEvents(new KingdomsListener(this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new RandomTeleportListener(this), this);
+public void savePluginData() {
+    if (!kingdoms.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
+                config.set("kingdoms." + kingdoms.getKey(), kingdoms.getValue());
+            }
+        }
+        config.save();
     }
+    if (!owner.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> owners : owner.entrySet()) {
+                config.set("owners." + owners.getKey(), owners.getValue());
+            }
+        }
+        config.save();
+    }
+    if (!admin.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> admins : admin.entrySet()) {
+                config.set("admins." + admins.getKey(), admins.getValue());
+            }
+        }
+        config.save();
+    }
+    if (!member.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> members : member.entrySet()) {
+                config.set("members." + members.getKey(), members.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!inviteList.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> invites : inviteList.entrySet()) {
+                config.set("invites." + invites.getKey(), invites.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!canClaim.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
+                config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!canUnclaim.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
+                config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!kingdomSpawn.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, Location> spawns : kingdomSpawn.entrySet()) {
+                config.set("spawns." + spawns.getKey(), spawns.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!claimedChunks.isEmpty()) {
+        Configurable config = kingdomsConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> claims : claimedChunks.entrySet()) {
+                config.set("claims." + claims.getKey(), claims.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!money.isEmpty()) {
+        Configurable config = moneyConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, Long> money : money.entrySet()) {
+                config.set("balance." + money.getKey(), money.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!playerRank.isEmpty()) {
+        Configurable config = staffConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> rank : playerRank.entrySet()) {
+                config.set("rank." + rank.getKey(), rank.getValue());
+            }
+        }
+        config.save();
+    }
+
+    if (!staff.isEmpty()) {
+        Configurable config = staffConfig.getConfig();
+        if (config != null) {
+            for (Map.Entry<String, String> staff : staff.entrySet()) {
+                config.set("staff." + staff.getKey(), staff.getValue());
+            }
+        }
+        config.save();
+    }
+}
+
+private void events() {
+    Bukkit.getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
+    Bukkit.getServer().getPluginManager().registerEvents(new WarzoneCommandListener(this), this);
+    Bukkit.getServer().getPluginManager().registerEvents(this, this);
+    Bukkit.getServer().getPluginManager().registerEvents(new CustomOreCommand(this), this);
+    Bukkit.getServer().getPluginManager().registerEvents(this, this);
+    Bukkit.getServer().getPluginManager().registerEvents(new KingdomsListener(this), this);
+    Bukkit.getServer().getPluginManager().registerEvents(new RandomTeleportListener(this), this);
+}
 }

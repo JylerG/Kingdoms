@@ -1,10 +1,19 @@
 package games.kingdoms.kingdoms.admin.CustomNPCs.models;
 
+import org.bukkit.Material;
+
 public abstract class Quest {
 
     private String name;
     private String description;
     private double reward;
+
+    private Material material;
+
+    public Quest(String name, Material material) {
+        this.name = name;
+        this.material = material;
+    }
 
     public Quest(String name, String description, double reward) {
         this.name = name;

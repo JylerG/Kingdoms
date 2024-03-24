@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class QuestMenu extends Menu {
+
     private final QuestManager questManager;
 
     public QuestMenu(PlayerMenuUtility playerMenuUtility) {

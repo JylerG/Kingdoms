@@ -15,3 +15,16 @@ quests:
       target:
         type: VILLAGER
         count: 5
+items:
+  glass:
+    orangepane:
+      name: ' '
+      type: ORANGE_STAINED_GLASS_PANE
+  forge:
+    orangepane:
+      name: ' '
+      type: ORANGE_STAINED_GLASS_PANE
+  guide:
+    orangepane:
+      name: ' '
+      type: ORANGE_STAINED_GLASS_PANE
