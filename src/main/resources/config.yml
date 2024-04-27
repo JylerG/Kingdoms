@@ -1,0 +1,34 @@
+#example
+#kingdom: kingdom
+bannedNames:
+  name1: Test
+  name2: TestKingdom
+quests:
+  kill:
+    quest1:
+      name: Zombie Slayer
+      description: Kill a zombie
+      reward: 100
+      target:
+        type: ZOMBIE
+        count: 1
+    quest2:
+      name: Genocide
+      description: Kill 5 Villagers
+      reward: 400
+      target:
+        type: VILLAGER
+        count: 5
+items:
+  glass:
+    orangepane:
+      name: ' '
+      type: ORANGE_STAINED_GLASS_PANE
+  forge:
+    orangepane:
+      name: ' '
+      type: ORANGE_STAINED_GLASS_PANE
+  guide:
+    orangepane:
+      name: ' '
+      type: ORANGE_STAINED_GLASS_PANE
