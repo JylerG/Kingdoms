@@ -403,7 +403,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdom.setScore(7);
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(staffCounter));
+        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(KingdomsConfig.getInstance().getConfig().getNode("staffCount").toPrimitive().getInt()));
         online_staff.setScore(5);
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
@@ -475,7 +475,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdom.setScore(7);
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(staffCounter));
+        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(KingdomsConfig.getInstance().getConfig().getNode("onlineStaff").toPrimitive().getInt()));
         online_staff.setScore(5);
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
@@ -546,22 +546,27 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     public void onLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        String JRMOD = ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "JRMOD";
-        String MOD = ChatColor.YELLOW.toString() + ChatColor.BOLD + "MOD";
-        String SRMOD = ChatColor.GOLD.toString() + ChatColor.BOLD + "SRMOD";
-        String JRADMIN = ChatColor.DARK_RED.toString() + ChatColor.BOLD + "JRADMIN";
-        String ADMIN = ChatColor.DARK_RED.toString() + ChatColor.BOLD + "ADMIN";
-
-        if (playerRank.get(player.getUniqueId().toString()).equals(JRMOD) || playerRank.get(player.getUniqueId().toString()).equals(MOD) ||
-                playerRank.get(player.getUniqueId().toString()).equals(SRMOD) || playerRank.get(player.getUniqueId().toString()).equals(JRADMIN) ||
-                playerRank.get(player.getUniqueId().toString()).equals(ADMIN)) {
+        /*if (staff.get(player.getUniqueId().toString()).equals("JRMOD") || staff.get(player.getUniqueId().toString()).equals("MOD") ||
+                staff.get(player.getUniqueId().toString()).equals("SRMOD") || staff.get(player.getUniqueId().toString()).equals("JRADMIN") ||
+                staff.get(player.getUniqueId().toString()).equals("ADMIN")) {
 
             // check that player is a staff member
             if (kingdomsConfig.getConfig().getNode("staff").toPrimitive().getString().equalsIgnoreCase(player.getUniqueId().toString())) {
                 staffCounter--;
+                staffCount.put(staffCounter, staffCounter);
             }
-        }
+        }*/
         savePluginData(player);
+    }
+
+    // Define a method to register teams if not already registered
+    private Team registerTeam(Scoreboard board, String teamName, String prefix) {
+        Team team = board.getTeam(teamName);
+        if (team == null) {
+            team = board.registerNewTeam(teamName);
+            team.setPrefix(prefix);
+        }
+        return team;
     }
 
     @EventHandler
@@ -569,36 +574,35 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         String chunkID = player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ();
 
-        String JRMOD = ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "JRMOD";
-        String MOD = ChatColor.YELLOW.toString() + ChatColor.BOLD + "MOD";
-        String SRMOD = ChatColor.GOLD.toString() + ChatColor.BOLD + "SRMOD";
-        String JRADMIN = ChatColor.DARK_RED.toString() + ChatColor.BOLD + "JRADMIN";
-        String ADMIN = ChatColor.DARK_RED.toString() + ChatColor.BOLD + "ADMIN";
-
         if (!player.hasPlayedBefore()) {
             notInKingdomBoard(player);
 
+            ScoreboardManager manager = Bukkit.getScoreboardManager();
+            Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
+            Team defaultTeam = board.registerNewTeam("default");
+
+            defaultTeam.addEntry(player.getUniqueId().toString());
             playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
             money.put(player.getUniqueId().toString(), 0L);
 
         } else {
 
-            if (playerRank.get(player.getUniqueId().toString()).equals(JRMOD) || playerRank.get(player.getUniqueId().toString()).equals(MOD) ||
-                    playerRank.get(player.getUniqueId().toString()).equals(SRMOD) || playerRank.get(player.getUniqueId().toString()).equals(JRADMIN) ||
-                    playerRank.get(player.getUniqueId().toString()).equals(ADMIN)) {
+            restorePluginData(player);
 
-                // check that player is a staff member
-                if (kingdomsConfig.getConfig().getNode("rank").getNode(player.getUniqueId().toString()).toPrimitive().getString().equalsIgnoreCase(JRMOD) ||
-                kingdomsConfig.getConfig().getNode("rank").getNode(player.getUniqueId().toString()).toPrimitive().getString().equalsIgnoreCase(MOD) ||
-                kingdomsConfig.getConfig().getNode("rank").getNode(player.getUniqueId().toString()).toPrimitive().getString().equalsIgnoreCase(SRMOD) ||
-                kingdomsConfig.getConfig().getNode("rank").getNode(player.getUniqueId().toString()).toPrimitive().getString().equalsIgnoreCase(JRADMIN) ||
-                kingdomsConfig.getConfig().getNode("rank").getNode(player.getUniqueId().toString()).toPrimitive().getString().equalsIgnoreCase(ADMIN))
-                {
-                    staffCounter++;
-                } else {
-                    staffCounter = 0;
-                }
-            }
+/*            int staffCounter = 0; // Initialize staffCounter
+            // Check that player is a staff member
+            String staffRole = kingdomsConfig.getConfig().getNode("staff").getNode(player.getUniqueId().toString()).toPrimitive().getString();
+            // Check if the player has a staff role and update counters accordingly
+            if (staffRole.equalsIgnoreCase("JRMOD") ||
+                    staffRole.equalsIgnoreCase("MOD") ||
+                    staffRole.equalsIgnoreCase("SRMOD") ||
+                    staffRole.equalsIgnoreCase("JRADMIN") ||
+                    staffRole.equalsIgnoreCase("ADMIN")) {
+                staffCounter++; // Increment staffCounter if player has a staff role
+                staffCount.put(staffCounter, staffCounter);
+            } else {
+                staffCounter = 0; // Reset staffCounter if player doesn't have a staff role
+            }*/
 
             //TODO: Comment the three lines below this out
             if (!money.containsKey(player.getUniqueId().toString())) {
@@ -607,62 +611,63 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
             }
-            restorePluginData(player);
 
-            // Scoreboard
+            // Register teams
             ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
+            Scoreboard board = manager.getNewScoreboard();
 
-            Team admin = board.registerNewTeam("admin");
-            Team jradmin = board.registerNewTeam("jradmin");
-            Team srmod = board.registerNewTeam("srmod");
-            Team mod = board.registerNewTeam("mod");
-            Team jrmod = board.registerNewTeam("jrmod");
-            Team hero = board.registerNewTeam("hero");
-            Team vip = board.registerNewTeam("vip");
-            Team defaultTeam = board.registerNewTeam("default");
+            Team admin = registerTeam(board, "admin", "§4§lADMIN ");
+            Team jradmin = registerTeam(board, "jradmin", "§4§lJRADMIN ");
+            Team srmod = registerTeam(board, "srmod", "§6§lSRMOD ");
+            Team mod = registerTeam(board, "mod", "§e§lMOD ");
+            Team jrmod = registerTeam(board, "jrmod", "§3§lJRMOD ");
+            Team hero = registerTeam(board, "hero", "§b§lHERO ");
+            Team vip = registerTeam(board, "vip", "§a§lVIP ");
+            Team defaultTeam = registerTeam(board, "default", "");
 
-            admin.setPrefix("§4§lADMIN ");
-            jradmin.setPrefix("§4§lJRADMIN ");
-            srmod.setPrefix("§6§lSRMOD ");
-            mod.setPrefix("§e§lMOD ");
-            jrmod.setPrefix("§3§lJRMOD ");
-            hero.setPrefix("§b§lHERO ");
-            vip.setPrefix("§a§lVIP ");
-            defaultTeam.setPrefix("");
-
-            // Assuming playerRank is a Map<UUID, String> where UUID is the player's UUID and String is their rank
-            UUID playerId = player.getUniqueId();
-            String playerRank = this.playerRank.get(playerId.toString());
+            // Set players' teams based on their ranks
+            String playerRank = this.playerRank.get(player.getUniqueId().toString());
             if (playerRank != null) {
-                if (playerRank.equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT)) {
+//                Team playerTeam = null;
+                if (playerRank.equalsIgnoreCase(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT)) {
+//                    playerTeam = defaultTeam;
                     defaultTeam.addEntry(player.getUniqueId().toString());
-                } else if (playerRank.equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP)) {
+                } else if (playerRank.equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP)) {
+//                    playerTeam = vip;
                     vip.addEntry(player.getUniqueId().toString());
-                } else if (playerRank.equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO)) {
+                } else if (playerRank.equalsIgnoreCase(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO)) {
+//                    playerTeam = hero;
                     hero.addEntry(player.getUniqueId().toString());
-                } else if (playerRank.equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD)) {
+                } else if (playerRank.equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD)) {
+//                    playerTeam = jrmod;
                     jrmod.addEntry(player.getUniqueId().toString());
-                } else if (playerRank.equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD)) {
+                } else if (playerRank.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD)) {
+//                    playerTeam = mod;
                     mod.addEntry(player.getUniqueId().toString());
-                } else if (playerRank.equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
+                } else if (playerRank.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
+//                    playerTeam = srmod;
                     srmod.addEntry(player.getUniqueId().toString());
-                } else if (playerRank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
+                } else if (playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
+//                    playerTeam = jradmin;
                     jradmin.addEntry(player.getUniqueId().toString());
-                } else if (playerRank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
+                } else if (playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
+//                    playerTeam = admin;
                     admin.addEntry(player.getUniqueId().toString());
                 }
-            }
-
-            // Apply the scoreboard to all online players
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.setScoreboard(board);
+                // Set the player's team if found
+                    player.setScoreboard(board); // Set scoreboard for the player
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.setScoreboard(board);
+                }
+            } else {
+                player.sendMessage("Could not determine your rank.");
             }
 
             //check if player is in a kingdom onJoin
             if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
+                if (claimedChunks.get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equals(kingdoms.get(player.getUniqueId().toString()))) {
                     inPlayersKingdomBoard(player, player.getLocation().getChunk());
+                    //TODO: Figure out why the else block doesn't load
                 } else {
                     notInPlayersKingdomBoard(player);
                 }

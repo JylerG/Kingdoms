@@ -50,9 +50,6 @@ public class KingdomsCommands implements CommandExecutor {
                 String kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
                 String chunkID = chunk.getX() + "," + chunk.getZ();
                 Location spawn = new Location(world, player.getLocation().getX(), player.getLocation().getBlockY(), player.getLocation().getZ());
-                if (args[0].equalsIgnoreCase("setspawn")) {
-                    setSpawn(player, kingdom, spawn);
-                }
 
                 if (args[0].equalsIgnoreCase("spawn")) {
                     teleportToSpawn(player, kingdom);
@@ -85,6 +82,12 @@ public class KingdomsCommands implements CommandExecutor {
 
                 if (args[0].equalsIgnoreCase("create")) {
                     createKingdom(player, args[1]);
+                }
+
+                if (args[0].equalsIgnoreCase("set")) {
+                    if (args[1].equalsIgnoreCase("spawn")) {
+                        setSpawn(player, kingdom, spawn);
+                    }
                 }
 
                 if (args[0].equalsIgnoreCase("ban")) {
@@ -590,7 +593,6 @@ public class KingdomsCommands implements CommandExecutor {
             player.sendMessage(ChatColor.YELLOW + "/kingdom uninvite <player>");
             player.sendMessage(ChatColor.YELLOW + "/kingdom join <kingdom>");
             player.sendMessage(ChatColor.YELLOW + "/kingdom spawn");
-            player.sendMessage(ChatColor.YELLOW + "/kingdom setspawn");
             player.sendMessage(ChatColor.YELLOW + "/kingdom leave <kingdom>");
             player.sendMessage(ChatColor.YELLOW + "/kingdom kick <player>");
             player.sendMessage(ChatColor.YELLOW + "/kingdom map");

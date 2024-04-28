@@ -37,6 +37,7 @@ public class RankCMD implements CommandExecutor {
                 if (sender.hasPermission("kingdoms.setrank.default") || sender.hasPermission("kingdoms.setrank.vip") || sender.hasPermission("kingdoms.setrank.hero") || sender.hasPermission("kingdoms.setrank.jrmod") || sender.hasPermission("kingdoms.setrank.mod") || sender.hasPermission("kingdoms.setrank.srmod") || sender.hasPermission("kingdoms.setrank.jradmin") || sender.hasPermission("kingdoms.setrank.admin")) {
                     if (target == null) {
                         sender.sendMessage(args[1] + ChatColor.RED + " is not online");
+                        return true;
                     } else {
                         if (args[0].equalsIgnoreCase("set")) {
 
@@ -411,9 +412,10 @@ public class RankCMD implements CommandExecutor {
                                     }
                                 }
                             }
+                            plugin.savePluginData();
                         }
                     }
-                    plugin.savePluginData();
+
                 } else {
                     MessageManager.playerBad(player, "You do not have permission to execute this command");
                 }
