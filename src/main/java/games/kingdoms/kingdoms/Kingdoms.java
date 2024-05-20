@@ -34,7 +34,8 @@ import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.StaffConfig;
 import games.kingdoms.kingdoms.publiccmds.nightvision.Commands;
 import games.kingdoms.kingdoms.publiccmds.randomtp.RandomTeleportListener;
 import games.kingdoms.kingdoms.publiccmds.randomtp.rtp;
-import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCMD;
+import games.kingdoms.kingdoms.publiccmds.teleports.KingdomsCommandListener;
+import games.kingdoms.kingdoms.publiccmds.teleports.SpawnCommand;
 import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCommandListener;
 import games.kingdoms.kingdoms.rankedcmds.feed.Feed;
 import games.kingdoms.kingdoms.rankedcmds.fly.Fly;
@@ -53,8 +54,9 @@ import java.util.*;
 public final class Kingdoms extends JavaPlugin implements Listener {
 
     private int staffCounter;
+    private HashMap<String, String> customRank = new HashMap<>();
     private final ArrayList<Player> invisiblePlayers = new ArrayList<>();
-    private final HashMap<String, String> claims = new HashMap<>();
+    private HashMap<String, String> claims = new HashMap<>();
     private HashMap<String, String> bannedNames = new HashMap<>();
     private HashMap<String, String> canUnclaim = new HashMap<>();
     private HashMap<String, String> canClaim = new HashMap<>();
@@ -72,6 +74,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private MoneyConfig moneyConfig;
     private StaffConfig staffConfig;
     private static Kingdoms plugin;
+    private HashMap<String, Integer> maxMembers = new HashMap<>();
+    private HashMap<String, Integer> maxClaims = new HashMap<>();
     private HashMap<Integer, Integer> staffCount = new HashMap<>();
 
     @Override
@@ -97,6 +101,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         //Initialize ArrayLists and HashMaps
         money = new HashMap<>();
+        maxMembers = new HashMap<>();
+        maxClaims = new HashMap<>();
+        claims = new HashMap<>();
+        customRank = new HashMap<>();
         staffCount = new HashMap<>();
         bannedNames = new HashMap<>();
         playerRank = new HashMap<>();
@@ -122,7 +130,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         staffVault();
         Feed();
         Fly();
-        warZone();
+        Spawns();
         Rtp();
         Vanish();
         kingdom();
@@ -208,8 +216,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         getCommand("fly").setExecutor(new Fly(this));
     }
 
-    private void warZone() {
-        getCommand("warzone").setExecutor(new WarzoneCMD(this));
+    private void Spawns() {
+        getCommand("spawn").setExecutor(new SpawnCommand(this, new KingdomsCommandListener(this) ));
     }
 
     private void Vanish() {
@@ -264,8 +272,22 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
             p.setScore(14);
             //Player rank
-            Score rank = obj.getScore("Rank " + playerRank.get(player.getUniqueId().toString()));
-            rank.setScore(13);
+            if (owner.containsKey(player.getUniqueId().toString())) {
+                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "King");
+                rank.setScore(13);
+            }
+            if (admin.containsKey(player.getUniqueId().toString())) {
+                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Knight");
+                rank.setScore(13);
+            }
+            if (member.containsKey(player.getUniqueId().toString()) && !owner.containsKey(player.getUniqueId().toString())) {
+                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Citizen");
+                rank.setScore(13);
+            }
+            if (customRank.containsKey(player.getUniqueId().toString())) {
+                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + customRank.get(player.getUniqueId().toString()));
+                rank.setScore(13);
+            }
             //Coins
             if (moneyValue == 0) {
                 Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
@@ -305,17 +327,19 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
             kingdom.setScore(7);
 
-            int memberCount = 0;
+            //TODO: loop through players and add to member count if they are in the kingdom of the chunk the player goes into
+            for (Player player1 : Bukkit.getOnlinePlayers()) {
+                if (claimedChunks.get(chunk.getX() + "," + chunk.getZ()).equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString()))) {
+                    int memberCount = 0;
 
-            for (String playerName : member.keySet()) {
-                if (member.get(playerName).equals(kingdoms.get(player.getUniqueId().toString()))) {
-                    memberCount++;
+                    if (kingdoms.get(player1.getUniqueId().toString()).equalsIgnoreCase(claimedChunks.get(chunk.getX() + "," + chunk.getZ()))) {
+                        memberCount++;
+                    }
+
+                    Score members = obj.getScore("Members " + ChatColor.YELLOW + memberCount + "/" + maxMembers.get(kingdoms.get(player.getUniqueId().toString())));
+                    members.setScore(6);
                 }
             }
-
-            Score members = obj.getScore("Members " + ChatColor.YELLOW + memberCount);
-            members.setScore(6);
-
 
             for (String chunkID : claimedChunks.keySet()) {
                 if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
@@ -327,7 +351,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                             claimCount++;
                         }
                     }
-                    Score claims = obj.getScore("Claims " + ChatColor.YELLOW + claimCount);
+                    Score claims = obj.getScore("Claims " + ChatColor.YELLOW + claimCount + "/" + maxClaims.get(kingdoms.get(player.getUniqueId().toString())));
                     claims.setScore(5);
                 }
             }
@@ -801,6 +825,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return kingdoms;
     }
 
+    public HashMap<String, Integer> getMaxMembers() {
+        return maxMembers;
+    }
+
+    public HashMap<String, Integer> getMaxClaims() {
+        return maxClaims;
+    }
+
     public HashMap<String, String> getBannedNames() {
         return bannedNames;
     }
@@ -842,9 +874,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
 
-//        FileManager kingdomFile = files.get("Kingdoms", "Data", YamlExtension.INSTANCE);
-//        FileManager staffFile = files.get("Staff", "Data", YamlExtension.INSTANCE);
-//        FileManager moneyFile = files.get("Money", "Data", YamlExtension.INSTANCE);
             Configurable kc = kingdomsConfig.getConfig();
             Configurable sc = staffConfig.getConfig();
             Configurable mc = moneyConfig.getConfig();
@@ -859,6 +888,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
                 if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
                     kingdoms.put(player.getUniqueId().toString(), kc.getNode("kingdoms." + player.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (kc.getNode("maxClaims").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                    maxClaims.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxClaims." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 if (kc.getNode("owners").getNode(player.getUniqueId().toString()).exists()) {
                     owner.put(player.getUniqueId().toString(), kc.getNode("owners." + player.getUniqueId().toString()).toPrimitive().getString());
@@ -877,6 +909,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
                 if (kc.getNode("spawns").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                     kingdomSpawn.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(player.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
+                }
+                if (kc.getNode("maxMembers").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                    maxMembers.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
                     if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
@@ -931,6 +966,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
                 kingdoms.put(player.getUniqueId().toString(), kc.getNode("kingdoms." + player.getUniqueId().toString()).toPrimitive().getString());
             }
+            if (kc.getNode("maxClaims").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                maxClaims.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxClaims." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
+            }
             if (kc.getNode("owners").getNode(player.getUniqueId().toString()).exists()) {
                 owner.put(player.getUniqueId().toString(), kc.getNode("owners." + player.getUniqueId().toString()).toPrimitive().getString());
             }
@@ -948,6 +986,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
             if (kc.getNode("spawns").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                 kingdomSpawn.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(player.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
+            }
+            if (kc.getNode("maxMembers").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                maxMembers.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
             }
             for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
                 if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
@@ -1012,6 +1053,24 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
                 config.save();
             }
+        }
+        if (!maxClaims.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
+                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!maxMembers.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
+                    config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
+                }
+            }
+            config.save();
         }
         if (!owner.isEmpty()) {
             if (admin.containsKey(player.getUniqueId().toString())) {
@@ -1164,6 +1223,24 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (config != null) {
                 for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
                     config.set("kingdoms." + kingdoms.getKey(), kingdoms.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!maxClaims.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
+                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!maxMembers.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
+                    config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
                 }
             }
             config.save();
