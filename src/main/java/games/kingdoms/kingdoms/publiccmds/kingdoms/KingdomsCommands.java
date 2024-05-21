@@ -55,7 +55,7 @@ public class KingdomsCommands implements CommandExecutor {
                 Chunk chunk = player.getLocation().getChunk();
                 String kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
                 String chunkID = chunk.getX() + "," + chunk.getZ();
-                Location spawn = new Location(world, player.getLocation().getX(), player.getLocation().getBlockY(), player.getLocation().getZ());
+                Location spawn = new Location(world, player.getLocation().getX(), player.getLocation().getBlockY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
 
                 if (args[0].equalsIgnoreCase("spawn")) {
                     teleportToSpawn(player, kingdom);
@@ -169,15 +169,11 @@ public class KingdomsCommands implements CommandExecutor {
         }
         player.sendMessage(ChatColor.RED + "—————— " + ChatColor.YELLOW + "Banned Kingdoms" + ChatColor.RED + " ——————");
 
-        kc.getNode("bannedNames").getKeys(false).forEach(key -> {
-            MessageManager.consoleGood("Keys = " + key);
-            if (!plugin.getBannedNames().containsValue(key)) {
-                MessageManager.playerBad(player, "No Banned Names");
-                return;
-            }
-        });
-
-        kc.getNode("bannedNames").getKeys(false).forEach(key -> player.sendMessage(ChatColor.GOLD + key));
+        try {
+            kc.getNode("bannedNames").getKeys(false).forEach(key -> player.sendMessage(ChatColor.GOLD + key));
+        } catch (NullPointerException e) {
+            player.sendMessage(ChatColor.LIGHT_PURPLE + "No Banned Names");
+        }
     }
 
     private void unbanKingdomName(Player player, String kingdom) {
@@ -590,6 +586,7 @@ public class KingdomsCommands implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "/kingdom list [page]");
     }
 
+    //TODO: figure out why this doesn't work
     private void setSpawn(Player player, String kingdom, Location spawn) {
         if (plugin.getAdmin().get(player.getUniqueId().toString()).equals(kingdom) || plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom)) {
             plugin.getKingdomSpawn().put(kingdom, spawn);
