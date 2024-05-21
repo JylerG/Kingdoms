@@ -31,6 +31,7 @@ import games.kingdoms.kingdoms.publiccmds.kingdoms.KingdomsListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.KingdomsConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.MoneyConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.StaffConfig;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomUpgradeListener;
 import games.kingdoms.kingdoms.publiccmds.nightvision.Commands;
 import games.kingdoms.kingdoms.publiccmds.randomtp.RandomTeleportListener;
 import games.kingdoms.kingdoms.publiccmds.randomtp.rtp;
@@ -57,6 +58,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, String> customRank = new HashMap<>();
     private final ArrayList<Player> invisiblePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
+    private HashMap<String, Long> claimPrice = new HashMap<>();
+    private HashMap<String, Long> memberPrice = new HashMap<>();
     private HashMap<String, String> bannedNames = new HashMap<>();
     private HashMap<String, String> canUnclaim = new HashMap<>();
     private HashMap<String, String> canClaim = new HashMap<>();
@@ -101,6 +104,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         //Initialize ArrayLists and HashMaps
         money = new HashMap<>();
+        memberPrice = new HashMap<>();
+        claimPrice = new HashMap<>();
         maxMembers = new HashMap<>();
         maxClaims = new HashMap<>();
         claims = new HashMap<>();
@@ -825,6 +830,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return kingdoms;
     }
 
+    public HashMap<String, Long> getClaimPrice() {
+        return claimPrice;
+    }
+
+    public HashMap<String, Long> getMemberPrice() {
+        return memberPrice;
+    }
+
     public HashMap<String, Integer> getMaxMembers() {
         return maxMembers;
     }
@@ -912,6 +925,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
                 if (kc.getNode("maxMembers").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                     maxMembers.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
+                }
+                if (kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                    claimPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
+                }
+                if (kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                    memberPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
                 }
                 for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
                     if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
@@ -1166,6 +1185,26 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
         }
 
+        if (!memberPrice.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
+                    config.set("memberPrice." + price.getKey(), price.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!claimPrice.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
+                    config.set("claimPrice." + price.getKey(), price.getValue());
+                }
+            }
+            config.save();
+        }
+
         if (!money.isEmpty()) {
             if (money.containsKey(player.getUniqueId().toString())) {
                 Configurable config = moneyConfig.getConfig();
@@ -1202,13 +1241,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData() {
-        if (staffCounter > -1) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                config.set("onlineStaff." + staffCounter, staffCounter);
-            }
-            config.save();
-        }
         if (!bannedNames.isEmpty()) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
@@ -1323,6 +1355,26 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             config.save();
         }
 
+        if (!memberPrice.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
+                    config.set("memberPrice." + price.getKey(), price.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!claimPrice.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
+                    config.set("claimPrice." + price.getKey(), price.getValue());
+                }
+            }
+            config.save();
+        }
+
         if (!money.isEmpty()) {
             Configurable config = moneyConfig.getConfig();
             if (config != null) {
@@ -1356,6 +1408,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void events() {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new KingdomUpgradeListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WarzoneCommandListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new CustomOreCommand(this), this);

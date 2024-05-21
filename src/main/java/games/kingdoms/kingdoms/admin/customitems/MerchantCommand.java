@@ -8,9 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -28,10 +30,9 @@ public class MerchantCommand implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             MessageManager.consoleBad("You must be a player to execute this command.");
         } else {
-            Player player = (Player) sender;
             if (args.length == 0) {
                 Inventory gui = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "Merchant (Page 1)");
 
@@ -55,6 +56,17 @@ public class MerchantCommand implements CommandExecutor, Listener {
                 ItemStack warzoneDiamond = new ItemStack(Material.DIAMOND);
                 ItemStack warzoneEmerald = new ItemStack(Material.EMERALD);
                 ItemStack goblinSkin = new ItemStack(Material.LILY_PAD);
+                //TODO: Figure out what the feather is
+                ItemStack feather = new ItemStack(Material.FEATHER);
+
+                ItemMeta featherMeta = feather.getItemMeta();
+                featherMeta.setDisplayName(ChatColor.YELLOW.toString() + ChatColor.BOLD + "Unknown Item");
+                ArrayList<String> featherLore = new ArrayList<>();
+                featherLore.add(" ");
+                featherMeta.setLore(featherLore);
+                featherMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                featherMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                feather.setItemMeta(featherMeta);
 
                 ItemMeta warzoneCoalMeta = warzoneCoal.getItemMeta();
                 warzoneCoalMeta.setDisplayName(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "Warzone Coal");
@@ -158,6 +170,8 @@ public class MerchantCommand implements CommandExecutor, Listener {
                 leatherLore.add(" ");
                 leatherLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Value" + ChatColor.WHITE + ": " + ChatColor.GOLD + "1000 " + ChatColor.GREEN + "coins");
                 enchantedLeatherMeta.setLore(leatherLore);
+                enchantedLeatherMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+                enchantedLeatherMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 enchantedLeather.setItemMeta(enchantedLeatherMeta);
 
                 ItemMeta refinedCoalMeta = refinedCoal.getItemMeta();
@@ -192,6 +206,8 @@ public class MerchantCommand implements CommandExecutor, Listener {
                 fleshLore.add(" ");
                 fleshLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Value" + ChatColor.WHITE + ": " + ChatColor.GOLD + "1500 " + ChatColor.GREEN + "coins");
                 fleshItemMeta.setLore(fleshLore);
+                fleshItemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                fleshItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 enchantedFlesh.setItemMeta(fleshItemMeta);
 
                 ItemMeta gemstoneItemMeta = gemstoneOfChivalry.getItemMeta();
@@ -244,6 +260,7 @@ public class MerchantCommand implements CommandExecutor, Listener {
                 gui.setItem(51, border);
                 gui.setItem(52, border);
                 gui.setItem(53, border);
+                gui.setItem(10, feather);
                 gui.setItem(15, heartOfWar);
                 gui.setItem(19, refinedCoalBlock);
                 gui.setItem(20, refinedGold);

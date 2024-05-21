@@ -27,7 +27,7 @@ public class KingdomsCommandListener implements Listener {
     public void start() {
         try {
             for (int i = 10; i > -1; i--) {
-                plugin.sendTitle(player, " ", ChatColor.GREEN.toString() + ChatColor.BOLD + "Teleporting to Kingdoms Spawn in " + ChatColor.WHITE + ChatColor.BOLD + i, 10, 20, 10);
+                plugin.sendTitle(player, ChatColor.YELLOW.toString() + ChatColor.BOLD + i + "s", ChatColor.GREEN.toString() + ChatColor.BOLD + "Teleporting in...", 10, 20, 10);
                 Thread.sleep(1000);
             }
             World world = Bukkit.getWorld("kingdoms");

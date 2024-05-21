@@ -10,9 +10,15 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -53,6 +59,10 @@ public class KingdomsCommands implements CommandExecutor {
 
                 if (args[0].equalsIgnoreCase("spawn")) {
                     teleportToSpawn(player, kingdom);
+                }
+
+                if (args[0].equalsIgnoreCase("upgrade")) {
+                    upgradeKingdom(player, kingdom);
                 }
 
                 if (args[0].equalsIgnoreCase("claim")) {
@@ -385,12 +395,25 @@ public class KingdomsCommands implements CommandExecutor {
             String invitedKingdom = plugin.getInviteList().get(player.getUniqueId().toString());
 
             if (invitedKingdom != null && invitedKingdom.equalsIgnoreCase(args[1])) {
-                plugin.getInviteList().remove(player.getUniqueId().toString());
-                plugin.getKingdoms().put(player.getUniqueId().toString(), args[1]);
-                plugin.getMember().put(player.getUniqueId().toString(), args[1]);
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                        int memberCount = 0;
 
+                        if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase(plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                            memberCount++;
+                        }
 
-                player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
+                        if (plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())) >= memberCount) {
+                            plugin.getInviteList().remove(player.getUniqueId().toString());
+                            plugin.getKingdoms().put(player.getUniqueId().toString(), args[1]);
+                            plugin.getMember().put(player.getUniqueId().toString(), args[1]);
+
+                            player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
+                        } else {
+                            player.sendMessage(args[1] + " is at maximum capacity");
+                        }
+                    }
+                }
             } else {
                 if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString()) && !player.hasPermission("kingdoms.admin.join")) {
                     player.sendMessage(ChatColor.RED + "You have not been invited to " + ChatColor.WHITE + args[1]);
@@ -413,10 +436,24 @@ public class KingdomsCommands implements CommandExecutor {
                 return;
             }
 
-            plugin.getKingdoms().put(player.getUniqueId().toString(), args[1]);
-            plugin.getMember().put(player.getUniqueId().toString(), args[1]);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                    int memberCount = 0;
 
-            player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
+                    if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase(plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                        memberCount++;
+                    }
+
+                    if (plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())) >= memberCount) {
+                        plugin.getKingdoms().put(player.getUniqueId().toString(), args[1]);
+                        plugin.getMember().put(player.getUniqueId().toString(), args[1]);
+
+                        player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
+                    } else {
+                        player.sendMessage(args[1] + " is at maximum capacity");
+                    }
+                }
+            }
         } catch (NullPointerException e) {
             player.sendMessage(args[1] + ChatColor.RED + " doesn't exist");
         }
@@ -445,64 +482,6 @@ public class KingdomsCommands implements CommandExecutor {
         target.sendMessage(ChatColor.RED + "You were uninvited from " + ChatColor.WHITE + plugin.getKingdoms().get(player.getUniqueId().toString()));
 
     }
-
-    //TODO: Figure out how to make this actually disband the kingdom and remove all data for it
-/*    private void disbandKingdom(Player player, String kingdom, String[] args, String chunkID) {
-        if (!player.hasPermission("kingdoms.disband.admin")) {
-            if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
-                player.sendMessage(ChatColor.RED + "You are not in a kingdom");
-                return;
-            }
-            if (!plugin.getKingdoms().get(player.getUniqueId().toString()).equals(args[1])) {
-                player.sendMessage(ChatColor.RED + "You are not a member of " + ChatColor.WHITE + kingdom);
-                return;
-            }
-            if (!plugin.getOwner().get(player.getUniqueId().toString()).equals(args[1])) {
-                player.sendMessage(ChatColor.RED + "You are not the owner of " + ChatColor.WHITE + kingdom);
-                return;
-            }
-        }
-        Iterator<Map.Entry<String, String>> iterator = plugin.getKingdoms().entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> kingdoms = iterator.next();
-            if (kingdoms.getValue().equals(kingdom)) {
-                String playerObj = kingdoms.getKey();
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (playerObj.equals(p.getUniqueId().toString())) {
-                        iterator.remove(); // Using iterator's remove method to avoid concurrent modification
-                        if (plugin.getKingdoms().containsValue(kingdom)) {
-
-                            plugin.getKingdomSpawn().remove(kingdom);
-                            plugin.getOwner().remove(player.getUniqueId().toString(), kingdom);
-
-                            for (Map.Entry<String, String> kingdomName : plugin.getKingdoms().entrySet()) {
-                                plugin.getKingdoms().remove(kingdomName.getKey(), kingdom);
-                            }
-                            for (Map.Entry<String, String> admin : plugin.getAdmin().entrySet()) {
-                                plugin.getAdmin().remove(admin.getKey(), kingdom);
-                            }
-                            for (Map.Entry<String, String> member : plugin.getMember().entrySet()) {
-                                plugin.getAdmin().remove(member.getKey(), kingdom);
-                            }
-                            for (Map.Entry<String, String> canClaim : plugin.getCanClaim().entrySet()) {
-                                plugin.getAdmin().remove(canClaim.getKey(), kingdom);
-                            }
-                            for (Map.Entry<String, String> canUnclaim : plugin.getCanUnclaim().entrySet()) {
-                                plugin.getAdmin().remove(canUnclaim.getKey(), kingdom);
-                            }
-                            for (Map.Entry<String, String> chunk : plugin.getClaimedChunks().entrySet()) {
-                                plugin.getClaimedChunks().remove(chunk.getKey(), kingdom);
-                            }
-                        }
-                    }
-                }
-                player.sendMessage(kingdom + ChatColor.GREEN + " disbanded");
-            } else {
-                player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
-            }
-        }
-    }*/
-
 
     private void disbandKingdom(Player player, String kingdom, String[] args, String chunkID) {
 
@@ -580,6 +559,8 @@ public class KingdomsCommands implements CommandExecutor {
         plugin.getMember().put(player.getUniqueId().toString(), kingdom);
         plugin.getCanClaim().put(player.getUniqueId().toString(), kingdom);
         plugin.getCanUnclaim().put(player.getUniqueId().toString(), kingdom);
+        plugin.getClaimPrice().put(kingdom, 10_000L);
+        plugin.getMemberPrice().put(kingdom, 10_000L);
         plugin.getMaxClaims().put(kingdom, 10);
         plugin.getMaxMembers().put(kingdom, 10);
         player.sendMessage(kingdom + ChatColor.GREEN + " created");
@@ -632,6 +613,106 @@ public class KingdomsCommands implements CommandExecutor {
         player.sendMessage(ChatColor.GREEN + "Teleported to " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s spawn");
     }
 
+    private void upgradeKingdom(Player player, String kingdom) {
+
+        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+            MessageManager.playerBad(player, "You are not in a kingdom");
+            return;
+        }
+
+        try {
+            Inventory upgrades = Bukkit.createInventory(player, 27, ChatColor.DARK_AQUA + "Kingdom Upgrades");
+
+            ItemStack border = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+            // claims, members
+            ItemStack claims = new ItemStack(Material.GREEN_WOOL);
+            ItemStack members = new ItemStack(Material.LIME_WOOL);
+
+            ItemMeta borderMeta = border.getItemMeta();
+            borderMeta.setDisplayName(" ");
+            border.setItemMeta(borderMeta);
+
+            ItemMeta claimMeta = claims.getItemMeta();
+            // Calculate the new price based on the current maximum claims
+            for (String chunkID : plugin.getClaimedChunks().keySet()) {
+                if (plugin.getClaimedChunks().get(chunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                    // This chunk is claimed by the player's kingdom
+                    // You can increment the claim count and update the scoreboard here
+                    int claimCount = 0;
+                    for (String otherChunkID : plugin.getClaimedChunks().keySet()) {
+                        if (plugin.getClaimedChunks().get(otherChunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                            claimCount++;
+                        }
+                    }
+                    claimMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Claim Limit");
+                    ArrayList<String> claimsLore = new ArrayList<>();
+                    claimsLore.add(" ");
+                    claimsLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getClaimPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                    claimMeta.setLore(claimsLore);
+                    claimMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                    claimMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    claims.setItemMeta(claimMeta);
+                    claimCount++;
+                }
+            }
+
+            ItemMeta memberMeta = members.getItemMeta();
+            memberMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Member Limit");
+
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ())
+                        .equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                    int memberCount = 0;
+
+                    if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase
+                            (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                        memberCount++;
+                    }
+                    ArrayList<String> memberLore = new ArrayList<>();
+                    memberLore.add(" ");
+                    memberLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getMemberPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                    memberMeta.setLore(memberLore);
+                    memberMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                    memberMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    members.setItemMeta(memberMeta);
+                    memberCount++;
+                }
+            }
+
+            upgrades.setItem(0, border);
+            upgrades.setItem(1, border);
+            upgrades.setItem(2, border);
+            upgrades.setItem(3, border);
+            upgrades.setItem(4, border);
+            upgrades.setItem(5, border);
+            upgrades.setItem(6, border);
+            upgrades.setItem(7, border);
+            upgrades.setItem(8, border);
+            upgrades.setItem(9, border);
+            upgrades.setItem(10, border);
+            upgrades.setItem(11, claims);
+            upgrades.setItem(12, border);
+            upgrades.setItem(13, border);
+            upgrades.setItem(14, border);
+            upgrades.setItem(15, members);
+            upgrades.setItem(16, border);
+            upgrades.setItem(17, border);
+            upgrades.setItem(18, border);
+            upgrades.setItem(19, border);
+            upgrades.setItem(20, border);
+            upgrades.setItem(21, border);
+            upgrades.setItem(22, border);
+            upgrades.setItem(23, border);
+            upgrades.setItem(24, border);
+            upgrades.setItem(25, border);
+            upgrades.setItem(26, border);
+
+            player.openInventory(upgrades);
+        } catch (NullPointerException e) {
+            player.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.WHITE + kingdom + ChatColor.RED + " claim to execute this command");
+        }
+    }
+
     private void claimChunk(Player player, String kingdom, String chunkID) {
 
         if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
@@ -653,9 +734,22 @@ public class KingdomsCommands implements CommandExecutor {
             }
             return;
         }
-        plugin.getClaims().put(kingdom, chunkID);
-        plugin.getClaimedChunks().put(chunkID, kingdom);
-        player.sendMessage(ChatColor.GREEN + "Chunk claimed");
+
+        int claimCount = 0;
+        for (String ChunkID : plugin.getClaimedChunks().keySet()) {
+            if (plugin.getClaimedChunks().get(ChunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                claimCount++;
+            }
+        }
+        if (plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString())) > claimCount) {
+            plugin.getClaims().put(kingdom, chunkID);
+            plugin.getClaimedChunks().put(chunkID, kingdom);
+            player.sendMessage(ChatColor.GREEN + "Chunk claimed");
+        } else {
+            player.sendMessage(kingdom + ChatColor.RED + " has claimed " +
+                    ChatColor.YELLOW + claimCount + "/" + plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString()))
+                    + ChatColor.RED + " chunks. " + ChatColor.GOLD + "/k upgrade " + ChatColor.RED + "to increase this amount");
+        }
     }
 
     private void unclaimChunk(Player player, String kingdom, String chunkID) {

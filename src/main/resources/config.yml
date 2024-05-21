@@ -1,8 +1,4 @@
 #example
-#kingdom: kingdom
-bannedNames:
-  name1: Test
-  name2: TestKingdom
 quests:
   kill:
     quest1:
