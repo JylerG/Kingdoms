@@ -588,11 +588,15 @@ public class KingdomsCommands implements CommandExecutor {
 
     //TODO: figure out why this doesn't work
     private void setSpawn(Player player, String kingdom, Location spawn) {
-        if (plugin.getAdmin().get(player.getUniqueId().toString()).equals(kingdom) || plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom)) {
-            plugin.getKingdomSpawn().put(kingdom, spawn);
-            player.sendMessage(ChatColor.GREEN + "You set " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s spawn");
-        } else {
-            player.sendMessage(ChatColor.RED + "You do not have permission to set " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s spawn");
+        try {
+            if (plugin.getAdmin().get(player.getUniqueId().toString()).equals(kingdom) || plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom)) {
+                plugin.getKingdomSpawn().put(kingdom, spawn);
+                player.sendMessage(ChatColor.GREEN + "You set " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s spawn");
+            } else {
+                player.sendMessage(ChatColor.RED + "You do not have permission to set " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s spawn");
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -645,6 +649,9 @@ public class KingdomsCommands implements CommandExecutor {
                     ArrayList<String> claimsLore = new ArrayList<>();
                     claimsLore.add(" ");
                     claimsLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getClaimPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                    claimsLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
+                    claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
+                    claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
                     claimMeta.setLore(claimsLore);
                     claimMeta.addEnchant(Enchantment.DURABILITY, 1, false);
                     claimMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -668,6 +675,9 @@ public class KingdomsCommands implements CommandExecutor {
                     ArrayList<String> memberLore = new ArrayList<>();
                     memberLore.add(" ");
                     memberLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getMemberPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                    memberLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
+                    memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
+                    memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
                     memberMeta.setLore(memberLore);
                     memberMeta.addEnchant(Enchantment.DURABILITY, 1, false);
                     memberMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

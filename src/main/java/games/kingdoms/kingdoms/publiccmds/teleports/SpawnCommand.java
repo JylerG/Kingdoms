@@ -25,10 +25,12 @@ public class SpawnCommand implements CommandExecutor {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("warzone") || args[0].equalsIgnoreCase("wz") || args[0].equalsIgnoreCase("w")) {
                 WarzoneCommandListener warzoneCommandListener = new WarzoneCommandListener(plugin, player);
+                //TODO: Make this cancel the event if the player moves
                 warzoneCommandListener.start();
             }
             if (args[0].equalsIgnoreCase("kingdoms") || args[0].equalsIgnoreCase("k")) {
                 KingdomsCommandListener kingdomsCommandListener = new KingdomsCommandListener(plugin, player);
+                //TODO: Make this cancel the event if the player moves
                 kingdomsCommandListener.start();
             }
         }

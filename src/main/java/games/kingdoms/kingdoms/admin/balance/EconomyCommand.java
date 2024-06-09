@@ -43,6 +43,9 @@ public class EconomyCommand implements CommandExecutor {
                         } else {
                             try {
                                 long moneyValue = Long.parseLong(args[2]);
+                                if (!plugin.getMoney().containsKey(player.getUniqueId().toString())) {
+                                    plugin.getMoney().put(player.getUniqueId().toString(), 0L);
+                                }
                                 if (args[0].equalsIgnoreCase("give")) {
 
 
