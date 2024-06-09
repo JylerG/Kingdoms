@@ -65,9 +65,12 @@ commands:
   pay:
     description: Pay a player.
     aliases: []
+  kingdomchat:
+    description: Send a message in your kingdom's chat.
+    aliases: [kc]
   staffchat:
     description: Send a message in Staff chat.
-    aliases: [s]
+    aliases: [sc]
   staffreload:
     description: Broadcast a message to all online players saying they may need to log out and back in.
     aliases: [srl]
@@ -77,3 +80,6 @@ commands:
   spawn:
     description: Teleport to Kingdoms or Warzone Spawn.
     aliases: [s]
+  easter:
+    description: lolno.
+    aliases: []

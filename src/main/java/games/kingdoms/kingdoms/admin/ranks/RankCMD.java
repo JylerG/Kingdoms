@@ -612,20 +612,21 @@ public class RankCMD implements CommandExecutor {
                                             plugin.getStaff().put(target.getUniqueId().toString(), "SRMOD");
                                             target.setOp(false);
                                             target.kickPlayer("You were demoted to SRMOD rank");
-                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT);
+                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.SRMOD);
                                             return true;
                                         }
                                         if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
                                             plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
                                             plugin.getStaff().put(target.getUniqueId().toString(), "SRMOD");
                                             target.setOp(false);
-                                            target.kickPlayer("You were demoted to DEFAULT rank");
-                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT);
+                                            target.kickPlayer("You were demoted to SRMOD rank");
+                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.SRMOD);
                                             return true;
                                         }
                                         if (!plugin.getPlayerRank().get(target.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
                                             plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
                                             plugin.getStaff().put(target.getUniqueId().toString(), "SRMOD");
+                                            target.kickPlayer("You were demoted to SRMOD rank");
                                             target.setOp(false);
                                             player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD);
                                             target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD);
@@ -638,14 +639,14 @@ public class RankCMD implements CommandExecutor {
                                             plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
                                             plugin.getStaff().put(target.getUniqueId().toString(), "SRMOD");
                                             target.setOp(false);
-                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT);
+                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.SRMOD);
                                             return true;
                                         }
                                         if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
                                             plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
                                             plugin.getStaff().put(target.getUniqueId().toString(), "SRMOD");
                                             target.setOp(false);
-                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT);
+                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName() + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.SRMOD);
                                             return true;
                                         }
                                         if (!plugin.getPlayerRank().get(target.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {

@@ -14,6 +14,7 @@ import games.kingdoms.kingdoms.admin.gamemodes.Adventure;
 import games.kingdoms.kingdoms.admin.gamemodes.Creative;
 import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
+import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import games.kingdoms.kingdoms.admin.ranks.RankCMD;
 import games.kingdoms.kingdoms.admin.ranks.RankTabCompleter;
@@ -26,8 +27,11 @@ import games.kingdoms.kingdoms.admin.vanish.commands.VanishCMD;
 import games.kingdoms.kingdoms.admin.vanish.events.JoinEvent;
 import games.kingdoms.kingdoms.publiccmds.balance.BalanceCommand;
 import games.kingdoms.kingdoms.publiccmds.balance.PayCommand;
-import games.kingdoms.kingdoms.publiccmds.kingdoms.KingdomsCommands;
-import games.kingdoms.kingdoms.publiccmds.kingdoms.KingdomsListener;
+import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.KingdomsConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.MoneyConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.StaffConfig;
@@ -54,7 +58,14 @@ import java.util.*;
 
 public final class Kingdoms extends JavaPlugin implements Listener {
 
-    private int staffCounter;
+    private QuestManager questManager;
+    private GuideManager guideManager;
+    private BrotherManager brotherManager;
+    private ForgeManager forgeManager;
+    private GlassManager glassManager;
+    private SchematicsManager schematicsManager;
+    private NatureManager natureManager;
+    private MerchantManager merchantManager;
     private HashMap<String, String> customRank = new HashMap<>();
     private final ArrayList<Player> invisiblePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
@@ -79,7 +90,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private static Kingdoms plugin;
     private HashMap<String, Integer> maxMembers = new HashMap<>();
     private HashMap<String, Integer> maxClaims = new HashMap<>();
-    private HashMap<Integer, Integer> staffCount = new HashMap<>();
+    private HashMap<String, Integer> staffCount = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -128,6 +139,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         restoreServerData();
 
         //Commands
+        interactWithNPC();
         createNPC();
         setRank();
         staffReload();
@@ -147,6 +159,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         balanceCMDs();
         Merchant();
         staffChat();
+        kingdomChat();
+        easter();
 
         //Events
         events();
@@ -179,6 +193,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void setRank() {
         getCommand("rank").setExecutor(new RankCMD(this));
+    }
+
+    private void kingdomChat() {
+        getCommand("kingdomchat").setExecutor(new KingdomsChat());
+        getCommand("kingdomchat").setTabCompleter(new KingdomsChatTabCompleter(this));
+    }
+
+    private void easter() {
+        getCommand("easter").setExecutor(new EasterCommand());
     }
 
     private void createNPC() {
@@ -231,6 +254,17 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void Rtp() {
         getCommand("rtp").setExecutor(new rtp());
+    }
+
+    private void interactWithNPC() {
+        brotherManager = new BrotherManager();
+        forgeManager = new ForgeManager();
+        glassManager = new GlassManager();
+        guideManager = new GuideManager();
+        merchantManager = new MerchantManager();
+        natureManager = new NatureManager();
+        questManager = new QuestManager();
+        schematicsManager = new SchematicsManager();
     }
 
     private void kingdom() {
@@ -337,7 +371,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 if (claimedChunks.get(chunk.getX() + "," + chunk.getZ()).equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString()))) {
                     int memberCount = 0;
 
-                    if (kingdoms.get(player1.getUniqueId().toString()).equalsIgnoreCase(claimedChunks.get(chunk.getX() + "," + chunk.getZ()))) {
+                    if (kingdomsConfig.getConfig().getNode("members." + player1.getUniqueId().toString())
+                            .toPrimitive().getString().equalsIgnoreCase(kingdomsConfig.getConfig()
+                            .getNode("members." + player.getUniqueId().toString()).toPrimitive().getString())) {
                         memberCount++;
                     }
 
@@ -547,6 +583,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 //            String ownerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
             if (kingdoms.containsKey(player.getUniqueId().toString())) {
                 //TODO: Figure out how to calculate if the player is in a chunk that is owned by their kingdom
+                // Figure out why this doesn't show the scoreboard to the player
                 if (isChunkClaimed(toChunk)) {
                     inPlayersKingdomBoard(player, toChunk);
                 } else {
@@ -607,6 +644,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             money.put(player.getUniqueId().toString(), 0L);
 
         } else {
+            if (!playerRank.containsKey(player.getUniqueId().toString())) {
+                playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+                savePluginData(player);
+            }
+            if (!money.containsKey(player.getUniqueId().toString())) {
+                money.put(player.getUniqueId().toString(), 0L);
+                savePluginData(player);
+            }
+
             savePluginData(player);
             restorePluginData(player);
 
@@ -951,7 +997,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
                 if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-                    staffCount.put(kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
+                    staffCount.put("onlineStaff", kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
                 }
             }
         }
@@ -1028,14 +1074,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
             }
             if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-                staffCount.put(kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
+                staffCount.put("onlineStaff", kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
             }
         }
     }
 
     public void savePluginData(Player player) {
-        //TODO: make this calculate online staff
-
         if (!staff.isEmpty()) {
             Configurable config = staffConfig.getConfig();
             if (config != null) {
@@ -1043,6 +1087,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 for (Player player1 : Bukkit.getOnlinePlayers()) {
                     int staffCount = 0;
 
+                    //TODO: Figure out why this doesn't calculate the staff count
                     if (staff.get(player1.getUniqueId().toString()).equalsIgnoreCase(config.getNode("staff." + player1.getUniqueId().toString()).toPrimitive().getString())) {
 
                         staffCount++;
@@ -1410,6 +1455,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 for (Player player1 : Bukkit.getOnlinePlayers()) {
                     int staffCount = 0;
 
+                    //TODO: Figure out why this doesn't calculate the staff count
                     if (staff.get(player1.getUniqueId().toString()).equalsIgnoreCase(config.getNode("staff." + player1.getUniqueId().toString()).toPrimitive().getString())) {
 
                         staffCount++;
