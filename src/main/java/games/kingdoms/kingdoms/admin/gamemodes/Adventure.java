@@ -24,7 +24,7 @@ public class Adventure implements CommandExecutor {
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (sender.hasPermission("kingdoms.set.gamemode")) {
+            if (sender.hasPermission("kingdoms.set.gamemode.adventure")) {
                 if (args.length == 0) {
                     if (!player.getGameMode().equals(GameMode.ADVENTURE)) {
                         player.setGameMode(GameMode.ADVENTURE);
@@ -39,7 +39,7 @@ public class Adventure implements CommandExecutor {
                         if (!target.getGameMode().equals(GameMode.ADVENTURE)) {
                             target.setGameMode(GameMode.ADVENTURE);
                             player.sendMessage(ChatColor.GRAY + "You set " + ChatColor.LIGHT_PURPLE + target.getName() + ChatColor.GRAY + "'s gamemode to " + ChatColor.LIGHT_PURPLE + "Adventure");
-                            target.sendMessage(ChatColor.GRAY + "Your gamemode was set to " + ChatColor.LIGHT_PURPLE + "Adventure ");
+                            target.sendMessage(ChatColor.GRAY + "Your gamemode was set to " + ChatColor.LIGHT_PURPLE + "Adventure");
                         } else {
                             player.sendMessage(ChatColor.LIGHT_PURPLE + target.getName() + ChatColor.RED + " is already in gamemode " + ChatColor.LIGHT_PURPLE + "Adventure");
                         }

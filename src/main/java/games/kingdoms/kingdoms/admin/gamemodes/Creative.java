@@ -23,7 +23,7 @@ public class Creative implements CommandExecutor {
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (sender.hasPermission("kingdoms.set.gamemode")) {
+            if (sender.hasPermission("kingdoms.set.gamemode.creative")) {
                 if (args.length == 0) {
                     if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                         player.setGameMode(GameMode.CREATIVE);
@@ -38,7 +38,7 @@ public class Creative implements CommandExecutor {
                         if (!target.getGameMode().equals(GameMode.CREATIVE)) {
                             target.setGameMode(GameMode.CREATIVE);
                             player.sendMessage(ChatColor.GRAY + "You set " + ChatColor.LIGHT_PURPLE + target.getName() + ChatColor.GRAY + "'s gamemode to " + ChatColor.LIGHT_PURPLE + "Creative");
-                            target.sendMessage(ChatColor.GRAY + "Your gamemode was set to " + ChatColor.LIGHT_PURPLE + "Creative ");
+                            target.sendMessage(ChatColor.GRAY + "Your gamemode was set to " + ChatColor.LIGHT_PURPLE + "Creative");
                         } else {
                             player.sendMessage(ChatColor.LIGHT_PURPLE + target.getName() + ChatColor.RED + " is already in gamemode " + ChatColor.LIGHT_PURPLE + "Creative");
                         }

@@ -83,3 +83,6 @@ commands:
   easter:
     description: lolno.
     aliases: []
+  view:
+    description: View all available permissions for the plugin.
+    aliases: []

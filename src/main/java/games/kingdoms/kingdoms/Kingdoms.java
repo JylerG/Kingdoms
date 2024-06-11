@@ -15,6 +15,7 @@ import games.kingdoms.kingdoms.admin.gamemodes.Creative;
 import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
+import games.kingdoms.kingdoms.admin.permissions.Permissions;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import games.kingdoms.kingdoms.admin.ranks.RankCMD;
 import games.kingdoms.kingdoms.admin.ranks.RankTabCompleter;
@@ -151,6 +152,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Rtp();
         Vanish();
         kingdom();
+        viewPerms();
         gameModes();
         rank();
         ore();
@@ -271,9 +273,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         getCommand("kingdom").setExecutor(new KingdomsCommands(this));
     }
 
+    private void viewPerms() {
+        getCommand("view").setExecutor(new Permissions());
+    }
+
     private void rank() {
         getCommand("rank").setExecutor(new RankCMD(this));
-        getCommand("rank").setTabCompleter(new RankTabCompleter(this));
+        getCommand("rank").setTabCompleter(new RankTabCompleter());
     }
 
     private void Merchant() {
@@ -468,7 +474,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdom.setScore(7);
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(StaffConfig.getInstance().getConfig().getNode("onlineStaff.onlineStaff").toPrimitive().getInt()));
+        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(String.valueOf(StaffConfig.getInstance().getConfig().getNode("onlineStaff.onlineStaff").toPrimitive().getInt())));
         online_staff.setScore(5);
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
@@ -540,7 +546,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdom.setScore(7);
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(KingdomsConfig.getInstance().getConfig().getNode("onlineStaff").toPrimitive().getInt()));
+        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(String.valueOf(StaffConfig.getInstance().getConfig().getNode("onlineStaff").toPrimitive().getInt())));
         online_staff.setScore(5);
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
@@ -638,7 +644,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
             Team defaultTeam = board.registerNewTeam("default");
-
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "/pex group " + player.getUniqueId().toString() + " set default");
             defaultTeam.addEntry(player.getUniqueId().toString());
             playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
             money.put(player.getUniqueId().toString(), 0L);
@@ -646,6 +652,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         } else {
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "/pex group " + player.getUniqueId().toString() + " set default");
                 savePluginData(player);
             }
             if (!money.containsKey(player.getUniqueId().toString())) {
@@ -997,7 +1004,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
                 if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-                    staffCount.put("onlineStaff", kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
+                    staffCount.put(sc.getNode("onlineStaff.onlineStaff").toString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
                 }
             }
         }
@@ -1074,7 +1081,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
             }
             if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-                staffCount.put("onlineStaff", kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
+                staffCount.put(sc.getNode("onlineStaff.onlineStaff").toString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
             }
         }
     }
@@ -1174,7 +1181,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 Configurable config = kingdomsConfig.getConfig();
                 if (config != null) {
                     for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                        config.set("invites." + player.getUniqueId().toString(), invites.getValue());
+                        config.set("invites." + invites.getKey(), invites.getValue());
                     }
                 }
                 config.save();
@@ -1444,23 +1451,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (config != null) {
                 for (Map.Entry<String, String> staff : staff.entrySet()) {
                     config.set("staff." + staff.getKey(), staff.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!staff.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-
-                for (Player player1 : Bukkit.getOnlinePlayers()) {
-                    int staffCount = 0;
-
-                    //TODO: Figure out why this doesn't calculate the staff count
-                    if (staff.get(player1.getUniqueId().toString()).equalsIgnoreCase(config.getNode("staff." + player1.getUniqueId().toString()).toPrimitive().getString())) {
-
-                        staffCount++;
-                        config.set("onlineStaff.onlineStaff", staffCount);
-                    }
                 }
             }
             config.save();

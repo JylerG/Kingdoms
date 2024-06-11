@@ -39,7 +39,7 @@ public class CustomOreCommand implements CommandExecutor, Listener {
             MessageManager.consoleBad("You must be a player to execute this command.");
         } else {
             Player player = (Player) sender;
-            if (player.hasPermission("kingdoms.give"))
+            if (player.hasPermission("kingdoms.ore.give"))
                 switch (args.length) {
                     case 0:
                     case 1:

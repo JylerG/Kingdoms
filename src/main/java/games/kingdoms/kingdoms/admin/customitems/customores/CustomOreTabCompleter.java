@@ -20,30 +20,33 @@ public class CustomOreTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
 
-        if (args.length == 1) {
-            List<String> give = new ArrayList<>();
-            give.add("give");
-            return give;
-        }
-        if (args.length == 2) {
-            List<String> ores = new ArrayList<>();
-            ores.add("refined_coal_ore");
-            ores.add("refined_iron_ore");
-            ores.add("refined_diamond_ore");
-            ores.add("refined_gold_ore");
-            ores.add("warzone_diamond_ore");
-            ores.add("warzone_emerald_ore");
-            ores.add("warzone_gold_ore");
-            ores.add("warzone_iron_ore");
-            ores.add("warzone_coal_ore");
-            ores.add("refined_emerald_ore");
-            return ores;
-        }
+        if (sender.hasPermission("kingdoms.ore.give")) {
 
-        if (args.length == 3) {
-            List<String> amount = new ArrayList<>();
-            amount.add("<amount>");
-            return amount;
+            if (args.length == 1) {
+                List<String> give = new ArrayList<>();
+                give.add("give");
+                return give;
+            }
+            if (args.length == 2) {
+                List<String> ores = new ArrayList<>();
+                ores.add("refined_coal_ore");
+                ores.add("refined_iron_ore");
+                ores.add("refined_diamond_ore");
+                ores.add("refined_gold_ore");
+                ores.add("warzone_diamond_ore");
+                ores.add("warzone_emerald_ore");
+                ores.add("warzone_gold_ore");
+                ores.add("warzone_iron_ore");
+                ores.add("warzone_coal_ore");
+                ores.add("refined_emerald_ore");
+                return ores;
+            }
+
+            if (args.length == 3) {
+                List<String> amount = new ArrayList<>();
+                amount.add("<amount>");
+                return amount;
+            }
         }
         return null;
     }

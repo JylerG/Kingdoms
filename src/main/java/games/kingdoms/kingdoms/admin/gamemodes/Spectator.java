@@ -24,7 +24,7 @@ public class Spectator implements CommandExecutor {
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (sender.hasPermission("kingdoms.set.gamemode")) {
+            if (sender.hasPermission("kingdoms.set.gamemode.spectator")) {
                 if (args.length == 0) {
                     if (!player.getGameMode().equals(GameMode.SPECTATOR)) {
                         player.setGameMode(GameMode.SPECTATOR);
@@ -39,7 +39,7 @@ public class Spectator implements CommandExecutor {
                         if (!target.getGameMode().equals(GameMode.SPECTATOR)) {
                             target.setGameMode(GameMode.SPECTATOR);
                             player.sendMessage(ChatColor.GRAY + "You set " + ChatColor.LIGHT_PURPLE + target.getName() + ChatColor.GRAY + "'s gamemode to " + ChatColor.LIGHT_PURPLE + "Spectator");
-                            target.sendMessage(ChatColor.GRAY + "Your gamemode was set to " + ChatColor.LIGHT_PURPLE + "Spectator ");
+                            target.sendMessage(ChatColor.GRAY + "Your gamemode was set to " + ChatColor.LIGHT_PURPLE + "Spectator");
                         } else {
                             player.sendMessage(ChatColor.LIGHT_PURPLE + target.getName() + ChatColor.RED + " is already in gamemode " + ChatColor.LIGHT_PURPLE + "Spectator");
                         }
