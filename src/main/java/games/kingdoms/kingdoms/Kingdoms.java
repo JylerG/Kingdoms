@@ -16,9 +16,7 @@ import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
 import games.kingdoms.kingdoms.admin.permissions.Permissions;
-import games.kingdoms.kingdoms.admin.ranks.Rank;
-import games.kingdoms.kingdoms.admin.ranks.RankCMD;
-import games.kingdoms.kingdoms.admin.ranks.RankTabCompleter;
+import games.kingdoms.kingdoms.admin.ranks.*;
 import games.kingdoms.kingdoms.admin.reload.StaffReload;
 import games.kingdoms.kingdoms.admin.staffchat.StaffChat;
 import games.kingdoms.kingdoms.admin.staffchat.StaffChatTabCompleter;
@@ -67,7 +65,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private SchematicsManager schematicsManager;
     private NatureManager natureManager;
     private MerchantManager merchantManager;
+    private KingdomsConfig kingdomsConfig;
+    private MoneyConfig moneyConfig;
+    private StaffConfig staffConfig;
+    private static Kingdoms plugin;
     private HashMap<String, String> customRank = new HashMap<>();
+    private HashMap<String, String> kingdomExists = new HashMap<>();
     private final ArrayList<Player> invisiblePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
     private HashMap<String, Long> claimPrice = new HashMap<>();
@@ -85,10 +88,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, String> staff = new HashMap<>();
     private HashMap<String, String> kingdoms = new HashMap<>();
     private HashMap<String, Long> money = new HashMap<>();
-    private KingdomsConfig kingdomsConfig;
-    private MoneyConfig moneyConfig;
-    private StaffConfig staffConfig;
-    private static Kingdoms plugin;
+    private HashMap<String, Integer> onlineStaff = new HashMap<>();
     private HashMap<String, Integer> maxMembers = new HashMap<>();
     private HashMap<String, Integer> maxClaims = new HashMap<>();
     private HashMap<String, Integer> staffCount = new HashMap<>();
@@ -96,6 +96,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+        //Save default config
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
@@ -115,26 +116,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
 
         //Initialize ArrayLists and HashMaps
-        money = new HashMap<>();
-        memberPrice = new HashMap<>();
-        claimPrice = new HashMap<>();
-        maxMembers = new HashMap<>();
-        maxClaims = new HashMap<>();
-        claims = new HashMap<>();
-        customRank = new HashMap<>();
-        staffCount = new HashMap<>();
-        bannedNames = new HashMap<>();
-        playerRank = new HashMap<>();
-        kingdomSpawn = new HashMap<>();
-        kingdoms = new HashMap<>();
-        member = new HashMap<>();
-        owner = new HashMap<>();
-        admin = new HashMap<>();
-        staff = new HashMap<>();
-        inviteList = new HashMap<>();
-        claimedChunks = new HashMap<>();
-        canUnclaim = new HashMap<>();
-        canClaim = new HashMap<>();
+        initMapList();
 
         //Restore Plugin Data
         restoreServerData();
@@ -187,6 +169,31 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 restorePluginData();
             }
         }
+    }
+
+    private void initMapList() {
+        money = new HashMap<>();
+        kingdomExists = new HashMap<>();
+        onlineStaff = new HashMap<>();
+        memberPrice = new HashMap<>();
+        claimPrice = new HashMap<>();
+        maxMembers = new HashMap<>();
+        maxClaims = new HashMap<>();
+        claims = new HashMap<>();
+        customRank = new HashMap<>();
+        staffCount = new HashMap<>();
+        bannedNames = new HashMap<>();
+        playerRank = new HashMap<>();
+        kingdomSpawn = new HashMap<>();
+        kingdoms = new HashMap<>();
+        member = new HashMap<>();
+        owner = new HashMap<>();
+        admin = new HashMap<>();
+        staff = new HashMap<>();
+        inviteList = new HashMap<>();
+        claimedChunks = new HashMap<>();
+        canUnclaim = new HashMap<>();
+        canClaim = new HashMap<>();
     }
 
     private void nightVision() {
@@ -372,21 +379,25 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
             kingdom.setScore(7);
 
-            //TODO: loop through players and add to member count if they are in the kingdom of the chunk the player goes into
+            // TODO: loop through players and add to member count if they are in the kingdom of the chunk the player goes into
+            int memberCount = 0;  // Initialize memberCount outside the loop
+
+            // Get the kingdom of the chunk the player is going into
+            String chunkKey = chunk.getX() + "," + chunk.getZ();
+            String kingdomOfChunk = claimedChunks.get(chunkKey);
+
             for (Player player1 : Bukkit.getOnlinePlayers()) {
-                if (claimedChunks.get(chunk.getX() + "," + chunk.getZ()).equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString()))) {
-                    int memberCount = 0;
-
-                    if (kingdomsConfig.getConfig().getNode("members." + player1.getUniqueId().toString())
-                            .toPrimitive().getString().equalsIgnoreCase(kingdomsConfig.getConfig()
-                            .getNode("members." + player.getUniqueId().toString()).toPrimitive().getString())) {
-                        memberCount++;
-                    }
-
-                    Score members = obj.getScore("Members " + ChatColor.YELLOW + memberCount + "/" + maxMembers.get(kingdoms.get(player.getUniqueId().toString())));
-                    members.setScore(6);
+                // Check if the player is in the same kingdom as the kingdom of the chunk
+                String playerKingdom = kingdoms.get(player1.getUniqueId().toString());
+                if (kingdomOfChunk != null && kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
+                    memberCount++;
                 }
             }
+
+            // Set the score for the scoreboard with the updated memberCount
+            Score members = obj.getScore("Members " + ChatColor.YELLOW + memberCount + "/" + maxMembers.get(kingdomOfChunk));
+            members.setScore(6);
+
 
             for (String chunkID : claimedChunks.keySet()) {
                 if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
@@ -417,6 +428,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     //Player is not in a chunk owned by their kingdom
+    //TODO: figure out why this throws a NullPointerException
     public void notInPlayersKingdomBoard(Player player) {
         long moneyValue = money.get(player.getUniqueId().toString());
         String formattedMoney = money.get(player.getUniqueId().toString()).toString();
@@ -869,6 +881,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public HashMap<String, String> getKingdoms() {
         return kingdoms;
+    }
+
+    public HashMap<String, String> getKingdomExists() {
+        return kingdomExists;
     }
 
     public HashMap<String, Long> getClaimPrice() {

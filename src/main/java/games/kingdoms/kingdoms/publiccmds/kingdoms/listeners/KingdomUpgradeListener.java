@@ -19,7 +19,7 @@ public class KingdomUpgradeListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if (event.getView().getTitle().equalsIgnoreCase(ChatColor.DARK_AQUA + "Kingdom Upgrades")) {
+        if (event.getView().getTitle().equalsIgnoreCase(ChatColor.DARK_AQUA + plugin.getKingdoms().get(player.getUniqueId().toString()) + " Upgrades")) {
             event.setCancelled(true);
             switch (event.getCurrentItem().getType()) {
                 case GREEN_WOOL:

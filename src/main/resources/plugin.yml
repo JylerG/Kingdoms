@@ -86,3 +86,6 @@ commands:
   view:
     description: View all available permissions for the plugin.
     aliases: []
+  fakerank:
+    description: Make yourself appear as a different rank than you actually are.
+    aliases: [fr]

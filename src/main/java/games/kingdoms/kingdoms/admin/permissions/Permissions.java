@@ -22,12 +22,11 @@ public class Permissions implements CommandExecutor {
                     player.sendMessage(ChatColor.GOLD + "BANS");
                     player.sendMessage(ChatColor.GOLD + "RANK");
                     player.sendMessage(ChatColor.GOLD + "ADMIN");
-                    player.sendMessage(ChatColor.GOLD + "BYPASS");
                     player.sendMessage(ChatColor.GOLD + "RELOAD");
                     player.sendMessage(ChatColor.GOLD + "ECONOMY");
                     player.sendMessage(ChatColor.GOLD + "GAMEMODE");
                     player.sendMessage(ChatColor.GOLD + "NICKNAME");
-                    player.sendMessage(ChatColor.DARK_PURPLE + "/view <category> " +
+                    player.sendMessage(ChatColor.RED + "/view <category> " +
                             ChatColor.LIGHT_PURPLE + "to view a category");
                 } else if (args.length == 1) {
                     if (args[0].equalsIgnoreCase("rank")) {
@@ -40,50 +39,46 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.srmod");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.jradmin");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.admin");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("npcs")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.npc.spawn");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("ores")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.ore.give");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("bans")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.ban");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.bans.view");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("admin")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.modmode");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.join");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.disband");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.transfer");
-                        player.sendMessage(ChatColor.GOLD + "kingdoms.modmode");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.fake");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.jrmod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.mod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.srmod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.punish");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
-                    } else if (args[0].equalsIgnoreCase("bypass")) {
-                        player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
-                        player.sendMessage(ChatColor.GOLD + "kingdoms.rank.kick.bypass");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("reload")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.staff.reload");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("economy")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.economy");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("gamemode")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
@@ -91,7 +86,7 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.set.gamemode.creative");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.set.gamemode.spectator");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.set.gamemode.adventure");
-                        player.sendMessage(ChatColor.DARK_PURPLE + "/view <perm> " +
+                        player.sendMessage(ChatColor.RED + "/view <perm> " +
                                 ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                       //TODO: permission based viewing
                     } else if (args[0].equalsIgnoreCase("rank")) {

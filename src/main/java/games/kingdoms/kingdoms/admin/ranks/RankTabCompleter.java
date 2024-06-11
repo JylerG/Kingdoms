@@ -25,9 +25,28 @@ public class RankTabCompleter implements TabCompleter {
                     || player.hasPermission("kingdoms.setrank.admin")) {
 
                 if (args.length == 1) {
+
+                    if (player.hasPermission("kingdoms.setrank.fake")) {
+                        List<String> fake = new ArrayList<>();
+                        fake.add("fake");
+                        fake.add("set");
+
+                        return fake;
+                    }
+
                     List<String> set = new ArrayList<>();
                     set.add("set");
                     return set;
+                }
+
+                if (args.length == 2) {
+                    if (player.hasPermission("kingdoms.setrank.fake")) {
+                        if (args[0].equalsIgnoreCase("fake")) {
+                            List<String> rank = new ArrayList<>();
+                            rank.add("<rank>");
+                            return rank;
+                        }
+                    }
                 }
 
                 if (args.length == 3) {

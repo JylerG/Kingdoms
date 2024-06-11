@@ -12,6 +12,7 @@ public class ModMode implements CommandExecutor {
 
         if (sender instanceof Player player) {
 
+            //TODO: make this work
             if (player.hasPermission("kingdoms.modmode")) {
 
             }
