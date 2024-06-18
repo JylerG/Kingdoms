@@ -14,7 +14,7 @@ public class Permissions implements CommandExecutor {
 
         if (sender instanceof Player player) {
             if (player.hasPermission("kingdoms.permissions.view")) {
-                //view <category>
+                // /view <category>
                 if (args.length == 0) {
                     player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " CATEGORIES " + ChatColor.RED + "——————");
                     player.sendMessage(ChatColor.GOLD + "NPCS");
@@ -39,24 +39,16 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.srmod");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.jradmin");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.admin");
-                        player.sendMessage(ChatColor.RED + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("npcs")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.npc.spawn");
-                        player.sendMessage(ChatColor.RED + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("ores")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.ore.give");
-                        player.sendMessage(ChatColor.RED + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("bans")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.ban");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.bans.view");
-                        player.sendMessage(ChatColor.RED + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("admin")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.modmode");
@@ -68,8 +60,6 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.mod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.srmod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.punish");
-                        player.sendMessage(ChatColor.RED + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("reload")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.staff.reload");
@@ -78,61 +68,12 @@ public class Permissions implements CommandExecutor {
                     } else if (args[0].equalsIgnoreCase("economy")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.economy");
-                        player.sendMessage(ChatColor.RED + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
                     } else if (args[0].equalsIgnoreCase("gamemode")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.set.gamemode.survival");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.set.gamemode.creative");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.set.gamemode.spectator");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.set.gamemode.adventure");
-                        player.sendMessage(ChatColor.RED + "/view <perm> " +
-                                ChatColor.LIGHT_PURPLE + "to view what a permission is for");
-                      //TODO: permission based viewing
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
-                    } else if (args[0].equalsIgnoreCase("rank")) {
-
                     }
 
                 } else if (args.length > 1) {

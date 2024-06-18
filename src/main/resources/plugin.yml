@@ -5,87 +5,87 @@ api-version: 1.18
 authors: [ dmoplayz ]
 description: Commands for the Kingdoms Project!
 website: www.kingdoms.games
-depend: [Labyrinth, Vault, ProtocolLib, Citizens]
+depend: [ Labyrinth, Vault, ProtocolLib, Citizens ]
 load: POSTWORLD
 commands:
+  #chat:
+    #description: Switch between chat channels.
+    #aliases: [ c ]
   staffvault:
     description: Access OP Staff Items!
-    aliases: [sv]
+    aliases: [ sv ]
   nv:
     description: Give or remove night vision from yourself.
-    aliases: [nightvision]
+    aliases: [ nightvision ]
   rtp:
     description: Randomly teleport yourself.
-    aliases: []
+    aliases: [ ]
   feed:
     description: Sate yourself!
-    aliases: [sate]
+    aliases: [ sate ]
   fly:
     description: Fly!
-    aliases: []
+    aliases: [ ]
   kingdom:
     description: Base command for all Kingdom commands.
-    aliases: [k]
+    aliases: [ k ]
   warzone:
     description: Teleport to the warzone.
-    aliases: [wz]
+    aliases: [ wz ]
   vanish:
     description: Vanish from players.
-    aliases: [v]
-  chat:
-    description: Switch between chat channels.
-    aliases: [c]
+    aliases: [ v ]
   rank:
     description: Set a player's rank.
-    aliases: []
+    aliases: [ ]
   merchant:
     description: Select which items you can and can't sell to the Merchant.
-    aliases: []
+    aliases: [ ]
   gmc:
     description: Set your gamemode to Creative.
-    aliases: []
+    aliases: [ ]
   gma:
     description: Set your gamemode to Adventure.
-    aliases: []
+    aliases: [ ]
   gms:
     description: Set your gamemode to Survival.
-    aliases: []
+    aliases: [ ]
   gmsp:
     description: Set your gamemode to Spectator.
-    aliases: []
+    aliases: [ ]
   ore:
     description: Give a player custom ores.
-    aliases: []
+    aliases: [ ]
   balance:
     description: Get a player's balance.
-    aliases: [bal]
+    aliases: [ bal ]
   eco:
     description: Set a player's balance.
-    aliases: []
+    aliases: [ ]
   pay:
     description: Pay a player.
-    aliases: []
+    aliases: [ ]
   kingdomchat:
     description: Send a message in your kingdom's chat.
-    aliases: [kc]
+    aliases: [ kc ]
   staffchat:
     description: Send a message in Staff chat.
-    aliases: [sc]
+    aliases: [ sc ]
   staffreload:
     description: Broadcast a message to all online players saying they may need to log out and back in.
-    aliases: [srl]
+    aliases: [ srl ]
   npcs:
     description: Spawn NPCs.
-    aliases: []
+    aliases: [ ]
   spawn:
     description: Teleport to Kingdoms or Warzone Spawn.
-    aliases: [s]
+    aliases: [ s ]
   easter:
     description: lolno.
-    aliases: []
+    aliases: [ ]
   view:
     description: View all available permissions for the plugin.
-    aliases: []
-  fakerank:
-    description: Make yourself appear as a different rank than you actually are.
-    aliases: [fr]
+    aliases: [ ]
+  whisper:
+    description: Direct Message another player.
+    aliases: [ w ]

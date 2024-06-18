@@ -41,6 +41,7 @@ import games.kingdoms.kingdoms.publiccmds.randomtp.rtp;
 import games.kingdoms.kingdoms.publiccmds.teleports.KingdomsCommandListener;
 import games.kingdoms.kingdoms.publiccmds.teleports.SpawnCommand;
 import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCommandListener;
+import games.kingdoms.kingdoms.publiccmds.whisper.WhisperCommand;
 import games.kingdoms.kingdoms.rankedcmds.feed.Feed;
 import games.kingdoms.kingdoms.rankedcmds.fly.Fly;
 import org.bukkit.*;
@@ -145,6 +146,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         staffChat();
         kingdomChat();
         easter();
+        whisper();
 
         //Events
         events();
@@ -211,6 +213,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void easter() {
         getCommand("easter").setExecutor(new EasterCommand());
+    }
+
+    private void whisper() {
+        getCommand("whisper").setExecutor(new WhisperCommand());
     }
 
     private void createNPC() {
@@ -452,9 +458,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
             coins.setScore(11);
         } else {
-            if (moneyValue == 1) {
-                formattedMoney = "1";
-            } else if (moneyValue < 1_000.0) {
+            if (moneyValue < 1_000.0) {
                 formattedMoney = String.valueOf(moneyValue);
             } else if (moneyValue < 1_000_000.0) {
                 formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
