@@ -42,6 +42,7 @@ import games.kingdoms.kingdoms.publiccmds.teleports.KingdomsCommandListener;
 import games.kingdoms.kingdoms.publiccmds.teleports.SpawnCommand;
 import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCommandListener;
 import games.kingdoms.kingdoms.publiccmds.whisper.WhisperCommand;
+import games.kingdoms.kingdoms.publiccmds.whisper.WhisperCommandTabCompleter;
 import games.kingdoms.kingdoms.rankedcmds.feed.Feed;
 import games.kingdoms.kingdoms.rankedcmds.fly.Fly;
 import org.bukkit.*;
@@ -217,6 +218,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void whisper() {
         getCommand("whisper").setExecutor(new WhisperCommand());
+        getCommand("whisper").setTabCompleter(new WhisperCommandTabCompleter());
     }
 
     private void createNPC() {
