@@ -532,7 +532,7 @@ public class KingdomsCommands implements CommandExecutor {
 
         // Check if the specified kingdom exists
         if (!plugin.getKingdoms().containsValue(kingdom)) {
-            player.sendMessage(kingdom + ChatColor.RED +  " doesn't exist");
+            player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
             return;
         }
 

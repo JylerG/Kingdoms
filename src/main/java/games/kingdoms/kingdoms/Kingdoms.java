@@ -90,7 +90,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, String> staff = new HashMap<>();
     private HashMap<String, String> kingdoms = new HashMap<>();
     private HashMap<String, Long> money = new HashMap<>();
-    private HashMap<String, Integer> onlineStaff = new HashMap<>();
+    private HashMap<String, String> onlineStaff = new HashMap<>();
     private HashMap<String, Integer> maxMembers = new HashMap<>();
     private HashMap<String, Integer> maxClaims = new HashMap<>();
     private HashMap<String, Integer> staffCount = new HashMap<>();
@@ -564,7 +564,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdom.setScore(7);
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(String.valueOf(StaffConfig.getInstance().getConfig().getNode("onlineStaff").toPrimitive().getInt())));
+        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(String.valueOf(StaffConfig.getInstance().getConfig().getNode("onlineStaff.onlineStaff").toPrimitive().getInt())));
         online_staff.setScore(5);
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);

@@ -88,4 +88,4 @@ commands:
     aliases: [ ]
   whisper:
     description: Direct Message another player.
-    aliases: [ w ]
+    aliases: [ w, msg ]

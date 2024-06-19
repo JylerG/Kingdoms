@@ -194,23 +194,23 @@ public class WhisperCommand implements CommandExecutor {
                     target.sendMessage(ChatColor.YELLOW + player.getDisplayName() + ChatColor.GRAY.toString() + ChatColor.BOLD + " > You" + ChatColor.WHITE + ": " + message);
                 } else if (plugin.getPlayerRank().get(target.getUniqueId().toString())
                         .equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP)) {
-                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.WHITE + target.getDisplayName() + ChatColor.WHITE + ": " + message);
+                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.GREEN + target.getDisplayName() + ChatColor.WHITE + ": " + message);
                     target.sendMessage(ChatColor.YELLOW + player.getDisplayName() + ChatColor.GRAY.toString() + ChatColor.BOLD + " > You" + ChatColor.WHITE + ": " + message);
                 } else if (plugin.getPlayerRank().get(target.getUniqueId().toString())
                         .equalsIgnoreCase(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO)) {
-                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.WHITE + target.getDisplayName() + ChatColor.WHITE + ": " + message);
+                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.AQUA + target.getDisplayName() + ChatColor.WHITE + ": " + message);
                     target.sendMessage(ChatColor.YELLOW + player.getDisplayName() + ChatColor.GRAY.toString() + ChatColor.BOLD + " > You" + ChatColor.WHITE + ": " + message);
                 } else if (plugin.getPlayerRank().get(target.getUniqueId().toString())
                         .equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD)) {
-                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.WHITE + target.getDisplayName() + ChatColor.WHITE + ": " + message);
+                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.DARK_AQUA + target.getDisplayName() + ChatColor.WHITE + ": " + message);
                     target.sendMessage(ChatColor.YELLOW + player.getDisplayName() + ChatColor.GRAY.toString() + ChatColor.BOLD + " > You" + ChatColor.WHITE + ": " + message);
                 } else if (plugin.getPlayerRank().get(target.getUniqueId().toString())
                         .equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD)) {
-                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.WHITE + target.getDisplayName() + ChatColor.WHITE + ": " + message);
+                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.YELLOW + target.getDisplayName() + ChatColor.WHITE + ": " + message);
                     target.sendMessage(ChatColor.YELLOW + player.getDisplayName() + ChatColor.GRAY.toString() + ChatColor.BOLD + " > You" + ChatColor.WHITE + ": " + message);
                 } else if (plugin.getPlayerRank().get(target.getUniqueId().toString())
                         .equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
-                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.WHITE + target.getDisplayName() + ChatColor.WHITE + ": " + message);
+                    player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "You > " + ChatColor.GOLD + target.getDisplayName() + ChatColor.WHITE + ": " + message);
                     target.sendMessage(ChatColor.YELLOW + player.getDisplayName() + ChatColor.GRAY.toString() + ChatColor.BOLD + " > You" + ChatColor.WHITE + ": " + message);
                 } else if (plugin.getPlayerRank().get(target.getUniqueId().toString())
                         .equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {

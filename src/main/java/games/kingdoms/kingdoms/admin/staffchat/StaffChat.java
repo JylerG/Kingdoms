@@ -36,31 +36,46 @@ public class StaffChat implements CommandExecutor {
             String message = String.join(" ", args); // Concatenate args into a single string
 
             for (Player p : Bukkit.getOnlinePlayers()) {
-                if (plugin.getStaff().containsKey(p.getUniqueId().toString())) {
+                if (plugin.getStaff().containsKey(player.getUniqueId().toString())) {
                     String rank = plugin.getPlayerRank().get(player.getUniqueId().toString());
 
+                    //Player has default rank
+                    if (rank.equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT)) {
+                        String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.WHITE + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
+                        p.sendMessage(format);
+                    }
+                    //Player has VIP Rank
+                    if (rank.equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP)) {
+                        String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
+                        p.sendMessage(format);
+                    }
+                    //Player has Hero Rank
+                    if (rank.equalsIgnoreCase(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO)) {
+                        String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
+                        p.sendMessage(format);
+                    }
                     //Player has JrMod Rank
-                    if (rank.equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString().toUpperCase())) {
-                        String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_AQUA + " " + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
+                    if (rank.equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD)) {
+                        String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_AQUA + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
                         p.sendMessage(format);
                     }
                     //Player has Mod Rank
-                    if (rank.equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString().toUpperCase())) {
+                    if (rank.equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD)) {
                         String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
                         p.sendMessage(format);
                     }
                     //Player has SrMod Rank
-                    if (rank.equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString().toUpperCase())) {
+                    if (rank.equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
                         String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.GOLD + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
                         p.sendMessage(format);
                     }
                     //Player has JrAdmin Rank
-                    if (rank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString().toUpperCase())) {
+                    if (rank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
                         String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_RED + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
                         p.sendMessage(format);
                     }
                     //Player has Admin Rank
-                    if (rank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString().toUpperCase())) {
+                    if (rank.equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
                         String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_RED + player.getDisplayName() + ChatColor.AQUA + ": " + ChatColor.LIGHT_PURPLE + message;
                         p.sendMessage(format);
                     }
