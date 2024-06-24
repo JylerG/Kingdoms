@@ -34,8 +34,13 @@ public class WarzoneCommandListener implements Listener {
     public void start() {
         try {
             for (int i = 10; i > -1; i--) {
+                if (i > 0) {
                     plugin.sendTitle(player, ChatColor.YELLOW.toString() + ChatColor.BOLD + i + "s", ChatColor.GREEN.toString() + ChatColor.BOLD + "Teleporting in...", 10, 20, 10);
                     Thread.sleep(1000);
+                } else {
+                    plugin.sendTitle(player, ChatColor.YELLOW.toString() + ChatColor.BOLD + "Now", ChatColor.GREEN.toString() + ChatColor.BOLD + "Teleporting in...", 10, 20, 10);
+                    Thread.sleep(1000);
+                }
             }
             World world = Bukkit.getWorld("warzone");
             Location loc = new Location(world, 1, 1, 1);

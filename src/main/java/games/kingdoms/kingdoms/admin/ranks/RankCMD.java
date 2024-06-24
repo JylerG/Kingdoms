@@ -126,20 +126,6 @@ public class RankCMD implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("default")) {
                             if (sender.hasPermission("kingdoms.setrank.default")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")) {
-                                    sender.sendMessage(ChatColor.RED + "You must be an " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
-                                            + ChatColor.RED + ", " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN
-                                            + ChatColor.RED + ", or " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + ChatColor.RED + " to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.DARK_GRAY + ChatColor.BOLD + "DEFAULT " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + " cannot be set to " + ChatColor.DARK_GRAY + ChatColor.DARK_GRAY + Rank.DEFAULT);
-                                    return true;
-                                }
                                 if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT);
                                     return true;
@@ -156,19 +142,6 @@ public class RankCMD implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("vip")) {
                             if (sender.hasPermission("kingdoms.setrank.vip")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")) {
-                                    sender.sendMessage(ChatColor.RED + "You must be an " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
-                                            + ChatColor.RED + ", " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED + ", or " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + ChatColor.RED + " to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.GREEN + ChatColor.BOLD + "VIP " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + " cannot be set to " + ChatColor.GREEN + ChatColor.BOLD + Rank.VIP);
-                                    return true;
-                                }
                                 if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.GREEN + ChatColor.BOLD + Rank.VIP);
                                     return true;
@@ -185,19 +158,6 @@ public class RankCMD implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("hero")) {
                             if (sender.hasPermission("kingdoms.setrank.hero")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")) {
-                                    sender.sendMessage(ChatColor.RED + "You must be an " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
-                                            + ChatColor.RED + ", " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED + ", or " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + ChatColor.RED + " to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.AQUA + ChatColor.BOLD + "HERO " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + " cannot be set to " + ChatColor.AQUA + ChatColor.BOLD + Rank.HERO);
-                                    return true;
-                                }
                                 if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.AQUA + ChatColor.BOLD + Rank.HERO);
                                     return true;
@@ -214,19 +174,6 @@ public class RankCMD implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("youtube")) {
                             if (sender.hasPermission("kingdoms.setrank.youtube")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")) {
-                                    sender.sendMessage(ChatColor.RED + "You must be an " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
-                                            + ChatColor.RED + ", " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED + ", or " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + ChatColor.RED + " to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.BOLD + "YT " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + " cannot be set to " + ChatColor.RED + ChatColor.BOLD + "YT " + ChatColor.RED + "rank");
-                                    return true;
-                                }
                                 if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.RED.toString() + ChatColor.BOLD + Rank.YOUTUBE)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.RED + ChatColor.BOLD + Rank.YOUTUBE);
                                     return true;
@@ -240,22 +187,8 @@ public class RankCMD implements CommandExecutor {
                             }
                         }
 
-
                         if (args[2].equalsIgnoreCase("jrmod")) {
                             if (sender.hasPermission("kingdoms.setrank.jrmod")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")) {
-                                    sender.sendMessage(ChatColor.RED + "You must be an " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
-                                            + ChatColor.RED + ", " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED + ", or " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + ChatColor.RED + " to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.DARK_AQUA + ChatColor.BOLD + "JRMOD " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + " cannot be set to " + ChatColor.DARK_AQUA + ChatColor.BOLD + Rank.JRMOD);
-                                    return true;
-                                }
                                 if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.DARK_AQUA + ChatColor.BOLD + Rank.JRMOD);
                                     return true;
@@ -272,20 +205,6 @@ public class RankCMD implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("mod")) {
                             if (sender.hasPermission("kingdoms.setrank.mod")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")) {
-                                    sender.sendMessage(ChatColor.RED + "You must be an " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
-                                            + ChatColor.RED + ", " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED +
-                                            ", or " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + ChatColor.RED + " to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.YELLOW + ChatColor.BOLD + "MOD " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + " cannot be set to " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD);
-                                    return true;
-                                }
                                 if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD);
                                     return true;
@@ -302,18 +221,6 @@ public class RankCMD implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("srmod")) {
                             if (sender.hasPermission("kingdom.setrank.srmod")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || !plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + "You must be an " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
-                                            + ChatColor.RED + ", " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED + " to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.GOLD + ChatColor.BOLD + "SRMOD " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                                        || plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
-                                    sender.sendMessage(ChatColor.RED + " cannot be set to " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD);
-                                    return true;
-                                }
                                 if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD);
                                     return true;
@@ -331,15 +238,6 @@ public class RankCMD implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("jradmin")) {
                             if (sender.hasPermission("kingdoms.setrank.jradmin")) {
-                                if (!plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
-                                    player.sendMessage(ChatColor.RED + "You must have " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN + ChatColor.RED + " rank to do this");
-                                    target.sendMessage(player.getName() + ChatColor.RED + " tried to set you to " + ChatColor.AQUA + ChatColor.BOLD + "JRADMIN " + ChatColor.RED + "rank");
-                                    return true;
-                                }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
-                                    sender.sendMessage(target.getName() + ChatColor.RED + " cannot be set to " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED + " rank");
-                                    return true;
-                                }
                                 if (!plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
 
                                     Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set jradmin");
@@ -357,8 +255,9 @@ public class RankCMD implements CommandExecutor {
                         }
 
                         if (args[2].equalsIgnoreCase("admin")) {
-                            if (sender.hasPermission("kingdoms.setrank.admin")) {
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                            if (sender.hasPermission("kingdoms.setrank.admin") || player.isOp()) {
+
+                                if (plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN);
                                     return true;
                                 }

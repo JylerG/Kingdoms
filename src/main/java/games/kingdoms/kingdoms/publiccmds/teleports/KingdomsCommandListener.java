@@ -27,8 +27,13 @@ public class KingdomsCommandListener implements Listener {
     public void start() {
         try {
             for (int i = 10; i > -1; i--) {
-                plugin.sendTitle(player, ChatColor.YELLOW.toString() + ChatColor.BOLD + i + "s", ChatColor.GREEN.toString() + ChatColor.BOLD + "Teleporting in...", 10, 20, 10);
-                Thread.sleep(1000);
+                if (i > 0) {
+                    plugin.sendTitle(player, ChatColor.YELLOW.toString() + ChatColor.BOLD + i + "s", ChatColor.GREEN.toString() + ChatColor.BOLD + "Teleporting in...", 10, 20, 10);
+                    Thread.sleep(1000);
+                } else {
+                    plugin.sendTitle(player, ChatColor.YELLOW.toString() + ChatColor.BOLD + "Now", ChatColor.GREEN.toString() + ChatColor.BOLD + "Teleporting in...", 10, 20, 10);
+                    Thread.sleep(1000);
+                }
             }
             World world = Bukkit.getWorld("kingdoms");
             Location loc = new Location(world, 1, 1, 1);
@@ -43,7 +48,6 @@ public class KingdomsCommandListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) throws InterruptedException {
         if (event.getPlayer().equals(player)) {
-            start();
             throw new InterruptedException();
         }
     }

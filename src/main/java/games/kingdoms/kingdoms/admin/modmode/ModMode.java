@@ -1,6 +1,9 @@
 package games.kingdoms.kingdoms.admin.modmode;
 
 import games.kingdoms.kingdoms.Kingdoms;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,8 +19,17 @@ public class ModMode implements CommandExecutor {
 
         if (sender instanceof Player player) {
             //TODO: make this work
-            if (player.hasPermission("kingdoms.modmode")) {
-
+            if (player.hasPermission("kingdoms.staff.modmode")) {
+                if (!plugin.getModModePlayers().contains(player)) {
+                    plugin.getModModePlayers().add(player);
+                    player.setGameMode(GameMode.SPECTATOR);
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (plugin.getStaff().containsKey(p.getUniqueId().toString())) {
+                            p.sendMessage(player.getName() + ChatColor.GRAY + " has entered modmode. They can now " +
+                                    "interact with other players in spectator.");
+                        }
+                    }
+                }
             }
         }
         return true;

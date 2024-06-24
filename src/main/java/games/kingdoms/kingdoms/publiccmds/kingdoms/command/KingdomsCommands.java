@@ -516,58 +516,63 @@ public class KingdomsCommands implements CommandExecutor {
 
     private void disbandKingdom(Player player, String kingdom, String[] args, String chunkID) {
 
-        // If the player is not an admin, check if they are trying to disband their own kingdom
-        if (!player.hasPermission("kingdoms.admin.disband")) {
-            if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
-                player.sendMessage(ChatColor.RED + "You are not in a kingdom");
-                return;
-            }
-
-            String playerKingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
-            if (!kingdom.equalsIgnoreCase(playerKingdom)) {
-                player.sendMessage(ChatColor.RED + "You do not have permission to disband " + ChatColor.WHITE + kingdom);
-                return;
-            }
-        }
-
-        // Check if the specified kingdom exists
-        if (!plugin.getKingdoms().containsValue(kingdom)) {
-            player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
-            return;
-        }
-
-        // Iterate over kingdoms and disband the specified one
-        Iterator<Map.Entry<String, String>> iterator = plugin.getKingdoms().entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entry = iterator.next();
-            if (entry.getValue().equals(kingdom)) {
-                String playerObj = entry.getKey();
-                Player kingdomOwner = Bukkit.getPlayer(UUID.fromString(playerObj));
-                if (kingdomOwner != null) {
-                    kingdomOwner.sendMessage(kingdom + ChatColor.GREEN + " disbanded");
+        try {
+            // If the player is not an admin, check if they are trying to disband their own kingdom
+            if (!player.hasPermission("kingdoms.admin.disband")) {
+                if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom");
+                    return;
                 }
-                iterator.remove(); // Remove the kingdom entry
 
-                // Remove all associated entries from other maps
-                plugin.getKingdomExists().remove(kingdom);
-                plugin.getKingdomSpawn().remove(kingdom);
-                plugin.getOwner().remove(playerObj, kingdom);
-                plugin.getAdmin().remove(playerObj, kingdom);
-                plugin.getMember().remove(playerObj, kingdom);
-                plugin.getCanClaim().remove(playerObj, kingdom);
-                plugin.getCanUnclaim().remove(playerObj, kingdom);
+                String playerKingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+                if (!kingdom.equalsIgnoreCase(playerKingdom)) {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to disband " + ChatColor.WHITE + kingdom);
+                    return;
+                }
+            }
 
-                // Remove claimed chunks associated with the kingdom
-                Iterator<Map.Entry<String, String>> chunkIterator = plugin.getClaimedChunks().entrySet().iterator();
-                while (chunkIterator.hasNext()) {
-                    Map.Entry<String, String> chunkEntry = chunkIterator.next();
-                    if (chunkEntry.getValue().equals(kingdom)) {
-                        chunkIterator.remove(); // Remove the chunk entry
+            // Check if the specified kingdom exists
+            if (!plugin.getKingdoms().containsValue(kingdom)) {
+                player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
+                return;
+            }
+
+            // Iterate over kingdoms and disband the specified one
+            Iterator<Map.Entry<String, String>> iterator = plugin.getKingdoms().entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> entry = iterator.next();
+                if (entry.getValue().equals(kingdom)) {
+                    String playerObj = entry.getKey();
+                    Player kingdomOwner = Bukkit.getPlayer(UUID.fromString(playerObj));
+                    if (kingdomOwner != null) {
+                        kingdomOwner.sendMessage(kingdom + ChatColor.GREEN + " disbanded");
                     }
+
+                    // Remove all associated entries from other maps
+                    plugin.getKingdomExists().remove(kingdom);
+                    plugin.getKingdomSpawn().remove(kingdom);
+                    plugin.getOwner().remove(playerObj, kingdom);
+                    plugin.getAdmin().remove(playerObj, kingdom);
+                    plugin.getMember().remove(playerObj, kingdom);
+                    plugin.getCanClaim().remove(playerObj, kingdom);
+                    plugin.getCanUnclaim().remove(playerObj, kingdom);
+
+                    iterator.remove(); // Remove the kingdom entry
+
+                    // Remove claimed chunks associated with the kingdom
+                    Iterator<Map.Entry<String, String>> chunkIterator = plugin.getClaimedChunks().entrySet().iterator();
+                    while (chunkIterator.hasNext()) {
+                        Map.Entry<String, String> chunkEntry = chunkIterator.next();
+                        if (chunkEntry.getValue().equals(kingdom)) {
+                            chunkIterator.remove(); // Remove the chunk entry
+                        }
+                    }
+                    // Stop iteration after finding and disbanding the kingdom
+                    break;
                 }
-                // Stop iteration after finding and disbanding the kingdom
-                break;
             }
+        } catch (NullPointerException e) {
+            MessageManager.playerBad(player, "You are not in a kingdom");
         }
     }
 
@@ -595,9 +600,7 @@ public class KingdomsCommands implements CommandExecutor {
         plugin.getClaimPrice().put(kingdom, 10_000L);
         plugin.getMemberPrice().put(kingdom, 10_000L);
         plugin.getMaxClaims().put(kingdom, 10);
-        plugin.getMaxMembers().put(kingdom, 10);
-        //todo:
-//         plugin.getMaxMembers().put(kingdom, 10);
+        plugin.getMaxMembers().put(kingdom, 6);
         player.sendMessage(kingdom + ChatColor.GREEN + " created");
     }
 

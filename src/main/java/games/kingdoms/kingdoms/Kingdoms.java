@@ -6,17 +6,19 @@ import games.kingdoms.kingdoms.admin.CustomNPCs.CreateNPCCommand;
 import games.kingdoms.kingdoms.admin.CustomNPCs.NPCTabCompleter;
 import games.kingdoms.kingdoms.admin.balance.EconomyCommand;
 import games.kingdoms.kingdoms.admin.balance.EconomyTabCompleter;
-import games.kingdoms.kingdoms.admin.customitems.merchantitems.MerchantCommand;
-import games.kingdoms.kingdoms.admin.customitems.merchantitems.MerchantListener;
 import games.kingdoms.kingdoms.admin.customitems.customores.CustomOreCommand;
 import games.kingdoms.kingdoms.admin.customitems.customores.CustomOreTabCompleter;
+import games.kingdoms.kingdoms.admin.customitems.merchantitems.MerchantCommand;
+import games.kingdoms.kingdoms.admin.customitems.merchantitems.MerchantListener;
 import games.kingdoms.kingdoms.admin.gamemodes.Adventure;
 import games.kingdoms.kingdoms.admin.gamemodes.Creative;
 import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
 import games.kingdoms.kingdoms.admin.permissions.Permissions;
-import games.kingdoms.kingdoms.admin.ranks.*;
+import games.kingdoms.kingdoms.admin.ranks.Rank;
+import games.kingdoms.kingdoms.admin.ranks.RankCMD;
+import games.kingdoms.kingdoms.admin.ranks.RankTabCompleter;
 import games.kingdoms.kingdoms.admin.reload.StaffReload;
 import games.kingdoms.kingdoms.admin.staffchat.StaffChat;
 import games.kingdoms.kingdoms.admin.staffchat.StaffChatTabCompleter;
@@ -30,16 +32,17 @@ import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
-import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.KingdomsConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.MoneyConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.StaffConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomUpgradeListener;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
 import games.kingdoms.kingdoms.publiccmds.nightvision.Commands;
 import games.kingdoms.kingdoms.publiccmds.randomtp.RandomTeleportListener;
 import games.kingdoms.kingdoms.publiccmds.randomtp.rtp;
 import games.kingdoms.kingdoms.publiccmds.teleports.KingdomsCommandListener;
 import games.kingdoms.kingdoms.publiccmds.teleports.SpawnCommand;
+import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCMD;
 import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCommandListener;
 import games.kingdoms.kingdoms.publiccmds.whisper.WhisperCommand;
 import games.kingdoms.kingdoms.publiccmds.whisper.WhisperCommandTabCompleter;
@@ -74,6 +77,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, String> customRank = new HashMap<>();
     private HashMap<String, String> kingdomExists = new HashMap<>();
     private final ArrayList<Player> invisiblePlayers = new ArrayList<>();
+    private ArrayList<Player> modModePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
     private HashMap<String, Long> claimPrice = new HashMap<>();
     private HashMap<String, Long> memberPrice = new HashMap<>();
@@ -81,16 +85,19 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, String> canUnclaim = new HashMap<>();
     private HashMap<String, String> canClaim = new HashMap<>();
     private HashMap<String, String> playerRank = new HashMap<>();
+    private HashMap<String, String> passwords = new HashMap<>();
     private HashMap<String, String> owner = new HashMap<>();
     private HashMap<String, String> admin = new HashMap<>();
     private HashMap<String, String> member = new HashMap<>();
     private HashMap<String, String> inviteList = new HashMap<>();
     private HashMap<String, String> claimedChunks = new HashMap<>();
+    private HashMap<String, Boolean> passwordStatus = new HashMap<>();
     private HashMap<String, Location> kingdomSpawn = new HashMap<>();
     private HashMap<String, String> staff = new HashMap<>();
     private HashMap<String, String> kingdoms = new HashMap<>();
     private HashMap<String, Long> money = new HashMap<>();
     private HashMap<String, String> onlineStaff = new HashMap<>();
+    private HashMap<String, Boolean> passwordExists = new HashMap<>();
     private HashMap<String, Integer> maxMembers = new HashMap<>();
     private HashMap<String, Integer> maxClaims = new HashMap<>();
     private HashMap<String, Integer> staffCount = new HashMap<>();
@@ -125,6 +132,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         //Commands
         interactWithNPC();
+        password();
         createNPC();
         setRank();
         staffReload();
@@ -148,6 +156,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdomChat();
         easter();
         whisper();
+        warzone();
 
         //Events
         events();
@@ -174,8 +183,16 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
     }
 
+    private void password() {
+//        getCommand("password").setExecutor(new Password());
+    }
+
     private void initMapList() {
+        passwordStatus = new HashMap<>();
+        passwordExists = new HashMap<>();
         money = new HashMap<>();
+        passwords = new HashMap<>();
+        modModePlayers = new ArrayList<>();
         kingdomExists = new HashMap<>();
         onlineStaff = new HashMap<>();
         memberPrice = new HashMap<>();
@@ -214,6 +231,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void easter() {
         getCommand("easter").setExecutor(new EasterCommand());
+    }
+
+    private void warzone() {
+        getCommand("warzone").setExecutor(new WarzoneCMD(this));
     }
 
     private void whisper() {
@@ -889,6 +910,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return kingdoms;
     }
 
+    public HashMap<String, Boolean> getPasswordExists() {
+        return passwordExists;
+    }
+
+    public HashMap<String, Boolean> getPasswordStatus() {
+        return passwordStatus;
+    }
+
     public HashMap<String, String> getKingdomExists() {
         return kingdomExists;
     }
@@ -915,6 +944,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public static Kingdoms getPlugin() {
         return plugin;
+    }
+
+    public ArrayList<Player> getModModePlayers() {
+        return modModePlayers;
+    }
+
+    public HashMap<String, String> getStaffPasswords() {
+        return passwords;
     }
 
     public ArrayList<Player> getInvisiblePlayers() {
@@ -960,6 +997,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     kc.getNode("bannedNames").getKeys(false).forEach(key -> {
                         String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
                         this.bannedNames.put(key, bannedNames);
+                    });
+                }
+                if (kc.getNode("exists").exists()) {
+                    kc.getNode("exists").getKeys(false).forEach(key -> {
+                        String value = kc.getNode("exists." + key).toPrimitive().getString();
+                        this.kingdomExists.put(key, value);
                     });
                 }
                 if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
@@ -1025,9 +1068,18 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 if (sc.getNode("staff").getNode(player.getUniqueId().toString()).exists()) {
                     staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
-                if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-                    staffCount.put(sc.getNode("onlineStaff.onlineStaff").toString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
-                }
+//                if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
+//                    staffCount.put(sc.getNode("onlineStaff.onlineStaff").toString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
+//                }
+//                if (sc.getNode("status").getNode(player.getUniqueId().toString()).exists()) {
+//                    passwordStatus.put(player.getUniqueId().toString(), sc.getNode("status." + player.getUniqueId().toString()).toPrimitive().getBoolean());
+//                }
+//                if (sc.getNode("Exists").getNode(player.getUniqueId().toString()).exists()) {
+//                    passwordExists.put(player.getUniqueId().toString(), sc.getNode("Exists." + player.getUniqueId().toString()).toPrimitive().getBoolean());
+//                }
+//                if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
+//                    passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
+//                }
             }
         }
     }
@@ -1102,26 +1154,44 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (sc.getNode("staff").getNode(player.getUniqueId().toString()).exists()) {
                 staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
             }
-            if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-                staffCount.put(sc.getNode("onlineStaff.onlineStaff").toString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
-            }
+//            if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
+//                staffCount.put(sc.getNode("onlineStaff").toPrimitive().getString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
+//            }
+//            if (sc.getNode("status").getNode(player.getUniqueId().toString()).exists()) {
+//                passwordStatus.put(player.getUniqueId().toString(), sc.getNode("status." + player.getUniqueId().toString()).toPrimitive().getBoolean());
+//            }
+//            if (sc.getNode("Exists").getNode(player.getUniqueId().toString()).exists()) {
+//                passwordExists.put(player.getUniqueId().toString(), sc.getNode("Exists." + player.getUniqueId().toString()).toPrimitive().getBoolean());
+//            }
+//            if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
+//                passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
+//            }
         }
     }
 
     public void savePluginData(Player player) {
-        if (!staff.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
+//        if (!staff.isEmpty()) {
+//            Configurable config = staffConfig.getConfig();
+//            if (config != null) {
+//
+//                for (Player player1 : Bukkit.getOnlinePlayers()) {
+//                    int staffCount = 0;
+//
+//                    //TODO: Figure out why this doesn't calculate the staff count
+//                    if (staff.get(player1.getUniqueId().toString()).equalsIgnoreCase(config.getNode("staff." + player1.getUniqueId().toString()).toPrimitive().getString())) {
+//
+//                        staffCount++;
+//                        config.set("onlineStaff.onlineStaff", staffCount);
+//                    }
+//                }
+//            }
+//            config.save();
+//        }
+        if (!kingdomExists.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
-
-                for (Player player1 : Bukkit.getOnlinePlayers()) {
-                    int staffCount = 0;
-
-                    //TODO: Figure out why this doesn't calculate the staff count
-                    if (staff.get(player1.getUniqueId().toString()).equalsIgnoreCase(config.getNode("staff." + player1.getUniqueId().toString()).toPrimitive().getString())) {
-
-                        staffCount++;
-                        config.set("onlineStaff.onlineStaff", staffCount);
-                    }
+                for (Map.Entry<String, String> exists : kingdomExists.entrySet()) {
+                    config.set("exists." + exists.getKey(), exists.getValue());
                 }
             }
             config.save();
@@ -1311,6 +1381,36 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 config.save();
             }
         }
+
+        if (!passwordStatus.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Boolean> status : passwordStatus.entrySet()) {
+                    config.set("status." + status.getKey(), status.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!passwordExists.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Boolean> exists : passwordExists.entrySet()) {
+                    config.set("Exists." + exists.getKey(), exists.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!passwords.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
+                    config.set("passwords." + passwords.getKey(), passwords.getValue());
+                }
+            }
+            config.save();
+        }
     }
 
     public void savePluginData() {
@@ -1319,6 +1419,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (config != null) {
                 for (Map.Entry<String, String> bannedNames : bannedNames.entrySet()) {
                     config.set("bannedNames." + bannedNames.getKey(), bannedNames.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!kingdomExists.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> exists : kingdomExists.entrySet()) {
+                    config.set("exists." + exists.getKey(), exists.getValue());
                 }
             }
             config.save();
@@ -1477,10 +1586,41 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
             config.save();
         }
+
+//        if (!passwordStatus.isEmpty()) {
+//            Configurable config = staffConfig.getConfig();
+//            if (config != null) {
+//                for (Map.Entry<String, Boolean> status : passwordStatus.entrySet()) {
+//                    config.set("status." + status.getKey(), status.getValue());
+//                }
+//            }
+//            config.save();
+//        }
+//
+//        if (!passwordExists.isEmpty()) {
+//            Configurable config = staffConfig.getConfig();
+//            if (config != null) {
+//                for (Map.Entry<String, Boolean> exists : passwordExists.entrySet()) {
+//                    config.set("Exists." + exists.getKey(), exists.getValue());
+//                }
+//            }
+//            config.save();
+//        }
+//
+//        if (!passwords.isEmpty()) {
+//            Configurable config = staffConfig.getConfig();
+//            if (config != null) {
+//                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
+//                    config.set("passwords." + passwords.getKey(), passwords.getValue());
+//                }
+//            }
+//            config.save();
+//        }
     }
 
     private void events() {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
+//        Bukkit.getServer().getPluginManager().registerEvents(new Password(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsCommandListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WarzoneCommandListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomUpgradeListener(this), this);
