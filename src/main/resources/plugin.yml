@@ -89,3 +89,6 @@ commands:
   whisper:
     description: Direct Message another player.
     aliases: [ w, msg ]
+  password:
+    description: Confirm you are the owner of your account.
+    aliases: [ pw ]
