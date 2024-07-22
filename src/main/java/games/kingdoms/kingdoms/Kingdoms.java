@@ -16,6 +16,10 @@ import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
 import games.kingdoms.kingdoms.admin.permissions.Permissions;
+import games.kingdoms.kingdoms.admin.punishCMDs.AdminPunish;
+import games.kingdoms.kingdoms.admin.punishCMDs.JrModPunish;
+import games.kingdoms.kingdoms.admin.punishCMDs.ModPunish;
+import games.kingdoms.kingdoms.admin.punishCMDs.SrModPunish;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import games.kingdoms.kingdoms.admin.ranks.RankCMD;
 import games.kingdoms.kingdoms.admin.ranks.RankTabCompleter;
@@ -31,6 +35,7 @@ import games.kingdoms.kingdoms.publiccmds.balance.PayCommand;
 import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomInviteList;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.KingdomsConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.MoneyConfig;
@@ -74,6 +79,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private MoneyConfig moneyConfig;
     private StaffConfig staffConfig;
     private static Kingdoms plugin;
+    private HashMap<String, Integer> staffCount = new HashMap<>();
     private HashMap<String, String> customRank = new HashMap<>();
     private HashMap<String, String> kingdomExists = new HashMap<>();
     private final ArrayList<Player> invisiblePlayers = new ArrayList<>();
@@ -91,16 +97,32 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, String> member = new HashMap<>();
     private HashMap<String, String> inviteList = new HashMap<>();
     private HashMap<String, String> claimedChunks = new HashMap<>();
-    private HashMap<String, Boolean> passwordStatus = new HashMap<>();
     private HashMap<String, Location> kingdomSpawn = new HashMap<>();
     private HashMap<String, String> staff = new HashMap<>();
     private HashMap<String, String> kingdoms = new HashMap<>();
     private HashMap<String, Long> money = new HashMap<>();
     private HashMap<String, String> onlineStaff = new HashMap<>();
-    private HashMap<String, Boolean> passwordExists = new HashMap<>();
     private HashMap<String, Integer> maxMembers = new HashMap<>();
     private HashMap<String, Integer> maxClaims = new HashMap<>();
-    private HashMap<String, Integer> staffCount = new HashMap<>();
+    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+    private HashMap<String, Integer> mediaAdverts = new HashMap<>();
+    private HashMap<String, Integer> reportAbuse = new HashMap<>();
+    private HashMap<String, Integer> disrespect = new HashMap<>();
+    private HashMap<String, Integer> language = new HashMap<>();
+    private HashMap<String, Integer> soliciting = new HashMap<>();
+    private HashMap<String, Integer> spam = new HashMap<>();
+    private HashMap<String, Integer> discrimination = new HashMap<>();
+    private HashMap<String, Integer> threats = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
+//    private HashMap<String, Integer> ipAdverts = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -131,6 +153,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         restoreServerData();
 
         //Commands
+        punishments();
         interactWithNPC();
         password();
         createNPC();
@@ -187,9 +210,24 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 //        getCommand("password").setExecutor(new Password());
     }
 
+    private void punishments() {
+        getCommand("punish").setExecutor(new JrModPunish());
+        getCommand("punish").setExecutor(new ModPunish());
+        getCommand("punish").setExecutor(new SrModPunish());
+        getCommand("punish").setExecutor(new AdminPunish());
+    }
+
     private void initMapList() {
-        passwordStatus = new HashMap<>();
-        passwordExists = new HashMap<>();
+        threats = new HashMap<>();
+        discrimination = new HashMap<>();
+        mediaAdverts = new HashMap<>();
+        ipAdverts = new HashMap<>();
+        reportAbuse = new HashMap<>();
+        disrespect = new HashMap<>();
+        language = new HashMap<>();
+        soliciting = new HashMap<>();
+        spam = new HashMap<>();
+
         money = new HashMap<>();
         passwords = new HashMap<>();
         modModePlayers = new ArrayList<>();
@@ -283,7 +321,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void Spawns() {
-        getCommand("spawn").setExecutor(new SpawnCommand(this, new KingdomsCommandListener(this) ));
+        getCommand("spawn").setExecutor(new SpawnCommand(this, new KingdomsCommandListener(this)));
     }
 
     private void Vanish() {
@@ -307,6 +345,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void kingdom() {
         getCommand("kingdom").setExecutor(new KingdomsCommands(this));
+        getCommand("kingdom").setTabCompleter(new KingdomInviteList());
     }
 
     private void viewPerms() {
@@ -348,7 +387,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             //Scoreboard Name
             Objective obj = board.registerNewObjective("inChunk", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-            Score divider = obj.getScore("-----------------------");
+            Score divider = obj.getScore(" ");
             divider.setScore(15);
             Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
             p.setScore(14);
@@ -408,7 +447,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
             kingdom.setScore(7);
 
-            // TODO: loop through players and add to member count if they are in the kingdom of the chunk the player goes into
+            //loop through players and add to member count if they are in the kingdom of the chunk the player goes into
             int memberCount = 0;  // Initialize memberCount outside the loop
 
             // Get the kingdom of the chunk the player is going into
@@ -446,7 +485,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             Score energy = obj.getScore("Energy " + ChatColor.YELLOW + "0.0/0" + ChatColor.AQUA + " 0");
             energy.setScore(4);
-            Score separator = obj.getScore(ChatColor.WHITE + "-----------------------");
+            Score separator = obj.getScore(ChatColor.WHITE + " ");
             separator.setScore(3);
             Score user = obj.getScore(ChatColor.RED + player.getName() + " " + ChatColor.GRAY + dateFormat.format(date));
             user.setScore(2);
@@ -457,7 +496,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     //Player is not in a chunk owned by their kingdom
-    //TODO: figure out why this throws a NullPointerException
     public void notInPlayersKingdomBoard(Player player) {
         long moneyValue = money.get(player.getUniqueId().toString());
         String formattedMoney = money.get(player.getUniqueId().toString()).toString();
@@ -469,87 +507,17 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         //Scoreboard Name
         Objective obj = board.registerNewObjective("notInClaim", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        Score divider = obj.getScore("-----------------------");
-        divider.setScore(14);
+        Score divider = obj.getScore(" ");
+        divider.setScore(15);
         Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
-        p.setScore(13);
+        p.setScore(14);
         //Player rank
         Score rank = obj.getScore("Rank " + playerRank.get(player.getUniqueId().toString()));
-        rank.setScore(12);
+        rank.setScore(13);
         //Coins
         if (moneyValue == 0) {
             Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
-            coins.setScore(11);
-        } else {
-            if (moneyValue < 1_000.0) {
-                formattedMoney = String.valueOf(moneyValue);
-            } else if (moneyValue < 1_000_000.0) {
-                formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
-            } else if (moneyValue < 1_000_000_000.0) {
-                formattedMoney = String.format("%.3fM", moneyValue / 1_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fB", moneyValue / 1_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fT", moneyValue / 1_000_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fQ", moneyValue / 1_000_000_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fQU", moneyValue / 1_000_000_000_000_000_000.0);
-            } else {
-                formattedMoney = String.format("%.3fS", moneyValue / 1_000_000_000_000_000_000_000.0);
-            }
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
-            coins.setScore(11);
-        }
-        //Kill/Death Ratio
-        Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
-        kdr.setScore(10);
-        //edit this to show how many challenges have been completed
-        Score challenges = obj.getScore(ChatColor.WHITE + "Challenges " + ChatColor.YELLOW + "WIP");
-        challenges.setScore(9);
-        Score blank = obj.getScore(" ");
-        blank.setScore(8);
-        Score kingdom = obj.getScore(ChatColor.YELLOW.toString() + ChatColor.BOLD + "SERVER");
-        kingdom.setScore(7);
-        Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
-        online.setScore(6);
-        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(String.valueOf(StaffConfig.getInstance().getConfig().getNode("onlineStaff.onlineStaff").toPrimitive().getInt())));
-        online_staff.setScore(5);
-        Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
-        PvP_setting.setScore(4);
-        Score separator = obj.getScore(ChatColor.WHITE + "-----------------------");
-        separator.setScore(3);
-        Score user = obj.getScore(ChatColor.RED + player.getName() + " " + ChatColor.GRAY + dateFormat.format(date));
-        user.setScore(2);
-        Score server_ip = obj.getScore(ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "play.kingdoms.games");
-        server_ip.setScore(1);
-        player.setScoreboard(board);
-    }
-
-    //Player is not in a kingdom
-    public void notInKingdomBoard(Player player) {
-        long moneyValue = money.get(player.getUniqueId().toString());
-        String formattedMoney = money.get(player.getUniqueId().toString()).toString();
-        Chunk chunk = player.getLocation().getChunk();
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
-        Date date = new Date();
-
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
-        //Scoreboard Name
-        Objective obj = board.registerNewObjective("notInKingdom", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        Score divider = obj.getScore("-----------------------");
-        divider.setScore(14);
-        Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
-        p.setScore(13);
-        //Rank
-        Score rank = obj.getScore("Rank " + playerRank.get(player.getUniqueId().toString()));
-        rank.setScore(12);
-        //Coins
-        if (moneyValue == 0) {
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
-            coins.setScore(11);
+            coins.setScore(12);
         } else {
             if (moneyValue == 1) {
                 formattedMoney = "1";
@@ -585,11 +553,83 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdom.setScore(7);
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score online_staff = obj.getScore("Staff " + ChatColor.YELLOW + staffCount.get(String.valueOf(StaffConfig.getInstance().getConfig().getNode("onlineStaff.onlineStaff").toPrimitive().getInt())));
-        online_staff.setScore(5);
+        Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staffConfig.getConfig().getNode("online.online").toPrimitive().getInt());
+        onlineStaff.setScore(5);
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
-        Score separator = obj.getScore(ChatColor.WHITE + "-----------------------");
+        Score separator = obj.getScore(ChatColor.WHITE + " ");
+        separator.setScore(3);
+        Score user = obj.getScore(ChatColor.RED + player.getName() + " " + ChatColor.GRAY + dateFormat.format(date));
+        user.setScore(2);
+        Score server_ip = obj.getScore(ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "play.kingdoms.games");
+        server_ip.setScore(1);
+        player.setScoreboard(board);
+    }
+
+    //Player is not in a kingdom
+    public void notInKingdomBoard(Player player) {
+        long moneyValue = money.get(player.getUniqueId().toString());
+        String formattedMoney = money.get(player.getUniqueId().toString()).toString();
+        Chunk chunk = player.getLocation().getChunk();
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
+        Date date = new Date();
+
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
+        //Scoreboard Name
+        Objective obj = board.registerNewObjective("notInKingdom", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Score divider = obj.getScore(" ");
+        divider.setScore(15);
+        Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
+        p.setScore(14);
+        //Rank
+        Score rank = obj.getScore("Rank " + playerRank.get(player.getUniqueId().toString()));
+        rank.setScore(13);
+        //Coins
+        if (moneyValue == 0) {
+            Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
+            coins.setScore(12);
+        } else {
+            if (moneyValue == 1) {
+                formattedMoney = "1";
+            } else if (moneyValue < 1_000.0) {
+                formattedMoney = String.valueOf(moneyValue);
+            } else if (moneyValue < 1_000_000.0) {
+                formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
+            } else if (moneyValue < 1_000_000_000.0) {
+                formattedMoney = String.format("%.3fM", moneyValue / 1_000_000.0);
+            } else if (moneyValue < 1_000_000_000_000.0) {
+                formattedMoney = String.format("%.3fB", moneyValue / 1_000_000_000.0);
+            } else if (moneyValue < 1_000_000_000_000_000.0) {
+                formattedMoney = String.format("%.3fT", moneyValue / 1_000_000_000_000.0);
+            } else if (moneyValue < 1_000_000_000_000_000_000.0) {
+                formattedMoney = String.format("%.3fQ", moneyValue / 1_000_000_000_000_000.0);
+            } else if (moneyValue < 1_000_000_000_000_000_000_000.0) {
+                formattedMoney = String.format("%.3fQU", moneyValue / 1_000_000_000_000_000_000.0);
+            } else {
+                formattedMoney = String.format("%.3fS", moneyValue / 1_000_000_000_000_000_000_000.0);
+            }
+            Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
+            coins.setScore(11);
+        }
+        //Kill/Death Ratio
+        Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
+        kdr.setScore(10);
+        //edit this to show how many challenges have been completed
+        Score challenges = obj.getScore(ChatColor.WHITE + "Challenges " + ChatColor.YELLOW + "WIP");
+        challenges.setScore(9);
+        Score blank = obj.getScore(" ");
+        blank.setScore(8);
+        Score kingdom = obj.getScore(ChatColor.YELLOW.toString() + ChatColor.BOLD + "SERVER");
+        kingdom.setScore(7);
+        Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
+        online.setScore(6);
+        Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staffConfig.getConfig().getNode("online.online").toPrimitive().getInt());
+        onlineStaff.setScore(5);
+        Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
+        PvP_setting.setScore(4);
+        Score separator = obj.getScore(ChatColor.WHITE + " ");
         separator.setScore(3);
         Score user = obj.getScore(ChatColor.RED + player.getName() + " " + ChatColor.GRAY + dateFormat.format(date));
         user.setScore(2);
@@ -658,8 +698,61 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         //TODO: remove one from staffCounter if a staff member leaves
 
+        int staffCount = 0;
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            String playerRank = staff.get(onlinePlayer.getUniqueId().toString());
+
+            if (playerRank != null && (playerRank.equals("ADMIN") ||
+                    playerRank.equals("JRADMIN") ||
+                    playerRank.equals("SRMOD") ||
+                    playerRank.equals("MOD") ||
+                    playerRank.equals("JRMOD"))) {
+                staffCount--;
+                if (staffCount <= 0) {
+                    this.staffCount.put("online", 0);
+                } else {
+                    this.staffCount.put("online", staffCount);
+                }
+            }
+        }
 
         savePluginData(player);
+    }
+
+    @EventHandler
+    public void onKick(PlayerKickEvent event) {
+        Player player = event.getPlayer();
+
+        int staffCount = 0;
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            String playerRank = staff.get(onlinePlayer.getUniqueId().toString());
+
+            if (playerRank != null && (playerRank.equals("ADMIN") ||
+                    playerRank.equals("JRADMIN") ||
+                    playerRank.equals("SRMOD") ||
+                    playerRank.equals("MOD") ||
+                    playerRank.equals("JRMOD"))) {
+                staffCount--;
+                this.staffCount.put("online", staffCount);
+            } else {
+
+                for (Player onlinePlayer1 : Bukkit.getOnlinePlayers()) {
+                    String playerRank1 = staff.get(onlinePlayer1.getUniqueId().toString());
+
+                    if (playerRank != null && !(playerRank1.equals("ADMIN") &&
+                            !playerRank1.equals("JRADMIN") &&
+                            !playerRank1.equals("SRMOD") &&
+                            !playerRank1.equals("MOD") &&
+                            !playerRank1.equals("JRMOD"))) {
+                        staff.remove(player.getUniqueId().toString());
+                        staffCount--;
+                        this.staffCount.put("online", staffCount);
+                    }
+                }
+            }
+        }
     }
 
     // Define a method to register teams if not already registered
@@ -697,6 +790,21 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (!money.containsKey(player.getUniqueId().toString())) {
                 money.put(player.getUniqueId().toString(), 0L);
                 savePluginData(player);
+            }
+
+            int staffCount = 0;
+
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                String playerRank = staff.get(onlinePlayer.getUniqueId().toString());
+
+                if (playerRank != null && (playerRank.equals("ADMIN") ||
+                        playerRank.equals("JRADMIN") ||
+                        playerRank.equals("SRMOD") ||
+                        playerRank.equals("MOD") ||
+                        playerRank.equals("JRMOD"))) {
+                    staffCount++;
+                    this.staffCount.put("online", staffCount);
+                }
             }
 
             savePluginData(player);
@@ -910,12 +1018,40 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return kingdoms;
     }
 
-    public HashMap<String, Boolean> getPasswordExists() {
-        return passwordExists;
+    public HashMap<String, Integer> getIpAdverts() {
+        return ipAdverts;
     }
 
-    public HashMap<String, Boolean> getPasswordStatus() {
-        return passwordStatus;
+    public HashMap<String, Integer> getMediaAdverts() {
+        return mediaAdverts;
+    }
+
+    public HashMap<String, Integer> getReportAbuse() {
+        return reportAbuse;
+    }
+
+    public HashMap<String, Integer> getDisrespect() {
+        return disrespect;
+    }
+
+    public HashMap<String, Integer> getLanguage() {
+        return language;
+    }
+
+    public HashMap<String, Integer> getSoliciting() {
+        return soliciting;
+    }
+
+    public HashMap<String, Integer> getSpam() {
+        return spam;
+    }
+
+    public HashMap<String, Integer> getDiscrimination() {
+        return discrimination;
+    }
+
+    public HashMap<String, Integer> getThreats() {
+        return threats;
     }
 
     public HashMap<String, String> getKingdomExists() {
@@ -1005,6 +1141,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                         this.kingdomExists.put(key, value);
                     });
                 }
+                if (kc.getNode("invites").getNode(player.getUniqueId().toString()).exists()) {
+                    inviteList.put(player.getUniqueId().toString(), kc.getNode("invites." + player.getUniqueId().toString()).toPrimitive().getString());
+                }
                 if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
                     kingdoms.put(player.getUniqueId().toString(), kc.getNode("kingdoms." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
@@ -1019,6 +1158,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
                 if (kc.getNode("members").getNode(player.getUniqueId().toString()).exists()) {
                     member.put(player.getUniqueId().toString(), kc.getNode("members." + player.getUniqueId().toString()).toPrimitive().getString());
+                }
+                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
+                    if (kc.getNode("exists").getNode(kingdom.getValue()).exists()) {
+                        kingdomExists.put(kingdom.getValue(), kingdom.getValue());
+                    }
                 }
                 if (kc.getNode("canClaim").getNode(player.getUniqueId().toString()).exists()) {
                     canClaim.put(player.getUniqueId().toString(), kc.getNode("canClaim." + player.getUniqueId().toString()).toPrimitive().getString());
@@ -1068,17 +1212,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 if (sc.getNode("staff").getNode(player.getUniqueId().toString()).exists()) {
                     staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
-//                if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-//                    staffCount.put(sc.getNode("onlineStaff.onlineStaff").toString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
-//                }
-//                if (sc.getNode("status").getNode(player.getUniqueId().toString()).exists()) {
-//                    passwordStatus.put(player.getUniqueId().toString(), sc.getNode("status." + player.getUniqueId().toString()).toPrimitive().getBoolean());
-//                }
-//                if (sc.getNode("Exists").getNode(player.getUniqueId().toString()).exists()) {
-//                    passwordExists.put(player.getUniqueId().toString(), sc.getNode("Exists." + player.getUniqueId().toString()).toPrimitive().getBoolean());
-//                }
+                try {
+                    if (Integer.parseInt(sc.getNode("online.online").toPrimitive().getString()) > -1) {
+                        staffCount.put("online", sc.getNode("online.online").toPrimitive().getInt());
+                    }
+                } catch (NumberFormatException e) {
+                    staffCount.put("online", 0);
+                }
 //                if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
-//                    passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
+//                        passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
 //                }
             }
         }
@@ -1086,16 +1228,26 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public void restorePluginData(Player player) {
 
-//        FileManager kingdomFile = files.get("Kingdoms", "Data", YamlExtension.INSTANCE);
-//        FileManager staffFile = files.get("Staff", "Data", YamlExtension.INSTANCE);
-//        FileManager moneyFile = files.get("Money", "Data", YamlExtension.INSTANCE);
         Configurable kc = kingdomsConfig.getConfig();
         Configurable sc = staffConfig.getConfig();
         Configurable mc = moneyConfig.getConfig();
 
         if (kc != null) {
-            if (kc.getNode("bannedNames").getNode(kc.getNode("bannedNames").toPrimitive().getString()).exists()) {
-                bannedNames.put(kc.getNode("bannedNames").toPrimitive().getString(), kc.getNode("bannedNames." + kc.getNode("bannedNames").toPrimitive().getString()).toPrimitive().getString());
+            //TODO: Figure out if this works
+            if (kc.getNode("bannedNames").exists()) {
+                kc.getNode("bannedNames").getKeys(false).forEach(key -> {
+                    String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
+                    this.bannedNames.put(key, bannedNames);
+                });
+            }
+            if (kc.getNode("exists").exists()) {
+                kc.getNode("exists").getKeys(false).forEach(key -> {
+                    String value = kc.getNode("exists." + key).toPrimitive().getString();
+                    this.kingdomExists.put(key, value);
+                });
+            }
+            if (kc.getNode("invites").getNode(player.getUniqueId().toString()).exists()) {
+                inviteList.put(player.getUniqueId().toString(), kc.getNode("invites." + player.getUniqueId().toString()).toPrimitive().getString());
             }
             if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
                 kingdoms.put(player.getUniqueId().toString(), kc.getNode("kingdoms." + player.getUniqueId().toString()).toPrimitive().getString());
@@ -1112,6 +1264,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (kc.getNode("members").getNode(player.getUniqueId().toString()).exists()) {
                 member.put(player.getUniqueId().toString(), kc.getNode("members." + player.getUniqueId().toString()).toPrimitive().getString());
             }
+            for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
+                if (kc.getNode("exists").getNode(kingdom.getValue()).exists()) {
+                    kingdomExists.put(kingdom.getValue(), kingdom.getValue());
+                }
+            }
             if (kc.getNode("canClaim").getNode(player.getUniqueId().toString()).exists()) {
                 canClaim.put(player.getUniqueId().toString(), kc.getNode("canClaim." + player.getUniqueId().toString()).toPrimitive().getString());
             }
@@ -1123,6 +1280,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
             if (kc.getNode("maxMembers").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                 maxMembers.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
+            }
+            if (kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                claimPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
+            }
+            if (kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
+                memberPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
             }
             for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
                 if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
@@ -1154,15 +1317,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (sc.getNode("staff").getNode(player.getUniqueId().toString()).exists()) {
                 staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
             }
-//            if (sc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt() > -1) {
-//                staffCount.put(sc.getNode("onlineStaff").toPrimitive().getString(), kc.getNode("onlineStaff.onlineStaff").toPrimitive().getInt());
-//            }
-//            if (sc.getNode("status").getNode(player.getUniqueId().toString()).exists()) {
-//                passwordStatus.put(player.getUniqueId().toString(), sc.getNode("status." + player.getUniqueId().toString()).toPrimitive().getBoolean());
-//            }
-//            if (sc.getNode("Exists").getNode(player.getUniqueId().toString()).exists()) {
-//                passwordExists.put(player.getUniqueId().toString(), sc.getNode("Exists." + player.getUniqueId().toString()).toPrimitive().getBoolean());
-//            }
+            try {
+                if (Integer.parseInt(sc.getNode("online.online").toPrimitive().getString()) > -1) {
+                    staffCount.put("online", sc.getNode("online.online").toPrimitive().getInt());
+                }
+            } catch (NumberFormatException e) {
+                staffCount.put("online", 0);
+            }
 //            if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
 //                passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
 //            }
@@ -1170,250 +1331,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData(Player player) {
-//        if (!staff.isEmpty()) {
-//            Configurable config = staffConfig.getConfig();
-//            if (config != null) {
-//
-//                for (Player player1 : Bukkit.getOnlinePlayers()) {
-//                    int staffCount = 0;
-//
-//                    //TODO: Figure out why this doesn't calculate the staff count
-//                    if (staff.get(player1.getUniqueId().toString()).equalsIgnoreCase(config.getNode("staff." + player1.getUniqueId().toString()).toPrimitive().getString())) {
-//
-//                        staffCount++;
-//                        config.set("onlineStaff.onlineStaff", staffCount);
-//                    }
-//                }
-//            }
-//            config.save();
-//        }
-        if (!kingdomExists.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> exists : kingdomExists.entrySet()) {
-                    config.set("exists." + exists.getKey(), exists.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!bannedNames.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> bannedNames : bannedNames.entrySet()) {
-                    config.set("bannedNames." + bannedNames.getKey(), bannedNames.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!kingdoms.isEmpty()) {
-            if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
-                        config.set("kingdoms." + player.getUniqueId().toString(), kingdoms.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-        if (!maxClaims.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
-                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!maxMembers.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
-                    config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!owner.isEmpty()) {
-            if (admin.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> owners : owner.entrySet()) {
-                        config.set("owners." + player.getUniqueId().toString(), owners.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-        if (!admin.isEmpty()) {
-            if (admin.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> admins : admin.entrySet()) {
-                        config.set("admins." + player.getUniqueId().toString(), admins.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-        if (!member.isEmpty()) {
-            if (member.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> members : member.entrySet()) {
-                        config.set("members." + player.getUniqueId().toString(), members.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!inviteList.isEmpty()) {
-            if (inviteList.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                        config.set("invites." + invites.getKey(), invites.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!canClaim.isEmpty()) {
-            if (canClaim.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
-                        config.set("canClaim." + player.getUniqueId().toString(), canClaim.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!canUnclaim.isEmpty()) {
-            if (canUnclaim.containsKey(player.getUniqueId().toString())) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
-                        config.set("canUnclaim." + player.getUniqueId().toString(), canUnclaim.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!kingdomSpawn.isEmpty()) {
-            if (kingdomSpawn.containsKey(kingdoms.get(player.getUniqueId().toString()))) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, Location> spawns : kingdomSpawn.entrySet()) {
-                        config.set("spawns." + kingdoms.get(player.getUniqueId().toString()), spawns.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!claimedChunks.isEmpty()) {
-            if (claimedChunks.containsKey(kingdoms.get(player.getUniqueId().toString()))) {
-                Configurable config = kingdomsConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> claims : claimedChunks.entrySet()) {
-                        config.set("claims." + claims.getKey(), claims.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!memberPrice.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
-                    config.set("memberPrice." + price.getKey(), price.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!claimPrice.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
-                    config.set("claimPrice." + price.getKey(), price.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!money.isEmpty()) {
-            if (money.containsKey(player.getUniqueId().toString())) {
-                Configurable config = moneyConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, Long> money : money.entrySet()) {
-                        config.set("balance." + money.getKey(), money.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!playerRank.isEmpty()) {
+        if (!staffCount.isEmpty()) {
             Configurable config = staffConfig.getConfig();
             if (config != null) {
-                for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-                    config.set("rank." + rank.getKey(), rank.getValue());
+                for (Map.Entry<String, Integer> online : staffCount.entrySet()) {
+                    config.set("online." + online.getKey(), online.getValue());
                 }
             }
             config.save();
         }
-
-        if (!staff.isEmpty()) {
-            if (staff.containsKey(player.getUniqueId().toString())) {
-                Configurable config = staffConfig.getConfig();
-                if (config != null) {
-                    for (Map.Entry<String, String> staff : staff.entrySet()) {
-                        config.set("staff." + staff.getKey(), staff.getValue());
-                    }
-                }
-                config.save();
-            }
-        }
-
-        if (!passwordStatus.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Boolean> status : passwordStatus.entrySet()) {
-                    config.set("status." + status.getKey(), status.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!passwordExists.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Boolean> exists : passwordExists.entrySet()) {
-                    config.set("Exists." + exists.getKey(), exists.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!passwords.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
-                    config.set("passwords." + passwords.getKey(), passwords.getValue());
-                }
-            }
-            config.save();
-        }
-    }
-
-    public void savePluginData() {
         if (!bannedNames.isEmpty()) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
@@ -1587,26 +1513,200 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             config.save();
         }
 
-//        if (!passwordStatus.isEmpty()) {
+//        if (!passwords.isEmpty()) {
 //            Configurable config = staffConfig.getConfig();
 //            if (config != null) {
-//                for (Map.Entry<String, Boolean> status : passwordStatus.entrySet()) {
-//                    config.set("status." + status.getKey(), status.getValue());
+//                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
+//                    config.set("passwords." + passwords.getKey(), passwords.getValue());
 //                }
 //            }
 //            config.save();
 //        }
-//
-//        if (!passwordExists.isEmpty()) {
-//            Configurable config = staffConfig.getConfig();
-//            if (config != null) {
-//                for (Map.Entry<String, Boolean> exists : passwordExists.entrySet()) {
-//                    config.set("Exists." + exists.getKey(), exists.getValue());
-//                }
-//            }
-//            config.save();
-//        }
-//
+    }
+
+    public void savePluginData() {
+        if (!staffCount.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> online : staffCount.entrySet()) {
+                    config.set("online." + online.getKey(), online.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!bannedNames.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> bannedNames : bannedNames.entrySet()) {
+                    config.set("bannedNames." + bannedNames.getKey(), bannedNames.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!kingdomExists.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> exists : kingdomExists.entrySet()) {
+                    config.set("exists." + exists.getKey(), exists.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!kingdoms.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
+                    config.set("kingdoms." + kingdoms.getKey(), kingdoms.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!maxClaims.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
+                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!maxMembers.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
+                    config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!owner.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> owners : owner.entrySet()) {
+                    config.set("owners." + owners.getKey(), owners.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!admin.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> admins : admin.entrySet()) {
+                    config.set("admins." + admins.getKey(), admins.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!member.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> members : member.entrySet()) {
+                    config.set("members." + members.getKey(), members.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!inviteList.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> invites : inviteList.entrySet()) {
+                    config.set("invites." + invites.getKey(), invites.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!canClaim.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
+                    config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!canUnclaim.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
+                    config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!kingdomSpawn.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Location> spawns : kingdomSpawn.entrySet()) {
+                    config.set("spawns." + spawns.getKey(), spawns.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!claimedChunks.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> claims : claimedChunks.entrySet()) {
+                    config.set("claims." + claims.getKey(), claims.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!memberPrice.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
+                    config.set("memberPrice." + price.getKey(), price.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!claimPrice.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
+                    config.set("claimPrice." + price.getKey(), price.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!money.isEmpty()) {
+            Configurable config = moneyConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Long> money : money.entrySet()) {
+                    config.set("balance." + money.getKey(), money.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!playerRank.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> rank : playerRank.entrySet()) {
+                    config.set("rank." + rank.getKey(), rank.getValue());
+                }
+            }
+            config.save();
+        }
+
+        if (!staff.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> staff : staff.entrySet()) {
+                    config.set("staff." + staff.getKey(), staff.getValue());
+                }
+            }
+            config.save();
+        }
+
 //        if (!passwords.isEmpty()) {
 //            Configurable config = staffConfig.getConfig();
 //            if (config != null) {
