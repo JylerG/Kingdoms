@@ -8,9 +8,12 @@ website: www.kingdoms.games
 depend: [ Labyrinth, Vault, ProtocolLib, Citizens ]
 load: POSTWORLD
 commands:
-  #chat:
-    #description: Switch between chat channels.
-    #aliases: [ c ]
+  #  password:
+  #    description: Confirm you are the owner of your account.
+  #    aliases: [ pw ]
+  chat:
+    description: Switch between chat channels.
+    aliases: [ c ]
   staffvault:
     description: Access OP Staff Items!
     aliases: [ sv ]
@@ -89,6 +92,6 @@ commands:
   whisper:
     description: Direct Message another player.
     aliases: [ w, msg ]
-  password:
-    description: Confirm you are the owner of your account.
-    aliases: [ pw ]
+  punish:
+    description: Punish players.
+    aliases: [pu]
