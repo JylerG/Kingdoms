@@ -11,6 +11,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class RankCMD implements CommandExecutor {
 
     private final Kingdoms plugin;
@@ -108,9 +110,7 @@ public class RankCMD implements CommandExecutor {
                 }
             }
             plugin.savePluginData();
-        }
-
-        else if (args.length == 3) {
+        } else if (args.length == 3) {
             Player target = Bukkit.getPlayer(args[1]);
             if (sender.hasPermission("kingdoms.setrank.default") || sender.hasPermission("kingdoms.setrank.vip") || sender.hasPermission("kingdoms.setrank.hero") || sender.hasPermission("kingdoms.setrank.jrmod") || sender.hasPermission("kingdoms.setrank.mod") || sender.hasPermission("kingdoms.setrank.srmod") || sender.hasPermission("kingdoms.setrank.jradmin") || sender.hasPermission("kingdoms.setrank.admin")) {
                 if (target == null) {
@@ -134,15 +134,19 @@ public class RankCMD implements CommandExecutor {
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT
                                         + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + player.getName());
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-                                plugin.getStaff().remove(target.getUniqueId().toString());
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT);
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to DEFAULT rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to DEFAULT rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -156,15 +160,19 @@ public class RankCMD implements CommandExecutor {
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.GREEN + ChatColor.BOLD + Rank.VIP
                                         + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + player.getName());
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP);
-                                plugin.getStaff().remove(target.getUniqueId().toString());
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.GREEN + ChatColor.BOLD + Rank.VIP);
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to VIP rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to VIP rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -178,15 +186,19 @@ public class RankCMD implements CommandExecutor {
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.AQUA + ChatColor.BOLD + Rank.HERO
                                         + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + player.getName());
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO);
-                                plugin.getStaff().remove(target.getUniqueId().toString());
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.AQUA + ChatColor.BOLD + Rank.HERO);
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to HERO rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to HERO rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -199,15 +211,19 @@ public class RankCMD implements CommandExecutor {
                                 Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set youtube");
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.RED + ChatColor.BOLD + "YT");
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.RED.toString() + ChatColor.BOLD + "YT");
-                                plugin.getStaff().remove(target.getUniqueId().toString());
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.RED + ChatColor.BOLD + "YT");
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to YOUTUBE rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to YOUTUBE rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -222,12 +238,16 @@ public class RankCMD implements CommandExecutor {
                                 plugin.getStaff().put(target.getUniqueId().toString(), "JRMOD");
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_AQUA + ChatColor.BOLD + Rank.JRMOD);
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to JRMOD rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to JRMOD rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -244,12 +264,16 @@ public class RankCMD implements CommandExecutor {
                                 plugin.getStaff().put(target.getUniqueId().toString(), "MOD");
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD);
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to MOD rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to MOD rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -266,12 +290,16 @@ public class RankCMD implements CommandExecutor {
                                 plugin.getStaff().put(target.getUniqueId().toString(), "SRMOD");
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD);
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to SRMOD rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to SRMOD rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -290,12 +318,16 @@ public class RankCMD implements CommandExecutor {
                                     sender.sendMessage(target.getName() + ChatColor.RED + " is already rank " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN);
                                     return true;
                                 }
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to JRADMIN rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to JRADMIN rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
 
@@ -313,15 +345,18 @@ public class RankCMD implements CommandExecutor {
                                         + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + player.getName());
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN);
-                                if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
-                                        plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN"))
-                                    target.kickPlayer("You were set to ADMIN rank by " + player.getName());
+                                if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
+                                    if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
+                                            plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                                        plugin.savePluginData(target);
+                                        target.kickPlayer("You were set to ADMIN rank by " + player.getName());
+                                    }
+                                }
                             }
                         }
-                        plugin.savePluginData();
                     }
                 }
             }

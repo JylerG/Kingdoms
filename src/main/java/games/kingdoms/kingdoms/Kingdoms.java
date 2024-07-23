@@ -16,10 +16,7 @@ import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
 import games.kingdoms.kingdoms.admin.permissions.Permissions;
-import games.kingdoms.kingdoms.admin.punishCMDs.AdminPunish;
-import games.kingdoms.kingdoms.admin.punishCMDs.JrModPunish;
-import games.kingdoms.kingdoms.admin.punishCMDs.ModPunish;
-import games.kingdoms.kingdoms.admin.punishCMDs.SrModPunish;
+import games.kingdoms.kingdoms.admin.punishCMD.PunishCommand;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import games.kingdoms.kingdoms.admin.ranks.RankCMD;
 import games.kingdoms.kingdoms.admin.ranks.RankTabCompleter;
@@ -32,6 +29,7 @@ import games.kingdoms.kingdoms.admin.vanish.commands.VanishCMD;
 import games.kingdoms.kingdoms.admin.vanish.events.JoinEvent;
 import games.kingdoms.kingdoms.publiccmds.balance.BalanceCommand;
 import games.kingdoms.kingdoms.publiccmds.balance.PayCommand;
+import games.kingdoms.kingdoms.publiccmds.chats.ChatCMD;
 import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
@@ -39,6 +37,7 @@ import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomInviteList;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.KingdomsConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.MoneyConfig;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.PunishmentConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.StaffConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomUpgradeListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
@@ -78,6 +77,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private KingdomsConfig kingdomsConfig;
     private MoneyConfig moneyConfig;
     private StaffConfig staffConfig;
+    private PunishmentConfig punishmentConfig;
     private static Kingdoms plugin;
     private HashMap<String, Integer> staffCount = new HashMap<>();
     private HashMap<String, String> customRank = new HashMap<>();
@@ -93,6 +93,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, String> playerRank = new HashMap<>();
     private HashMap<String, String> passwords = new HashMap<>();
     private HashMap<String, String> owner = new HashMap<>();
+    private HashMap<String, String> chatFocus = new HashMap<>();
     private HashMap<String, String> admin = new HashMap<>();
     private HashMap<String, String> member = new HashMap<>();
     private HashMap<String, String> inviteList = new HashMap<>();
@@ -132,10 +133,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveDefaultConfig();
 
         plugin = this;
+        punishmentConfig = new PunishmentConfig(this);
         kingdomsConfig = new KingdomsConfig(this);
         moneyConfig = new MoneyConfig(this);
         staffConfig = new StaffConfig(this);
 
+        if (!punishmentConfig.getConfig().exists()) {
+            punishmentConfig.setup();
+        }
         if (!kingdomsConfig.getConfig().exists()) {
             kingdomsConfig.setup();
         }
@@ -153,6 +158,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         restoreServerData();
 
         //Commands
+        chat();
         punishments();
         interactWithNPC();
         password();
@@ -210,11 +216,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 //        getCommand("password").setExecutor(new Password());
     }
 
+    private void chat() {
+        getCommand("chat").setExecutor(new ChatCMD());
+    }
+
     private void punishments() {
-        getCommand("punish").setExecutor(new JrModPunish());
-        getCommand("punish").setExecutor(new ModPunish());
-        getCommand("punish").setExecutor(new SrModPunish());
-        getCommand("punish").setExecutor(new AdminPunish());
+        getCommand("punish").setExecutor(new PunishCommand());
     }
 
     private void initMapList() {
@@ -228,6 +235,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         soliciting = new HashMap<>();
         spam = new HashMap<>();
 
+        chatFocus = new HashMap<>();
         money = new HashMap<>();
         passwords = new HashMap<>();
         modModePlayers = new ArrayList<>();
@@ -780,8 +788,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             defaultTeam.addEntry(player.getUniqueId().toString());
             playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
             money.put(player.getUniqueId().toString(), 0L);
-
+            chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
         } else {
+            if (!chatFocus.containsKey(player.getUniqueId().toString())) {
+                chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
+            }
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "/pex group " + player.getUniqueId().toString() + " set default");
@@ -994,6 +1005,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return playerRank;
     }
 
+    public HashMap<String, String> getChatFocus() {
+        return chatFocus;
+    }
+
     public HashMap<String, String> getClaims() {
         return claims;
     }
@@ -1126,6 +1141,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable kc = kingdomsConfig.getConfig();
             Configurable sc = staffConfig.getConfig();
             Configurable mc = moneyConfig.getConfig();
+            Configurable pu = punishmentConfig.getConfig();
 
             if (kc != null) {
                 //TODO: Figure out if this works
@@ -1195,6 +1211,36 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
             }
 
+            if (pu != null) {
+                if (pu.getNode("report").getNode(player.getUniqueId().toString()).exists()) {
+                    reportAbuse.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("discrimination").getNode(player.getUniqueId().toString()).exists()) {
+                    discrimination.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("language").getNode(player.getUniqueId().toString()).exists()) {
+                    language.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("ipAdverts").getNode(player.getUniqueId().toString()).exists()) {
+                    ipAdverts.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("mediaAdverts").getNode(player.getUniqueId().toString()).exists()) {
+                    mediaAdverts.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("soliciting").getNode(player.getUniqueId().toString()).exists()) {
+                    soliciting.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("spam").getNode(player.getUniqueId().toString()).exists()) {
+                    spam.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("threats").getNode(player.getUniqueId().toString()).exists()) {
+                    threats.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("disrespect").getNode(player.getUniqueId().toString()).exists()) {
+                    disrespect.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+                }
+            }
+
             if (mc != null) {
                 if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
                     money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
@@ -1219,6 +1265,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 } catch (NumberFormatException e) {
                     staffCount.put("online", 0);
                 }
+                if (sc.getNode("focus." + player.getUniqueId().toString()).exists()) {
+                    chatFocus.put(player.getUniqueId().toString(), sc.getNode("focus." + player.getUniqueId().toString()).toPrimitive().getString());
+                }
 //                if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
 //                        passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
 //                }
@@ -1231,6 +1280,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Configurable kc = kingdomsConfig.getConfig();
         Configurable sc = staffConfig.getConfig();
         Configurable mc = moneyConfig.getConfig();
+        Configurable pu = punishmentConfig.getConfig();
 
         if (kc != null) {
             //TODO: Figure out if this works
@@ -1300,6 +1350,36 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
         }
 
+        if (pu != null) {
+            if (pu.getNode("report").getNode(player.getUniqueId().toString()).exists()) {
+                reportAbuse.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("discrimination").getNode(player.getUniqueId().toString()).exists()) {
+                discrimination.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("language").getNode(player.getUniqueId().toString()).exists()) {
+                language.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("ipAdverts").getNode(player.getUniqueId().toString()).exists()) {
+                ipAdverts.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("mediaAdverts").getNode(player.getUniqueId().toString()).exists()) {
+                mediaAdverts.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("soliciting").getNode(player.getUniqueId().toString()).exists()) {
+                soliciting.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("spam").getNode(player.getUniqueId().toString()).exists()) {
+                spam.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("threats").getNode(player.getUniqueId().toString()).exists()) {
+                threats.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+            if (pu.getNode("disrespect").getNode(player.getUniqueId().toString()).exists()) {
+                disrespect.put(player.getUniqueId().toString(), pu.getNode("report." + player.getUniqueId().toString()).toPrimitive().getInt());
+            }
+        }
+
         if (mc != null) {
             if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
                 money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
@@ -1317,6 +1397,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (sc.getNode("staff").getNode(player.getUniqueId().toString()).exists()) {
                 staff.put(player.getUniqueId().toString(), sc.getNode("staff." + player.getUniqueId().toString()).toPrimitive().getString());
             }
+            if (sc.getNode("focus." + player.getUniqueId().toString()).exists()) {
+                chatFocus.put(player.getUniqueId().toString(), sc.getNode("focus." + player.getUniqueId().toString()).toPrimitive().getString());
+            }
             try {
                 if (Integer.parseInt(sc.getNode("online.online").toPrimitive().getString()) > -1) {
                     staffCount.put("online", sc.getNode("online.online").toPrimitive().getInt());
@@ -1331,6 +1414,87 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData(Player player) {
+        if (!reportAbuse.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> report : reportAbuse.entrySet()) {
+                    config.set("report." + report.getKey(), report.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!disrespect.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> disrespect : disrespect.entrySet()) {
+                    config.set("disrespect." + disrespect.getKey(), disrespect.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!language.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> language : language.entrySet()) {
+                    config.set("language." + language.getKey(), language.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!ipAdverts.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> ipAdverts : ipAdverts.entrySet()) {
+                    config.set("ipAdverts." + ipAdverts.getKey(), ipAdverts.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!mediaAdverts.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> mediaAdverts : mediaAdverts.entrySet()) {
+                    config.set("mediaAdverts." + mediaAdverts.getKey(), mediaAdverts.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!soliciting.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> soliciting : soliciting.entrySet()) {
+                    config.set("soliciting." + soliciting.getKey(), soliciting.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!spam.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> spam : spam.entrySet()) {
+                    config.set("spam." + spam.getKey(), spam.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!discrimination.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> discrimination : discrimination.entrySet()) {
+                    config.set("discrimination." + discrimination.getKey(), discrimination.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!threats.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> threats : threats.entrySet()) {
+                    config.set("threats." + threats.getKey(), threats.getValue());
+                }
+            }
+            config.save();
+        }
         if (!staffCount.isEmpty()) {
             Configurable config = staffConfig.getConfig();
             if (config != null) {
@@ -1508,6 +1672,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (config != null) {
                 for (Map.Entry<String, String> staff : staff.entrySet()) {
                     config.set("staff." + staff.getKey(), staff.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!chatFocus.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> focus : chatFocus.entrySet()) {
+                    config.set("focus." + focus.getKey(), focus.getValue());
                 }
             }
             config.save();
@@ -1525,6 +1698,87 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData() {
+        if (!reportAbuse.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> report : reportAbuse.entrySet()) {
+                    config.set("report." + report.getKey(), report.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!disrespect.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> disrespect : disrespect.entrySet()) {
+                    config.set("disrespect." + disrespect.getKey(), disrespect.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!language.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> language : language.entrySet()) {
+                    config.set("language." + language.getKey(), language.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!ipAdverts.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> ipAdverts : ipAdverts.entrySet()) {
+                    config.set("ipAdverts." + ipAdverts.getKey(), ipAdverts.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!mediaAdverts.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> mediaAdverts : mediaAdverts.entrySet()) {
+                    config.set("mediaAdverts." + mediaAdverts.getKey(), mediaAdverts.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!soliciting.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> soliciting : soliciting.entrySet()) {
+                    config.set("soliciting." + soliciting.getKey(), soliciting.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!spam.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> spam : spam.entrySet()) {
+                    config.set("spam." + spam.getKey(), spam.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!discrimination.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> discrimination : discrimination.entrySet()) {
+                    config.set("discrimination." + discrimination.getKey(), discrimination.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!threats.isEmpty()) {
+            Configurable config = punishmentConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, Integer> threats : threats.entrySet()) {
+                    config.set("threats." + threats.getKey(), threats.getValue());
+                }
+            }
+            config.save();
+        }
         if (!staffCount.isEmpty()) {
             Configurable config = staffConfig.getConfig();
             if (config != null) {
@@ -1702,6 +1956,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (config != null) {
                 for (Map.Entry<String, String> staff : staff.entrySet()) {
                     config.set("staff." + staff.getKey(), staff.getValue());
+                }
+            }
+            config.save();
+        }
+        if (!chatFocus.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> focus : chatFocus.entrySet()) {
+                    config.set("focus." + focus.getKey(), focus.getValue());
                 }
             }
             config.save();
@@ -1730,5 +1993,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new RandomTeleportListener(this), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new ChatCMD(), this);
     }
 }
