@@ -141,21 +141,22 @@ public class ChatCMD implements Listener, CommandExecutor {
             event.setMessage(eventMessage);
         } else if (plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("STAFF")) {
 
+            playerRank = plugin.getStaff();
             for (Player p : Bukkit.getOnlinePlayers()) {
 
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
+                if (playerRank.get(player.getUniqueId().toString()).equals("JRMOD")) {
                     String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_AQUA + ChatColor.BOLD + Rank.JRMOD + " " + ChatColor.DARK_AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
                     event.setFormat(format);
-                } else if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
+                } else if (playerRank.get(player.getUniqueId().toString()).equals("MOD")) {
                     String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
                     event.setFormat(format);
-                } else if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
+                } else if (playerRank.get(player.getUniqueId().toString()).equals("SRMOD")) {
                     String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + " " + ChatColor.GOLD + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
                     event.setFormat(format);
-                } else if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
+                } else if (playerRank.get(player.getUniqueId().toString()).equals("JRADMIN")) {
                     String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
                     event.setFormat(format);
-                } else if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
+                } else if (playerRank.get(player.getUniqueId().toString()).equals("ADMIN")) {
                     String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
                     event.setFormat(format);
                 }
