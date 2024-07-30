@@ -95,3 +95,5 @@ commands:
   punish:
     description: Punish players.
     aliases: [pu]
+  confirm:
+    description: Confirm punishment of players.
