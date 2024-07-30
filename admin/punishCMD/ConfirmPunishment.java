@@ -1,6 +1,7 @@
 package games.kingdoms.kingdoms.admin.punishCMD;
 
 import games.kingdoms.kingdoms.Kingdoms;
+import games.kingdoms.kingdoms.MessageManager;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -76,66 +77,64 @@ public class ConfirmPunishment implements CommandExecutor {
                             + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash
                             + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash;
 
-                    //Report Abuse
-                    if (args[1].equalsIgnoreCase("1")) {
-                        if (!plugin.getReportAbuse().containsKey(target.getUniqueId().toString()) || plugin.getReportAbuse().get(target.getUniqueId().toString()) < 0) {
-                            plugin.getReportAbuse().put(target.getUniqueId().toString(), 1);
-                        } else {
-                            plugin.getReportAbuse().put(target.getUniqueId().toString(), plugin.getReportAbuse().get(target.getUniqueId().toString()) + 1);
+                    if (plugin.getPlayerToPunish().get(player.getUniqueId().toString()).equalsIgnoreCase(target.getUniqueId().toString())) {
+                        //Report Abuse
+                        if (args[1].equalsIgnoreCase("1")) {
+                            if (!plugin.getReportAbuse().containsKey(target.getUniqueId().toString()) || plugin.getReportAbuse().get(target.getUniqueId().toString()) < 0) {
+                                plugin.getReportAbuse().put(target.getUniqueId().toString(), 1);
+                            } else {
+                                plugin.getReportAbuse().put(target.getUniqueId().toString(), plugin.getReportAbuse().get(target.getUniqueId().toString()) + 1);
+                            }
+                            if (plugin.getReportAbuse().get(target.getUniqueId().toString()) > 0 && plugin.getReportAbuse().get(target.getUniqueId().toString()) <= 5) {
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                                p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was warned"));
+                                p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Report Abuse - Violation #" + plugin.getReportAbuse().get(target.getUniqueId().toString())));
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                            } else if (plugin.getReportAbuse().get(target.getUniqueId().toString()) > 5) {
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                                p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
+                                p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Report Abuse - Violation #" + plugin.getReportAbuse().get(target.getUniqueId().toString())));
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                            }
                         }
-                        if (plugin.getReportAbuse().get(target.getUniqueId().toString()) > 0 && plugin.getReportAbuse().get(target.getUniqueId().toString()) <= 5) {
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                            p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was warned"));
-                            p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Report Abuse - Violation #" + plugin.getReportAbuse().get(target.getUniqueId().toString())));
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                        } else if (plugin.getReportAbuse().get(target.getUniqueId().toString()) > 5) {
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                            p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
-                            p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Report Abuse - Violation #" + plugin.getReportAbuse().get(target.getUniqueId().toString())));
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                        //Disrespect
+                        else if (args[1].equalsIgnoreCase("2")) {
+                            if (!plugin.getDisrespect().containsKey(target.getUniqueId().toString()) || plugin.getDisrespect().get(target.getUniqueId().toString()) < 0) {
+                                plugin.getDisrespect().put(target.getUniqueId().toString(), 1);
+                            } else {
+                                plugin.getDisrespect().put(target.getUniqueId().toString(), plugin.getDisrespect().get(target.getUniqueId().toString()) + 1);
+                            }
+                            if (plugin.getDisrespect().get(target.getUniqueId().toString()) > 0) {
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                                p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
+                                p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Disrespect - Violation #" + plugin.getDisrespect().get(target.getUniqueId().toString())));
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                            }
                         }
-                        return true;
-
+                        //Inappropriate Language
+                        else if (args[1].equalsIgnoreCase("3")) {
+                            if (!plugin.getLanguage().containsKey(target.getUniqueId().toString()) || plugin.getLanguage().get(target.getUniqueId().toString()) < 0) {
+                                plugin.getLanguage().put(target.getUniqueId().toString(), 1);
+                            } else {
+                                plugin.getLanguage().put(target.getUniqueId().toString(), plugin.getLanguage().get(target.getUniqueId().toString()) + 1);
+                            }
+                            if (plugin.getLanguage().get(target.getUniqueId().toString()) > 0 && plugin.getLanguage().get(target.getUniqueId().toString()) <= 5) {
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                                p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
+                                p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Inapp. Language - Violation #" + plugin.getLanguage().get(target.getUniqueId().toString())));
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                            } else if (plugin.getLanguage().get(target.getUniqueId().toString()) > 5) {
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                                p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
+                                p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Inapp. Language - Violation #" + plugin.getLanguage().get(target.getUniqueId().toString())));
+                                p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
+                            }
+                        }
+                        //TODO: put the rest below here
+                        plugin.getPlayerToPunish().remove(player, target);
+                    } else {
+                        MessageManager.playerBad(player, "You do not have anyone selected to punish");
                     }
-                    //Disrespect
-                    else if (args[1].equalsIgnoreCase("2")) {
-                        if (!plugin.getDisrespect().containsKey(target.getUniqueId().toString()) || plugin.getDisrespect().get(target.getUniqueId().toString()) < 0) {
-                            plugin.getDisrespect().put(target.getUniqueId().toString(), 1);
-                        } else {
-                            plugin.getDisrespect().put(target.getUniqueId().toString(), plugin.getDisrespect().get(target.getUniqueId().toString()) + 1);
-                        }
-                        if (plugin.getDisrespect().get(target.getUniqueId().toString()) > 0) {
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                            p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
-                            p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Disrespect - Violation #" + plugin.getDisrespect().get(target.getUniqueId().toString())));
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                        }
-                        return true;
-                    }
-                    //Inappropriate Language
-                    else if (args[1].equalsIgnoreCase("3")) {
-                        if (!plugin.getLanguage().containsKey(target.getUniqueId().toString()) || plugin.getLanguage().get(target.getUniqueId().toString()) < 0) {
-                            plugin.getLanguage().put(target.getUniqueId().toString(), 1);
-                        } else {
-                            plugin.getLanguage().put(target.getUniqueId().toString(), plugin.getLanguage().get(target.getUniqueId().toString()) + 1);
-                        }
-                        if (plugin.getLanguage().get(target.getUniqueId().toString()) > 0 && plugin.getLanguage().get(target.getUniqueId().toString()) <= 5) {
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                            p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
-                            p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Inapp. Language - Violation #" + plugin.getLanguage().get(target.getUniqueId().toString())));
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                        } else if (plugin.getLanguage().get(target.getUniqueId().toString()) > 5) {
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                            p.sendMessage(centerMessage(target.getName() + ChatColor.YELLOW + " was muted"));
-                            p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Inapp. Language - Violation #" + plugin.getLanguage().get(target.getUniqueId().toString())));
-                            p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
-                        }
-                        return true;
-                    }
-                    //TODO: put the rest below here
-
-                    //TODO: keep this at the bottom
-                    plugin.getPlayerToPunish().remove(player, target);
                 }
             }
         }
