@@ -60,6 +60,7 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.mod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.srmod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.punish");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.admin.punish.reset");
                     } else if (args[0].equalsIgnoreCase("reload")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.staff.reload");

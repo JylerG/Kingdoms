@@ -1,6 +1,7 @@
 package games.kingdoms.kingdoms.publiccmds.chats;
 
 import games.kingdoms.kingdoms.Kingdoms;
+import games.kingdoms.kingdoms.MessageManager;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +33,7 @@ public class ChatCMD implements Listener, CommandExecutor {
                     return true;
                 }
                 if (args.length == 1) {
-                    //chat
+                    //Global Chat
                     if (args[0].equalsIgnoreCase("global") || args[0].equalsIgnoreCase("g")) {
                         if (!plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("GLOBAL")) {
                             plugin.getChatFocus().put(player.getUniqueId().toString(), "GLOBAL");
@@ -40,7 +41,9 @@ public class ChatCMD implements Listener, CommandExecutor {
                         } else {
                             player.sendMessage(ChatColor.RED + "You are already focused on " + ChatColor.GOLD + "Global " + ChatColor.RED + "chat");
                         }
-                    } else if (args[0].equalsIgnoreCase("staff") || args[0].equalsIgnoreCase("s")) {
+                    }
+                    //Staff Chat
+                    else if (args[0].equalsIgnoreCase("staff") || args[0].equalsIgnoreCase("s")) {
                         if (plugin.getStaff().containsKey(player.getUniqueId().toString())) {
                             if (!plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("STAFF")) {
                                 plugin.getChatFocus().put(player.getUniqueId().toString(), "STAFF");
@@ -48,6 +51,20 @@ public class ChatCMD implements Listener, CommandExecutor {
                             } else {
                                 player.sendMessage(ChatColor.RED + "You are already focused on " + ChatColor.AQUA + "Staff " + ChatColor.RED + "chat");
                             }
+                        }
+                    }
+                    //Kingdom Chat
+                    //todo: Implement this
+                    else if (args[0].equalsIgnoreCase("kingdom") || args[0].equalsIgnoreCase("k")) {
+                        if (plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+                            if (!plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("KINGDOM")) {
+                                plugin.getChatFocus().put(player.getUniqueId().toString(), "KINGDOM");
+                                player.sendMessage(ChatColor.GREEN + "Chat focus set to " + ChatColor.DARK_GREEN + "Kingdom");
+                            } else {
+                                player.sendMessage(ChatColor.RED + "You are already focused on " + ChatColor.DARK_GREEN + "Kingdom " + ChatColor.RED + "chat");
+                            }
+                        } else {
+                            MessageManager.playerBad(player, "You are not in a kingdom");
                         }
                     }
                 }
@@ -166,6 +183,30 @@ public class ChatCMD implements Listener, CommandExecutor {
                     p.sendMessage(event.getFormat());
                 }
 
+                event.setCancelled(true);
+            }
+        } else if (plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("KINGDOM")) {
+            if (plugin.getOwner().containsKey(player.getUniqueId().toString())) {
+                String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "King " + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
+                event.setFormat(format);
+            } else if (plugin.getAdmin().containsKey(player.getUniqueId().toString())) {
+                String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "Knight " + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
+                event.setFormat(format);
+            } else if (plugin.getMember().containsKey(player.getUniqueId().toString()) && !plugin.getOwner().containsKey(player.getUniqueId().toString())) {
+                String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "Citizen " + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            event.setMessage(eventMessage);
+
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String onlinePlayerKingdom = plugin.getKingdoms().get(p.getUniqueId().toString());
+                String playerKingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+
+                if (plugin.getKingdoms().containsKey(p.getUniqueId().toString())) {
+                    if (onlinePlayerKingdom.equals(playerKingdom)) {
+                        p.sendMessage(event.getFormat());
+                    }
+                }
                 event.setCancelled(true);
             }
         }

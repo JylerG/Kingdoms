@@ -620,103 +620,109 @@ public class KingdomsCommands implements CommandExecutor {
             MessageManager.playerBad(player, "You are not in a kingdom");
             return;
         }
-
         try {
-            Inventory upgrades = Bukkit.createInventory(player, 27, ChatColor.DARK_AQUA + "Kingdom Upgrades");
+            if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
 
-            ItemStack border = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-            // claims, members
-            ItemStack claims = new ItemStack(Material.GREEN_WOOL);
-            ItemStack members = new ItemStack(Material.LIME_WOOL);
+                Inventory upgrades = Bukkit.createInventory(player, 27, ChatColor.DARK_AQUA + "Kingdom Upgrades");
 
-            ItemMeta borderMeta = border.getItemMeta();
-            borderMeta.setDisplayName(" ");
-            border.setItemMeta(borderMeta);
+                ItemStack border = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+                // claims, members
+                ItemStack claims = new ItemStack(Material.GREEN_WOOL);
+                ItemStack members = new ItemStack(Material.LIME_WOOL);
 
-            ItemMeta claimMeta = claims.getItemMeta();
-            // Calculate the new price based on the current maximum claims
-            for (String chunkID : plugin.getClaimedChunks().keySet()) {
-                if (plugin.getClaimedChunks().get(chunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
-                    // This chunk is claimed by the player's kingdom
-                    // You can increment the claim count and update the scoreboard here
-                    int claimCount = 0;
-                    for (String otherChunkID : plugin.getClaimedChunks().keySet()) {
-                        if (plugin.getClaimedChunks().get(otherChunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
-                            claimCount++;
+                ItemMeta borderMeta = border.getItemMeta();
+                borderMeta.setDisplayName(" ");
+                border.setItemMeta(borderMeta);
+
+                ItemMeta claimMeta = claims.getItemMeta();
+                // Calculate the new price based on the current maximum claims
+                for (String chunkID : plugin.getClaimedChunks().keySet()) {
+                    if (plugin.getClaimedChunks().get(chunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                        // This chunk is claimed by the player's kingdom
+                        // You can increment the claim count and update the scoreboard here
+                        int claimCount = 0;
+                        for (String otherChunkID : plugin.getClaimedChunks().keySet()) {
+                            if (plugin.getClaimedChunks().get(otherChunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                                claimCount++;
+                            }
                         }
+                        claimMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Claim Limit");
+                        ArrayList<String> claimsLore = new ArrayList<>();
+                        claimsLore.add(" ");
+                        claimsLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getClaimPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                        claimsLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
+                        claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
+                        claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
+                        claimMeta.setLore(claimsLore);
+                        claimMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                        claimMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        claims.setItemMeta(claimMeta);
+                        claimCount++;
                     }
-                    claimMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Claim Limit");
-                    ArrayList<String> claimsLore = new ArrayList<>();
-                    claimsLore.add(" ");
-                    claimsLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getClaimPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
-                    claimsLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
-                    claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
-                    claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
-                    claimMeta.setLore(claimsLore);
-                    claimMeta.addEnchant(Enchantment.DURABILITY, 1, false);
-                    claimMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    claims.setItemMeta(claimMeta);
-                    claimCount++;
                 }
-            }
 
-            ItemMeta memberMeta = members.getItemMeta();
-            memberMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Member Limit");
+                ItemMeta memberMeta = members.getItemMeta();
+                memberMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Member Limit");
 
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ())
-                        .equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
-                    int memberCount = 0;
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ())
+                            .equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                        int memberCount = 0;
 
-                    if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase
-                            (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                        if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase
+                                (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                            memberCount++;
+                        }
+                        ArrayList<String> memberLore = new ArrayList<>();
+                        memberLore.add(" ");
+                        memberLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getMemberPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                        memberLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
+                        memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
+                        memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
+                        memberMeta.setLore(memberLore);
+                        memberMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                        memberMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        members.setItemMeta(memberMeta);
                         memberCount++;
                     }
-                    ArrayList<String> memberLore = new ArrayList<>();
-                    memberLore.add(" ");
-                    memberLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getMemberPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
-                    memberLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
-                    memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
-                    memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
-                    memberMeta.setLore(memberLore);
-                    memberMeta.addEnchant(Enchantment.DURABILITY, 1, false);
-                    memberMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    members.setItemMeta(memberMeta);
-                    memberCount++;
                 }
+
+                upgrades.setItem(0, border);
+                upgrades.setItem(1, border);
+                upgrades.setItem(2, border);
+                upgrades.setItem(3, border);
+                upgrades.setItem(4, border);
+                upgrades.setItem(5, border);
+                upgrades.setItem(6, border);
+                upgrades.setItem(7, border);
+                upgrades.setItem(8, border);
+                upgrades.setItem(9, border);
+                upgrades.setItem(10, border);
+                upgrades.setItem(11, claims);
+                upgrades.setItem(12, border);
+                upgrades.setItem(13, border);
+                upgrades.setItem(14, border);
+                upgrades.setItem(15, members);
+                upgrades.setItem(16, border);
+                upgrades.setItem(17, border);
+                upgrades.setItem(18, border);
+                upgrades.setItem(19, border);
+                upgrades.setItem(20, border);
+                upgrades.setItem(21, border);
+                upgrades.setItem(22, border);
+                upgrades.setItem(23, border);
+                upgrades.setItem(24, border);
+                upgrades.setItem(25, border);
+                upgrades.setItem(26, border);
+
+                player.openInventory(upgrades);
             }
-
-            upgrades.setItem(0, border);
-            upgrades.setItem(1, border);
-            upgrades.setItem(2, border);
-            upgrades.setItem(3, border);
-            upgrades.setItem(4, border);
-            upgrades.setItem(5, border);
-            upgrades.setItem(6, border);
-            upgrades.setItem(7, border);
-            upgrades.setItem(8, border);
-            upgrades.setItem(9, border);
-            upgrades.setItem(10, border);
-            upgrades.setItem(11, claims);
-            upgrades.setItem(12, border);
-            upgrades.setItem(13, border);
-            upgrades.setItem(14, border);
-            upgrades.setItem(15, members);
-            upgrades.setItem(16, border);
-            upgrades.setItem(17, border);
-            upgrades.setItem(18, border);
-            upgrades.setItem(19, border);
-            upgrades.setItem(20, border);
-            upgrades.setItem(21, border);
-            upgrades.setItem(22, border);
-            upgrades.setItem(23, border);
-            upgrades.setItem(24, border);
-            upgrades.setItem(25, border);
-            upgrades.setItem(26, border);
-
-            player.openInventory(upgrades);
         } catch (NullPointerException e) {
-            player.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.WHITE + kingdom + ChatColor.RED + " claim to execute this command");
+            if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                player.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.WHITE + kingdom + ChatColor.RED + " claim to execute this command");
+            } else {
+                MessageManager.playerBad(player, "You must be in a claim to execute this command");
+            }
         }
     }
 
@@ -788,6 +794,11 @@ public class KingdomsCommands implements CommandExecutor {
     private void invitePlayerToKingdom(Player player, Player target, String kingdom, String[] args) {
         if (target == null) {
             player.sendMessage(ChatColor.RED + "The target must be online for you to invite them.");
+            return;
+        }
+
+        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+            MessageManager.playerBad(player, "You are not in a kingdom");
             return;
         }
 
