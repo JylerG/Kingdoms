@@ -134,10 +134,9 @@ public class PunishCommand implements CommandExecutor, Listener {
                                     confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 1"));
                                 }
                             }
-                            return true;
                         }
                         //Disrespect
-                        if (args[1].equalsIgnoreCase("2")) {
+                        else if (args[1].equalsIgnoreCase("2")) {
                             Player finalTarget = target;
                             int count = plugin.getDisrespect().get(finalTarget.getUniqueId().toString()) + 1;
                             if (!plugin.getDisrespect().containsKey(finalTarget.getUniqueId().toString()) || count == 1) {
@@ -185,7 +184,6 @@ public class PunishCommand implements CommandExecutor, Listener {
                                     player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
                                 }
                             }
-                            return true;
                         } //Inappropriate Language
                         else if (args[1].equalsIgnoreCase("3")) {
                             Player finalTarget = target;
@@ -241,7 +239,6 @@ public class PunishCommand implements CommandExecutor, Listener {
                                     player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
                                 }
                             }
-                            return true;
                         } //IP Adverts
                         else if (args[1].equalsIgnoreCase("4")) {
 
