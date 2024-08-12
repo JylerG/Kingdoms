@@ -55,7 +55,7 @@ public class ChatCMD implements Listener, CommandExecutor {
                     }
                     //Kingdom Chat
                     else if (args[0].equalsIgnoreCase("kingdom") || args[0].equalsIgnoreCase("k")) {
-                        if (plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+                        if (plugin.getKingdoms().containsKey(player.getUniqueId().toString()) && !plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("null")) {
                             if (!plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("KINGDOM")) {
                                 plugin.getChatFocus().put(player.getUniqueId().toString(), "KINGDOM");
                                 player.sendMessage(ChatColor.GREEN + "Chat focus set to " + ChatColor.DARK_GREEN + "Kingdom");

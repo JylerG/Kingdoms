@@ -278,19 +278,31 @@ public class KingdomsCommands implements CommandExecutor {
     private void kickPlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
         String commandSender = player.getUniqueId().toString();
         String commandTarget = target.getUniqueId().toString();
-        if (plugin.getKingdoms().get(commandTarget).equals(plugin.getKingdoms().get(commandTarget))) {
-            if (plugin.getOwner().get(commandSender).equals(plugin.getKingdoms().get(commandSender)) || plugin.getAdmin().get(commandSender).equals(plugin.getKingdoms().get(commandSender))) {
-                plugin.getKingdoms().remove(commandTarget, plugin.getKingdoms().get(commandSender));
-                plugin.getMember().remove(commandTarget, plugin.getKingdoms().get(commandSender));
-                plugin.getAdmin().remove(commandTarget, plugin.getKingdoms().get(commandSender));
-                player.sendMessage(ChatColor.GREEN + "You kicked " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
-                target.sendMessage(ChatColor.RED + "You were kicked from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
-            } else {
-                player.sendMessage(ChatColor.GREEN + "You do not have permission to kick players from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
-            }
-        } else {
-            player.sendMessage("You are not in a kingdom");
+        if (target == player) {
+            player.sendMessage(ChatColor.RED + "You cannot kick yourself from " + ChatColor.WHITE + kingdom);
+            return;
         }
+        if ((plugin.getAdmin().containsKey(commandSender) || plugin.getOwner().containsKey(commandSender)) && !plugin.getKingdoms().containsKey(commandTarget)) {
+            player.sendMessage(target.getName() + ChatColor.RED + " is not in a kingdom");
+            return;
+        }
+
+        if (!plugin.getKingdoms().get(commandSender).equals(plugin.getKingdoms().get(commandTarget))) {
+            player.sendMessage(target.getName() + ChatColor.RED + " is not a member of " + ChatColor.WHITE + kingdom);
+        }
+        if (!plugin.getOwner().get(commandSender).equals(plugin.getKingdoms().get(commandSender)) || plugin.getAdmin().get(commandSender).equals(plugin.getKingdoms().get(commandSender))) {
+            player.sendMessage(ChatColor.GREEN + "You do not have permission to kick players from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
+            return;
+        }
+
+        plugin.getKingdoms().put(commandTarget, "null");
+        plugin.getAdmin().put(commandTarget, "null");
+        plugin.getMember().put(commandTarget, "null");
+        plugin.getCanClaim().put(commandTarget, "null");
+        plugin.getCanUnclaim().put(commandTarget, "null");
+
+        player.sendMessage(ChatColor.GREEN + "You kicked " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
+        target.sendMessage(ChatColor.RED + "You were kicked from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
     }
 
     private void demotePlayer(Player player, Player target, String[] args) {
@@ -376,11 +388,11 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        plugin.getKingdoms().remove(playerUUID, kingdom);
-        plugin.getAdmin().remove(playerUUID, kingdom);
-        plugin.getMember().remove(playerUUID, kingdom);
-        plugin.getCanClaim().remove(playerUUID, kingdom);
-        plugin.getCanUnclaim().remove(playerUUID, kingdom);
+        plugin.getKingdoms().put(playerUUID, "null");
+        plugin.getAdmin().put(playerUUID, "null");
+        plugin.getMember().put(playerUUID, "null");
+        plugin.getCanClaim().put(playerUUID, "null");
+        plugin.getCanUnclaim().put(playerUUID, "null");
 
         player.sendMessage(ChatColor.GREEN + "You left " + ChatColor.WHITE + args[1]);
     }

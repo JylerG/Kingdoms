@@ -1839,8 +1839,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         if (!kingdoms.isEmpty()) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
-                for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
-                    config.set("kingdoms." + kingdoms.getKey(), kingdoms.getValue());
+                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
+                    config.set("kingdoms." + kingdom.getKey(), kingdom.getValue());
                 }
             }
             config.save();

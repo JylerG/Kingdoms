@@ -233,7 +233,7 @@ public class PunishCommand implements CommandExecutor, Listener {
                                 confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 3"));
                                 player.spigot().sendMessage(confirm);
                                 player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-                            } else if (plugin.getLanguage().get(finalTarget.getUniqueId().toString()) > 4) {
+                            } else if (count > 4) {
                                 player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
                                 player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Punishing " + ChatColor.WHITE + ChatColor.BOLD + finalTarget.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "...");
                                 player.sendMessage("Rule " + ChatColor.YELLOW + "Inapp. Language " + ChatColor.GRAY + "(ID: 3)");
