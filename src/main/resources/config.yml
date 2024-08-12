@@ -1,0 +1,31 @@
+quests:
+  #kill quests start here
+  kill:
+    quest1:
+      name: Zombie Slayer
+      description: Kill a zombie
+      reward: 100
+      target:
+        type: ZOMBIE
+        count: 1
+    quest2:
+      name: Genocide
+      description: Kill 5 Villagers
+      reward: 400
+      target:
+        type: VILLAGER
+        count: 5
+  #item quests start here
+  item:
+    quest1: Rags To Riches
+    description: Mine 5 diamond ore in the warzone
+    reward: 100
+    block:
+      type: DEEPSLATE_DIAMOND_ORE
+      count: 5
+forge:
+  border:
+    name:
+    block:
+      type:
+      count: 1

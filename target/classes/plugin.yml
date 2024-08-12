@@ -1,0 +1,99 @@
+name: Kingdoms
+version: '1.0.0'
+main: games.kingdoms.kingdoms.Kingdoms
+api-version: 1.18
+authors: [ dmoplayz ]
+description: Commands for the Kingdoms Project!
+website: www.kingdoms.games
+depend: [ Labyrinth, Vault, ProtocolLib, Citizens ]
+load: POSTWORLD
+commands:
+  #password:
+    #description: Confirm you are the owner of your account.
+    #aliases: [ pw ]
+  chat:
+    description: Switch between chat channels.
+    aliases: [ c ]
+  staffvault:
+    description: Access OP Staff Items!
+    aliases: [ sv ]
+  nv:
+    description: Give or remove night vision from yourself.
+    aliases: [ nightvision ]
+  rtp:
+    description: Randomly teleport yourself.
+    aliases: [ ]
+  feed:
+    description: Sate yourself!
+    aliases: [ sate ]
+  fly:
+    description: Fly!
+    aliases: [ ]
+  kingdom:
+    description: Base command for all Kingdom commands.
+    aliases: [ k ]
+  warzone:
+    description: Teleport to the warzone.
+    aliases: [ wz ]
+  vanish:
+    description: Vanish from players.
+    aliases: [ v ]
+  rank:
+    description: Set a player's rank.
+    aliases: [ ]
+  merchant:
+    description: Select which items you can and can't sell to the Merchant.
+    aliases: [ ]
+  gmc:
+    description: Set your gamemode to Creative.
+    aliases: [ ]
+  gma:
+    description: Set your gamemode to Adventure.
+    aliases: [ ]
+  gms:
+    description: Set your gamemode to Survival.
+    aliases: [ ]
+  gmsp:
+    description: Set your gamemode to Spectator.
+    aliases: [ ]
+  ore:
+    description: Give a player custom ores.
+    aliases: [ ]
+  balance:
+    description: Get a player's balance.
+    aliases: [ bal ]
+  eco:
+    description: Set a player's balance.
+    aliases: [ ]
+  pay:
+    description: Pay a player.
+    aliases: [ ]
+  kingdomchat:
+    description: Send a message in your kingdom's chat.
+    aliases: [ kc ]
+  staffchat:
+    description: Send a message in Staff chat.
+    aliases: [ sc ]
+  staffreload:
+    description: Broadcast a message to all online players saying they may need to log out and back in.
+    aliases: [ srl ]
+  npcs:
+    description: Spawn NPCs.
+    aliases: [ ]
+  spawn:
+    description: Teleport to Kingdoms or Warzone Spawn.
+    aliases: [ s ]
+  easter:
+    description: lolno.
+    aliases: [ ]
+  view:
+    description: View all available permissions for the plugin.
+    aliases: [ ]
+  whisper:
+    description: Direct Message another player.
+    aliases: [ w, msg ]
+  punish:
+    description: Punish players.
+    aliases: [pu]
+  confirm:
+    description: Confirm punishment of players.
