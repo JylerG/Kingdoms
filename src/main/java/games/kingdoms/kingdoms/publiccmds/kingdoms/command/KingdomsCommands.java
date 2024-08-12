@@ -169,7 +169,7 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
         if (plugin.getBannedNames().containsKey(kingdom) && plugin.getBannedNames().containsValue(kingdom)) {
-            plugin.getBannedNames().put(kingdom, null);
+            plugin.getBannedNames().put(kingdom, "");
             plugin.savePluginData();
             player.sendMessage(ChatColor.GREEN + "You unbanned " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " from being created");
         } else {
@@ -283,11 +283,12 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        plugin.getKingdoms().put(commandTarget, "null");
-        plugin.getAdmin().put(commandTarget, "null");
-        plugin.getMember().put(commandTarget, "null");
-        plugin.getCanClaim().put(commandTarget, "null");
-        plugin.getCanUnclaim().put(commandTarget, "null");
+        plugin.getRemovePlayerFromKingdom().put(commandTarget, kingdom);
+        plugin.getKingdoms().put(commandTarget, "");
+        plugin.getAdmin().remove(commandTarget, "");
+        plugin.getMember().remove(commandTarget, "");
+        plugin.getCanClaim().remove(commandTarget, "");
+        plugin.getCanUnclaim().remove(commandTarget, "");
 
         player.sendMessage(ChatColor.GREEN + "You kicked " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
         target.sendMessage(ChatColor.RED + "You were kicked from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
@@ -376,11 +377,12 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        plugin.getKingdoms().put(playerUUID, "null");
-        plugin.getAdmin().put(playerUUID, "null");
-        plugin.getMember().put(playerUUID, "null");
-        plugin.getCanClaim().put(playerUUID, "null");
-        plugin.getCanUnclaim().put(playerUUID, "null");
+        plugin.getRemovePlayerFromKingdom().put(playerUUID, kingdom);
+        plugin.getKingdoms().put(playerUUID, "");
+        plugin.getAdmin().put(playerUUID, "");
+        plugin.getMember().put(playerUUID, "");
+        plugin.getCanClaim().put(playerUUID, "");
+        plugin.getCanUnclaim().put(playerUUID, "");
 
         player.sendMessage(ChatColor.GREEN + "You left " + ChatColor.WHITE + args[1]);
     }
@@ -514,13 +516,14 @@ public class KingdomsCommands implements CommandExecutor {
                 iterator.remove(); // Remove the kingdom entry
 
                 // Remove all associated entries from other maps
+                plugin.getRemovePlayerFromKingdom().put(playerObj, kingdom);
                 plugin.getKingdomSpawn().remove(kingdom);
-                plugin.getOwner().put(playerObj, "null");
-                plugin.getAdmin().put(playerObj, "null");
-                plugin.getMember().put(playerObj, "null");
-                plugin.getCanClaim().put(playerObj, "null");
-                plugin.getCanUnclaim().put(playerObj, "null");
-                plugin.getKingdoms().put(playerObj, "null");
+                plugin.getOwner().put(playerObj, "");
+                plugin.getAdmin().put(playerObj, "");
+                plugin.getMember().put(playerObj, "");
+                plugin.getCanClaim().put(playerObj, "");
+                plugin.getCanUnclaim().put(playerObj, "");
+                plugin.getKingdoms().put(playerObj, "");
 
                 // Remove claimed chunks associated with the kingdom
                 Iterator<Map.Entry<String, String>> chunkIterator = plugin.getClaimedChunks().entrySet().iterator();

@@ -81,6 +81,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private StaffConfig staffConfig;
     private PunishmentConfig punishmentConfig;
     private static Kingdoms plugin;
+    private HashMap<String, String> removePlayerFromKingdom = new HashMap<>();
     private HashMap<String, Integer> staffCount = new HashMap<>();
     private HashMap<String, String> customRank = new HashMap<>();
     private HashMap<String, String> kingdomExists = new HashMap<>();
@@ -241,6 +242,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         spam = new HashMap<>();
         playerToPunish = new HashMap<>();
 
+        removePlayerFromKingdom = new HashMap<>();
         chatFocus = new HashMap<>();
         money = new HashMap<>();
         passwords = new HashMap<>();
@@ -680,10 +682,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
 
         if (!fromChunk.equals(toChunk)) {
-//            String ownerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
             if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                //TODO: Figure out how to calculate if the player is in a chunk that is owned by their kingdom
-                // Figure out why this doesn't show the scoreboard to the player
                 if (isChunkClaimed(toChunk)) {
                     inPlayersKingdomBoard(player, toChunk);
                 } else {
@@ -700,7 +699,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     public void onLeave(PlayerQuitEvent event) {
         event.setQuitMessage("");
         Player player = event.getPlayer();
-        //TODO: remove one from staffCounter if a staff member leaves
 
         int staffCount = 0;
 
@@ -785,22 +783,22 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
             Team defaultTeam = board.registerNewTeam("default");
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "/pex group " + player.getUniqueId() + " set default");
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             defaultTeam.addEntry(player.getUniqueId().toString());
             playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
             money.put(player.getUniqueId().toString(), 0L);
             chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
-            kingdoms.put(player.getUniqueId().toString(), "null");
+            kingdoms.put(player.getUniqueId().toString(), null);
         } else {
             if (!kingdoms.containsKey(player.getUniqueId().toString())) {
-                kingdoms.put(player.getUniqueId().toString(), "null");
+                kingdoms.put(player.getUniqueId().toString(), null);
             }
             if (!chatFocus.containsKey(player.getUniqueId().toString())) {
                 chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
             }
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "/pex group " + player.getUniqueId().toString() + " set default");
+                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             }
             if (!money.containsKey(player.getUniqueId().toString())) {
                 money.put(player.getUniqueId().toString(), 0L);
@@ -913,81 +911,81 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         String eventMessage = event.getMessage();
         Player player = event.getPlayer();
-            if (!kingdoms.get(player.getUniqueId().toString()).equalsIgnoreCase("null")) {
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.WHITE + player.getDisplayName() + ": " + ChatColor.WHITE + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.RED.toString() + ChatColor.BOLD + "YT")) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.RED + ChatColor.BOLD + "YT " + ChatColor.WHITE + player.getDisplayName() + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-            } else {
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.RED.toString() + ChatColor.BOLD + "YT")) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.RED + ChatColor.BOLD + "YT " + ChatColor.WHITE + player.getDisplayName() + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
-                if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
-                    String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + ChatColor.LIGHT_PURPLE + " " + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
-                    event.setFormat(format);
-                }
+        if (!kingdoms.get(player.getUniqueId().toString()).equalsIgnoreCase("")) {
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.WHITE + player.getDisplayName() + ": " + ChatColor.WHITE + eventMessage;
+                event.setFormat(format);
             }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.RED.toString() + ChatColor.BOLD + "YT")) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + ChatColor.RED + ChatColor.BOLD + "YT " + ChatColor.WHITE + player.getDisplayName() + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + "[" + ChatColor.GOLD + kingdoms.get(player.getUniqueId().toString()) + ChatColor.WHITE + "] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+        } else {
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.WHITE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.RED.toString() + ChatColor.BOLD + "YT")) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + ChatColor.RED + ChatColor.BOLD + "YT " + ChatColor.WHITE + player.getDisplayName() + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+            if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN.toString())) {
+                String format = ChatColor.WHITE.toString() + ChatColor.BOLD + "[G] " + playerRank.get(player.getUniqueId().toString()) + ChatColor.LIGHT_PURPLE + " " + player.getDisplayName() + ChatColor.WHITE + ": " + eventMessage;
+                event.setFormat(format);
+            }
+        }
         event.setMessage(eventMessage);
     }
 
@@ -1029,6 +1027,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public HashMap<String, String> getStaff() {
         return staff;
+    }
+
+    public HashMap<String, String> getRemovePlayerFromKingdom() {
+        return removePlayerFromKingdom;
     }
 
     public HashMap<String, String> getKingdoms() {
@@ -1139,7 +1141,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return money;
     }
 
-    //TODO: Figure out how to check if the custom config files contain the data
     public void restorePluginData() {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -1150,12 +1151,18 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable pu = punishmentConfig.getConfig();
 
             if (kc != null) {
-                //TODO: Figure out if this works
                 if (kc.getNode("bannedNames").exists()) {
                     kc.getNode("bannedNames").getKeys(false).forEach(key -> {
                         String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
                         this.bannedNames.put(key, bannedNames);
                     });
+                }
+                if (kc.getNode("remove").exists()) {
+                    kc.getNode("remove").getKeys(false).forEach(key -> {
+                        String remove = kc.getNode("remove." + key).toPrimitive().getString();
+                        removePlayerFromKingdom.put(key, remove);
+                    });
+
                 }
                 if (kc.getNode("exists").exists()) {
                     kc.getNode("exists").getKeys(false).forEach(key -> {
@@ -1289,12 +1296,18 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Configurable pu = punishmentConfig.getConfig();
 
         if (kc != null) {
-            //TODO: Figure out if this works
             if (kc.getNode("bannedNames").exists()) {
                 kc.getNode("bannedNames").getKeys(false).forEach(key -> {
                     String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
                     this.bannedNames.put(key, bannedNames);
                 });
+            }
+            if (kc.getNode("remove").exists()) {
+                kc.getNode("remove").getKeys(false).forEach(key -> {
+                    String remove = kc.getNode("remove." + key).toPrimitive().getString();
+                    removePlayerFromKingdom.put(key, remove);
+                });
+
             }
             if (kc.getNode("exists").exists()) {
                 kc.getNode("exists").getKeys(false).forEach(key -> {
@@ -1420,6 +1433,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData(Player player) {
+        if (!removePlayerFromKingdom.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> remove : removePlayerFromKingdom.entrySet()) {
+                    config.set("remove." + remove.getKey(), remove.getValue());
+                }
+            }
+            config.save();
+        }
         if (!reportAbuse.isEmpty()) {
             Configurable config = punishmentConfig.getConfig();
             if (config != null) {
@@ -1523,7 +1545,19 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> exists : kingdomExists.entrySet()) {
-                    config.set("exists." + exists.getKey(), exists.getValue());
+                    // Extract the key string from the config node
+                    String playerKey = config.getNode(player.getUniqueId().toString()).toPrimitive().getString();
+
+                    // Check if the kingdoms map contains this key
+                    boolean configContainsKingdomKey = kingdoms.containsKey(playerKey);
+
+                    if (!configContainsKingdomKey) {
+                        // Key doesn't exist, set it to null in config
+                        config.set("exists." + player.getUniqueId().toString(), null);
+                    } else {
+                        // Key exists in kingdoms, update the config with the kingdom's value
+                        config.set("exists." + exists.getKey(), exists.getValue());
+                    }
                 }
             }
             config.save();
@@ -1531,12 +1565,23 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         if (!kingdoms.isEmpty()) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
-                for (Map.Entry<String, String> kingdoms : kingdoms.entrySet()) {
-                    if (this.kingdoms.containsKey(kingdoms.getKey())) {
-                        config.set("kingdoms." + kingdoms.getKey(), kingdoms.getValue());
+                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
+
+                    // Extract the key string from the config node
+                    String playerKey = config.getNode(player.getUniqueId().toString()).toPrimitive().getString();
+
+                    // Check if the kingdoms map contains this key
+                    boolean configContainsKingdomKey = kingdoms.containsKey(playerKey);
+
+                    if (!configContainsKingdomKey) {
+                        // Key doesn't exist in kingdoms, set it to null in config
+                        config.set("kingdoms." + player.getUniqueId().toString(), null);
                     } else {
-                        config.set("kingdoms." + kingdoms.getKey(), null);
+                        // Key exists in kingdoms, update the config with the kingdom's value
+                        String kingdomValue = kingdoms.get(playerKey); // Get the value from kingdoms map
+                        config.set("kingdoms." + player.getUniqueId().toString(), kingdomValue);
                     }
+
                 }
             }
             config.save();
@@ -1732,6 +1777,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData() {
+        if (!removePlayerFromKingdom.isEmpty()) {
+            Configurable config = kingdomsConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> remove : removePlayerFromKingdom.entrySet()) {
+                    config.set("remove." + remove.getKey(), remove.getValue());
+                }
+            }
+            config.save();
+        }
         if (!reportAbuse.isEmpty()) {
             Configurable config = punishmentConfig.getConfig();
             if (config != null) {
@@ -1843,8 +1897,21 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         if (!kingdoms.isEmpty()) {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
-                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                    config.set("kingdoms." + kingdom.getKey(), kingdom.getValue());
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    // Extract the key string from the config node
+                    String playerKey = config.getNode(p.getUniqueId().toString()).toPrimitive().getString();
+
+                    // Check if the kingdoms map contains this key
+                    boolean configContainsKingdomKey = kingdoms.containsKey(playerKey);
+
+                    if (!configContainsKingdomKey) {
+                        // Key doesn't exist in kingdoms, set it to null in config
+                        config.set("kingdoms." + p.getUniqueId().toString(), null);
+                    } else {
+                        // Key exists in kingdoms, update the config with the kingdom's value
+                        String kingdomValue = kingdoms.get(playerKey); // Get the value from kingdoms map
+                        config.set("kingdoms." + p.getUniqueId().toString(), kingdomValue);
+                    }
                 }
             }
             config.save();

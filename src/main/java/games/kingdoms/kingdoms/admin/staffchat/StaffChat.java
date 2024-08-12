@@ -43,7 +43,7 @@ public class StaffChat implements CommandExecutor {
                         //Player has JrMod Rank
                         if (staff.equalsIgnoreCase("JRMOD")) {
                             String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_GREEN + ChatColor.BOLD + Rank.JRMOD + " " +
-                                    ChatColor.DARK_GREEN + player.getDisplayName() + ChatColor.AQUA + ": " + message;
+                                    ChatColor.DARK_AQUA + player.getDisplayName() + ChatColor.AQUA + ": " + message;
                             p.sendMessage(format);
                         }
                         //Player has Mod Rank
