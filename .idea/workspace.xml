@@ -4,7 +4,240 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Initial Commit" />
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Initial Commit">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kingdoms.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/MessageManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/CustomNPCs/CreateNPCCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/CustomNPCs/NPCTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/balance/EconomyCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/balance/EconomyTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/MerchantCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/MerchantListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customarmor/CustomArmorCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customarmor/CustomArmorTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customores/CustomOreCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customores/CustomOreTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Adventure.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Creative.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Spectator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Survival.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/modmode/ModMode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/BrotherManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/ForgeManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/GlassManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/GuideManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/MerchantManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/NatureManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/QuestManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/SchematicsManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/BrotherMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/ForgeMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/GlassMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/GuideMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/MerchantMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/NatureMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/QuestMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/SchematicMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/merchants/ForsakenForge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/merchants/GlassMerchant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/merchants/Guide.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/merchants/GuideBrother.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/merchants/Merchant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/merchants/NatureMerchant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/merchants/SchematicSeller.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/quests/ItemQuest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/quests/KillQuest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/BrotherItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/ForgeItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/GlassItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/GuideItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/MerchantItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/NatureItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/Quest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/types/SchematicItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/permissions/Permissions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/punishCMD/ConfirmPunishment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/punishCMD/PunishCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/Rank.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/reload/StaffReload.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChatTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffvault/StaffVault.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffvault/StaffVaultListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/vanish/commands/VanishCMD.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/vanish/events/JoinEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/BalanceCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/PayCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/easter/EasterCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/Kingdom.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChatTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomInviteList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/KingdomsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/KingdomsConfigTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/MoneyConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/PunishmentConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/StaffConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomUpgradeListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/related/Kingdom.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/related/KingdomManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/related/KingdomsListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/nightvision/Commands.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/randomtp/RandomTeleportListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/randomtp/rtp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/report/ReportCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/KingdomsCommandListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/SpawnCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/WarzoneCMD.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/WarzoneCommandListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/whisper/WhisperCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/whisper/WhisperCommandTabCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/rankedcmds/feed/Feed.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/rankedcmds/fly/Fly.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/MessageManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/CustomNPCs/CreateNPCCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/CustomNPCs/NPCTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/balance/EconomyCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/balance/EconomyTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/MerchantCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/MerchantListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/customarmor/CustomArmorCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/customarmor/CustomArmorTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreCommand$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreCommand$2.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customores/CustomOreCommand$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customores/CustomOreCommand$2.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customores/CustomOreCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/customores/CustomOreTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/gamemodes/Adventure.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/gamemodes/Creative.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/gamemodes/Spectator.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/gamemodes/Survival.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/modmode/ModMode.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/BrotherManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/ForgeManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/GlassManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/GuideManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/MerchantManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/NatureManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/QuestManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/managers/SchematicsManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/BrotherMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/ForgeMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/GlassMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/GuideMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/MerchantMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/NatureMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/QuestMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/menus/SchematicMenu.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/merchants/ForsakenForge.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/merchants/GlassMerchant.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/merchants/Guide.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/merchants/GuideBrother.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/merchants/Merchant.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/merchants/NatureMerchant.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/merchants/SchematicSeller.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/quests/ItemQuest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/quests/KillQuest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/BrotherItems.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/ForgeItems.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/GlassItems.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/GuideItems.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/MerchantItems.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/NatureItems.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/Quest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/npcinteractions/types/SchematicItems.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/password/Password.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/permissions/Permissions.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/punishCMD/ConfirmPunishment.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/punishCMD/PunishCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/ranks/Rank.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/ranks/RankCMD.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/reload/StaffReload.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/staffchat/StaffChat.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/staffchat/StaffChatTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/staffvault/StaffVault.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/staffvault/StaffVaultListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/vanish/commands/VanishCMD.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/vanish/events/JoinEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/balance/BalanceCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/balance/PayCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/easter/EasterCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/Kingdom.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsCommands.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChatTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomInviteList.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/KingdomsConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/KingdomsConfigTest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/MoneyConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/PunishmentConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/configs/StaffConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomUpgradeListener$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomUpgradeListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/related/Kingdom.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/related/KingdomManager.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/related/KingdomsListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/nightvision/Commands.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/randomtp/RandomTeleportListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/randomtp/rtp.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/report/ReportCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/teleports/KingdomsCommandListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/teleports/SpawnCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/teleports/WarzoneCMD.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/teleports/WarzoneCommandListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/whisper/WhisperCommand.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/whisper/WhisperCommandTabCompleter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/rankedcmds/feed/Feed.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/rankedcmds/fly/Fly.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,11 +271,11 @@
     "Repository.Attach.Sources": "false",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "<unknown>",
+    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last.edited.regexp": "#Mi3",
-    "last_opened_file_path": "C:/Users/pfram/Downloads/remapped-1.18.2.jar",
+    "last_opened_file_path": "C:/Users/pfram/IdeaProjects/Kingdoms",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -117,7 +350,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714260421315</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Initial Commit">
+      <option name="closed" value="true" />
+      <created>1723484416321</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1723484416321</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="UnknownFeatures">
