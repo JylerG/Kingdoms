@@ -776,7 +776,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         String chunkID = player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ();
 
         String joinMessage = ChatColor.GREEN.toString() + ChatColor.BOLD + "Welcome " + ChatColor.WHITE + ChatColor.BOLD + player.getName() +
-                ChatColor.GREEN + ChatColor.BOLD + " to " + ChatColor.YELLOW + ChatColor.BOLD + " Kingdoms";
+                ChatColor.GREEN + ChatColor.BOLD + " to " + ChatColor.YELLOW + ChatColor.BOLD + "Kingdoms" + ChatColor.GREEN + ChatColor.BOLD + ".";
         event.setJoinMessage(joinMessage);
 
         if (!player.hasPlayedBefore()) {
