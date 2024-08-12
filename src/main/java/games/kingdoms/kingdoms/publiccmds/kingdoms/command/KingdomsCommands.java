@@ -4,8 +4,6 @@ import com.github.sanctum.panther.file.Configurable;
 import games.kingdoms.kingdoms.Kingdoms;
 import games.kingdoms.kingdoms.MessageManager;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.KingdomsConfig;
-import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.MoneyConfig;
-import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.StaffConfig;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,14 +23,7 @@ import java.util.UUID;
 
 public class KingdomsCommands implements CommandExecutor {
 
-    private Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
-    private final KingdomsConfig kingdomsConfig = new KingdomsConfig(plugin);
-    private final StaffConfig staffConfig = new StaffConfig(plugin);
-    private final MoneyConfig moneyConfig = new MoneyConfig(plugin);
-
-    public KingdomsCommands(Kingdoms plugin) {
-        this.plugin = plugin;
-    }
+    private final Kingdoms plugin = Kingdoms.getPlugin();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -40,9 +31,6 @@ public class KingdomsCommands implements CommandExecutor {
             MessageManager.consoleBad("You must be a player to execute this command.");
             return true;
         }
-        //        System.out.println("Args length: " + args.length);
-//        getLogger().warning("Args: " + Arrays.toString(args));
-//        Thread.dumpStack();
         switch (args.length) {
             case 0:
                 //TODO: RANK, RAID, SET, INFO, WALLS, LIST, MAP
@@ -500,17 +488,17 @@ public class KingdomsCommands implements CommandExecutor {
                 return;
             }
 
+            // Check if the specified kingdom exists
+            if (!plugin.getKingdoms().containsValue(kingdom)) {
+                player.sendMessage(ChatColor.RED + kingdom + " doesn't exist");
+                return;
+            }
+
             String playerKingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
             if (!kingdom.equalsIgnoreCase(playerKingdom)) {
                 player.sendMessage(ChatColor.RED + "You do not have permission to disband " + ChatColor.WHITE + kingdom);
                 return;
             }
-        }
-
-        // Check if the specified kingdom exists
-        if (!plugin.getKingdoms().containsValue(kingdom)) {
-            player.sendMessage(ChatColor.RED + kingdom + " doesn't exist");
-            return;
         }
 
         // Iterate over kingdoms and disband the specified one
@@ -527,11 +515,12 @@ public class KingdomsCommands implements CommandExecutor {
 
                 // Remove all associated entries from other maps
                 plugin.getKingdomSpawn().remove(kingdom);
-                plugin.getOwner().remove(playerObj, kingdom);
-                plugin.getAdmin().remove(playerObj, kingdom);
-                plugin.getMember().remove(playerObj, kingdom);
-                plugin.getCanClaim().remove(playerObj, kingdom);
-                plugin.getCanUnclaim().remove(playerObj, kingdom);
+                plugin.getOwner().put(playerObj, "null");
+                plugin.getAdmin().put(playerObj, "null");
+                plugin.getMember().put(playerObj, "null");
+                plugin.getCanClaim().put(playerObj, "null");
+                plugin.getCanUnclaim().put(playerObj, "null");
+                plugin.getKingdoms().put(playerObj, "null");
 
                 // Remove claimed chunks associated with the kingdom
                 Iterator<Map.Entry<String, String>> chunkIterator = plugin.getClaimedChunks().entrySet().iterator();
@@ -600,16 +589,16 @@ public class KingdomsCommands implements CommandExecutor {
 
     //TODO: figure out why this doesn't work
     private void setSpawn(Player player, String kingdom, Location spawn) {
-        try {
+        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+            MessageManager.playerBad(player, "You are not in a kingdom");
+            return;
+        }
             if (plugin.getAdmin().get(player.getUniqueId().toString()).equals(kingdom) || plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom)) {
                 plugin.getKingdomSpawn().put(kingdom, spawn);
                 player.sendMessage(ChatColor.GREEN + "You set " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s spawn");
             } else {
                 player.sendMessage(ChatColor.RED + "You do not have permission to set " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s spawn");
             }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
     }
 
     private void teleportToSpawn(Player player, String kingdom) {
