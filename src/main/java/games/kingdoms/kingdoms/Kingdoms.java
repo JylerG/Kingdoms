@@ -804,8 +804,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             int staffCount = 0;
 
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                String playerRank = staff.get(onlinePlayer.getUniqueId().toString());
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String playerRank = staff.get(p.getUniqueId().toString());
 
                 if (playerRank != null && (playerRank.equals("ADMIN") ||
                         playerRank.equals("JRADMIN") ||
@@ -899,7 +899,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
             }
         }
-        restorePluginData(player);
+        savePluginData();
+        restorePluginData();
     }
 
 
