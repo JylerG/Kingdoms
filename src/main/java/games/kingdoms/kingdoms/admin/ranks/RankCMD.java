@@ -11,8 +11,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public class RankCMD implements CommandExecutor {
 
     private final Kingdoms plugin;
@@ -143,7 +141,7 @@ public class RankCMD implements CommandExecutor {
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
-                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.getStaff().remove(target.getUniqueId().toString());
                                         plugin.savePluginData(target);
                                         target.kickPlayer("You were set to DEFAULT rank by " + player.getName());
                                     }
@@ -170,7 +168,7 @@ public class RankCMD implements CommandExecutor {
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
-                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.getStaff().remove(target.getUniqueId().toString());
                                         plugin.savePluginData(target);
                                         target.kickPlayer("You were set to VIP rank by " + player.getName());
                                     }
@@ -197,7 +195,7 @@ public class RankCMD implements CommandExecutor {
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
-                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.getStaff().remove(target.getUniqueId().toString());
                                         plugin.savePluginData(target);
                                         target.kickPlayer("You were set to HERO rank by " + player.getName());
                                     }
@@ -223,7 +221,7 @@ public class RankCMD implements CommandExecutor {
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("SRMOD") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                             plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
-                                        plugin.getStaff().remove(UUID.fromString(target.getUniqueId().toString()));
+                                        plugin.getStaff().remove(target.getUniqueId().toString());
                                         plugin.savePluginData(target);
                                         target.kickPlayer("You were set to YOUTUBE rank by " + player.getName());
                                     }
@@ -362,6 +360,7 @@ public class RankCMD implements CommandExecutor {
                             }
                         }
                     }
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
                 }
             }
         } else {

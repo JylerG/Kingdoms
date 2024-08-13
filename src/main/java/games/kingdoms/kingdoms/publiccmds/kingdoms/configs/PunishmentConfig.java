@@ -17,7 +17,7 @@ public class PunishmentConfig {
 
     static PunishmentConfig INSTANCE;
     final FileList list;
-    Kingdoms plugin;
+    final Kingdoms plugin;
     String args;
     int argLength;
     Map<String, Configurable> configMap = new HashMap<>();

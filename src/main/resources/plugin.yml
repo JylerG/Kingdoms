@@ -2,7 +2,7 @@ name: Kingdoms
 version: '${project.version}'
 main: games.kingdoms.kingdoms.Kingdoms
 api-version: 1.18
-authors: [ dmoplayz ]
+authors: [ DHWH ]
 description: Commands for the Kingdoms Project!
 website: www.kingdoms.games
 depend: [ Labyrinth, Vault, ProtocolLib, Citizens ]

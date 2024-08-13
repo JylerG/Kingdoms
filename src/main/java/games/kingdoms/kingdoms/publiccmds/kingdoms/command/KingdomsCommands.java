@@ -169,7 +169,7 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
         if (plugin.getBannedNames().containsKey(kingdom) && plugin.getBannedNames().containsValue(kingdom)) {
-            plugin.getBannedNames().put(kingdom, "");
+            plugin.getBannedNames().put(kingdom, " ");
             plugin.savePluginData();
             player.sendMessage(ChatColor.GREEN + "You unbanned " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " from being created");
         } else {
@@ -393,22 +393,25 @@ public class KingdomsCommands implements CommandExecutor {
             String invitedKingdom = plugin.getInviteList().get(player.getUniqueId().toString());
 
             if (invitedKingdom != null && invitedKingdom.equalsIgnoreCase(args[1])) {
+                World kingdoms = Bukkit.getWorld("kingdoms");
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
-                        int memberCount = 0;
+                    for (Chunk loaded : kingdoms.getLoadedChunks()) {
+                        if (plugin.getClaimedChunks().get(loaded.getX() + "," + loaded.getZ()).equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                            int memberCount = 0;
 
-                        if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase(plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
-                            memberCount++;
-                        }
+                            if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase(plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                                memberCount++;
+                            }
 
-                        if (plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())) >= memberCount) {
-                            plugin.getInviteList().remove(player.getUniqueId().toString());
-                            plugin.getKingdoms().put(player.getUniqueId().toString(), args[1]);
-                            plugin.getMember().put(player.getUniqueId().toString(), args[1]);
+                            if (plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())) >= memberCount) {
+                                plugin.getInviteList().remove(player.getUniqueId().toString());
+                                plugin.getKingdoms().put(player.getUniqueId().toString(), args[1]);
+                                plugin.getMember().put(player.getUniqueId().toString(), args[1]);
 
-                            player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
-                        } else {
-                            player.sendMessage(args[1] + " is at maximum capacity");
+                                player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
+                            } else {
+                                player.sendMessage(args[1] + " is at maximum capacity");
+                            }
                         }
                     }
                 }
@@ -485,14 +488,14 @@ public class KingdomsCommands implements CommandExecutor {
 
         // If the player is not an admin, check if they are trying to disband their own kingdom
         if (!player.hasPermission("kingdoms.disband.admin")) {
-            if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+            if (plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("")) {
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom");
                 return;
             }
 
             // Check if the specified kingdom exists
             if (!plugin.getKingdoms().containsValue(kingdom)) {
-                player.sendMessage(ChatColor.RED + kingdom + " doesn't exist");
+                player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
                 return;
             }
 
@@ -541,7 +544,7 @@ public class KingdomsCommands implements CommandExecutor {
 
 
     private void createKingdom(Player player, String kingdom) {
-        if (plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+        if (!plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("")) {
             player.sendMessage(ChatColor.RED + "You are already in a kingdom");
             return;
         }
