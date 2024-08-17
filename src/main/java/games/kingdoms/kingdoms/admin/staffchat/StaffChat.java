@@ -47,31 +47,31 @@ public class StaffChat implements CommandExecutor {
                         //Player has JrMod Rank
                         if (staff.equalsIgnoreCase("JRMOD")) {
                             String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_GREEN + ChatColor.BOLD + Rank.JRMOD + " " +
-                                    ChatColor.DARK_GREEN + player.getDisplayName() + ChatColor.AQUA + ": " + message;
+                                    ChatColor.DARK_GREEN + player.getName() + ChatColor.AQUA + ": " + message;
                             p.sendMessage(format);
                         }
                         //Player has Mod Rank
                         if (staff.equalsIgnoreCase("MOD")) {
                             String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD + " " +
-                                    ChatColor.YELLOW + player.getDisplayName() + ChatColor.AQUA + ": " + message;
+                                    ChatColor.YELLOW + player.getName() + ChatColor.AQUA + ": " + message;
                             p.sendMessage(format);
                         }
                         //Player has SrMod Rank
                         if (staff.equalsIgnoreCase("SRMOD")) {
                             String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + " " +
-                                    ChatColor.GOLD + player.getDisplayName() + ChatColor.AQUA + ": " + message;
+                                    ChatColor.GOLD + player.getName() + ChatColor.AQUA + ": " + message;
                             p.sendMessage(format);
                         }
                         //Player has JrAdmin Rank
                         if (staff.equalsIgnoreCase("JRADMIN")) {
                             String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.JRADMIN + " " +
-                                    ChatColor.RED + player.getDisplayName() + ChatColor.AQUA + ": " + message;
+                                    ChatColor.RED + player.getName() + ChatColor.AQUA + ": " + message;
                             p.sendMessage(format);
                         }
                         //Player has Admin Rank
                         else if (staff.equalsIgnoreCase("ADMIN")) {
                             String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.ADMIN + " " +
-                                    ChatColor.RED + player.getDisplayName() + ChatColor.AQUA + ": " + message;
+                                    ChatColor.RED + player.getName() + ChatColor.AQUA + ": " + message;
                             p.sendMessage(format);
                         }
                     }

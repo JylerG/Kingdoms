@@ -106,19 +106,19 @@ public class ChatListener implements Listener {
             for (Player p : Bukkit.getOnlinePlayers()) {
 
                 if (playerRank.get(player.getUniqueId().toString()).equals("JRMOD")) {
-                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_GREEN + ChatColor.BOLD + Rank.JRMOD + " " + ChatColor.DARK_GREEN + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
+                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_GREEN + ChatColor.BOLD + Rank.JRMOD + " " + ChatColor.DARK_GREEN + player.getName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 } else if (playerRank.get(player.getUniqueId().toString()).equals("MOD")) {
-                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD + " " + ChatColor.YELLOW + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
+                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD + " " + ChatColor.YELLOW + player.getName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 } else if (playerRank.get(player.getUniqueId().toString()).equals("SRMOD")) {
-                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + " " + ChatColor.GOLD + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
+                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + " " + ChatColor.GOLD + player.getName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 } else if (playerRank.get(player.getUniqueId().toString()).equals("JRADMIN")) {
-                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.JRADMIN + " " + ChatColor.RED + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
+                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.JRADMIN + " " + ChatColor.RED + player.getName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 } else if (playerRank.get(player.getUniqueId().toString()).equals("ADMIN")) {
-                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.ADMIN + " " + ChatColor.RED + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
+                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.ADMIN + " " + ChatColor.RED + player.getName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 }
                 event.setMessage(eventMessage);
