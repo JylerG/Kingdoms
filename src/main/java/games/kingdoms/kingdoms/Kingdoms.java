@@ -19,6 +19,7 @@ import games.kingdoms.kingdoms.admin.gamemodes.Creative;
 import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
+import games.kingdoms.kingdoms.admin.password.Password;
 import games.kingdoms.kingdoms.admin.permissions.Permissions;
 import games.kingdoms.kingdoms.admin.punishCMD.ConfirmPunishment;
 import games.kingdoms.kingdoms.admin.punishCMD.PunishCommand;
@@ -164,7 +165,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         initMapList();
 
         //Restore Plugin Data
-        updateScoreBoardOnReload();
         restoreServerData();
 
         //Commands
@@ -224,7 +224,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void password() {
-//        getCommand("password").setExecutor(new Password());
+        getCommand("password").setExecutor(new Password());
     }
 
     private void reportPlayer() {
@@ -519,39 +519,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score server_ip = obj.getScore(ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "play.kingdoms.games");
             server_ip.setScore(1);
             player.setScoreboard(board);
-        }
-    }
-
-    private void updateScoreBoardOnReload() {
-
-        String title, subtitle;
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-
-            if (player == null) return;
-
-            if (isChunkClaimed(player.getLocation().getChunk())) {
-                String ownerKingdom = claimedChunks.get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ());
-
-                title = " ";
-                subtitle = ChatColor.GREEN + ownerKingdom;
-            } else {
-                title = " ";
-                subtitle = ChatColor.RED + "Wilderness";
-            }
-
-            sendTitle(player, title, subtitle, 10, 40, 10);
-
-            if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                if (isChunkClaimed(player.getLocation().getChunk())) {
-                    inPlayersKingdomBoard(player, player.getLocation().getChunk());
-                } else {
-                    notInPlayersKingdomBoard(player);
-                }
-
-            } else {
-                notInKingdomBoard(player);
-            }
         }
     }
 
@@ -1523,11 +1490,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("maxClaims." + kingdom.getKey()).exists()) {
-                            config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
-                        }
-                    }
+                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
                 }
             }
             config.save();
@@ -1536,11 +1499,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("maxMembers." + kingdom.getKey()).exists()) {
-                            config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
-                        }
-                    }
+                    config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
                 }
             }
             config.save();
@@ -1589,11 +1548,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("invites." + kingdom.getKey()).exists()) {
-                            config.set("invites." + invites.getKey(), invites.getValue());
-                        }
-                    }
+                    config.set("invites." + invites.getKey(), invites.getValue());
                 }
             }
             config.save();
@@ -1603,11 +1558,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("canClaim." + kingdom.getKey()).exists()) {
-                            config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
-                        }
-                    }
+                    config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
                 }
             }
             config.save();
@@ -1617,11 +1568,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("canUnclaim." + kingdom.getKey()).exists()) {
-                            config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
-                        }
-                    }
+                    config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
                 }
             }
             config.save();
@@ -1655,11 +1602,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("memberPrice." + kingdom.getKey()).exists()) {
-                            config.set("memberPrice." + price.getKey(), price.getValue());
-                        }
-                    }
+                    config.set("memberPrice." + price.getKey(), price.getValue());
                 }
             }
             config.save();
@@ -1669,11 +1612,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("claimPrice." + kingdom.getKey()).exists()) {
-                            config.set("claimPrice." + price.getKey(), price.getValue());
-                        }
-                    }
+                    config.set("claimPrice." + price.getKey(), price.getValue());
                 }
             }
             config.save();
@@ -1703,12 +1642,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = staffConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> staff : staff.entrySet()) {
-                    if (!playerRank.get(staff.getKey()).equalsIgnoreCase("VIP") || !playerRank.get(staff.getKey()).equalsIgnoreCase("HERO")
-                            || !playerRank.get(staff.getKey()).equalsIgnoreCase("YT") || !playerRank.get(staff.getKey()).equalsIgnoreCase("DEFAULT")) {
-                        config.set("staff." + staff.getKey(), staff.getValue());
-                    } else {
-                        config.set("staff." + null, null);
-                    }
+                    config.set("staff." + staff.getKey(), staff.getValue());
                 }
             }
             config.save();
@@ -1723,15 +1657,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             config.save();
         }
 
-//        if (!passwords.isEmpty()) {
-//            Configurable config = staffConfig.getConfig();
-//            if (config != null) {
-//                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
-//                    config.set("passwords." + passwords.getKey(), passwords.getValue());
-//                }
-//            }
-//            config.save();
-//        }
+        if (!passwords.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
+                    config.set("passwords." + passwords.getKey(), passwords.getValue());
+                }
+            }
+            config.save();
+        }
     }
 
     public void savePluginData() {
@@ -1865,11 +1799,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("maxClaims." + kingdom.getKey()).exists()) {
-                            config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
-                        }
-                    }
+                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
                 }
             }
             config.save();
@@ -1878,12 +1808,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("maxMembers." + kingdom.getKey()).exists()) {
                             config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
-                        }
                     }
-                }
             }
             config.save();
         }
@@ -1931,11 +1857,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("invites." + kingdom.getKey()).exists()) {
                             config.set("invites." + invites.getKey(), invites.getValue());
-                        }
-                    }
                 }
             }
             config.save();
@@ -1945,11 +1867,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("canClaim." + kingdom.getKey()).exists()) {
                             config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
-                        }
-                    }
                 }
             }
             config.save();
@@ -1959,11 +1877,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("canUnclaim." + kingdom.getKey()).exists()) {
                             config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
-                        }
-                    }
                 }
             }
             config.save();
@@ -1997,11 +1911,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("memberPrice." + kingdom.getKey()).exists()) {
                             config.set("memberPrice." + price.getKey(), price.getValue());
-                        }
-                    }
                 }
             }
             config.save();
@@ -2011,11 +1921,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = kingdomsConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("claimPrice." + kingdom.getKey()).exists()) {
                             config.set("claimPrice." + price.getKey(), price.getValue());
-                        }
-                    }
                 }
             }
             config.save();
@@ -2045,12 +1951,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable config = staffConfig.getConfig();
             if (config != null) {
                 for (Map.Entry<String, String> staff : staff.entrySet()) {
-                    if (!playerRank.get(staff.getKey()).equalsIgnoreCase("VIP") || !playerRank.get(staff.getKey()).equalsIgnoreCase("HERO")
-                            || !playerRank.get(staff.getKey()).equalsIgnoreCase("YT") || !playerRank.get(staff.getKey()).equalsIgnoreCase("DEFAULT")) {
                         config.set("staff." + staff.getKey(), staff.getValue());
-                    } else {
-                        config.set("staff." + null, null);
-                    }
                 }
             }
             config.save();
@@ -2065,20 +1966,20 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             config.save();
         }
 
-//        if (!passwords.isEmpty()) {
-//            Configurable config = staffConfig.getConfig();
-//            if (config != null) {
-//                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
-//                    config.set("passwords." + passwords.getKey(), passwords.getValue());
-//                }
-//            }
-//            config.save();
-//        }
+        if (!passwords.isEmpty()) {
+            Configurable config = staffConfig.getConfig();
+            if (config != null) {
+                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
+                    config.set("passwords." + passwords.getKey(), passwords.getValue());
+                }
+            }
+            config.save();
+        }
     }
 
     private void events() {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
-//        Bukkit.getServer().getPluginManager().registerEvents(new Password(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new Password(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsCommandListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WarzoneCommandListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomUpgradeListener(this), this);
