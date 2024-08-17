@@ -1,6 +1,7 @@
 package games.kingdoms.kingdoms.publiccmds.report;
 
 import games.kingdoms.kingdoms.Kingdoms;
+import games.kingdoms.kingdoms.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -37,6 +38,8 @@ public class ReportCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "You must be in the same world as " + ChatColor.WHITE + target.getName() + ChatColor.RED + " to report them");
                     return true;
                 }
+
+                MessageManager.playerGood(player, "Report sent successfully");
 
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
