@@ -164,6 +164,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         initMapList();
 
         //Restore Plugin Data
+        updateScoreBoardOnReload();
         restoreServerData();
 
         //Commands
@@ -521,6 +522,39 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
     }
 
+    private void updateScoreBoardOnReload() {
+
+        String title, subtitle;
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            if (player == null) return;
+
+            if (isChunkClaimed(player.getLocation().getChunk())) {
+                String ownerKingdom = claimedChunks.get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ());
+
+                title = " ";
+                subtitle = ChatColor.GREEN + ownerKingdom;
+            } else {
+                title = " ";
+                subtitle = ChatColor.RED + "Wilderness";
+            }
+
+            sendTitle(player, title, subtitle, 10, 40, 10);
+
+            if (kingdoms.containsKey(player.getUniqueId().toString())) {
+                if (isChunkClaimed(player.getLocation().getChunk())) {
+                    inPlayersKingdomBoard(player, player.getLocation().getChunk());
+                } else {
+                    notInPlayersKingdomBoard(player);
+                }
+
+            } else {
+                notInKingdomBoard(player);
+            }
+        }
+    }
+
     //Player is not in a chunk owned by their kingdom
     public void notInPlayersKingdomBoard(Player player) {
         long moneyValue = money.get(player.getUniqueId().toString());
@@ -595,8 +629,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     //Player is not in a kingdom
     public void notInKingdomBoard(Player player) {
-        long moneyValue = money.get(player.getUniqueId().toString());
-        String formattedMoney = money.get(player.getUniqueId().toString()).toString();
+        long moneyValue = money.getOrDefault(player.getUniqueId().toString(), 0L);
+        String formattedMoney = money.getOrDefault(player.getUniqueId().toString(), 0L).toString();
         Chunk chunk = player.getLocation().getChunk();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
