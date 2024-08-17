@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class ReportCommand implements CommandExecutor {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
@@ -17,23 +19,44 @@ public class ReportCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (sender instanceof Player player) {
-            if (args.length == 0) {
+
+            if (args.length < 2) {
                 player.sendMessage(ChatColor.GOLD + "Usage: /report <user> <reason>");
                 return true;
             }
 
-            if (args.length == 1) {
-                player.sendMessage(ChatColor.GOLD + "Usage: /report <user> <reason>");
-                return true;
-            }
-
-            if (args.length > 1) {
+            if (args.length >= 2) {
                 Player target = Bukkit.getPlayer(args[0]);
-                String message = String.join(" ", args);
+                String report = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+
+                if (target == null) {
+                    player.sendMessage(args[0] + ChatColor.RED + " is not online");
+                }
+
+                if (!(target.getWorld() == player.getWorld())) {
+                    player.sendMessage(ChatColor.RED + "You must be in the same world as " + ChatColor.WHITE + target.getName() + ChatColor.RED + " to report them");
+                    return true;
+                }
+
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (plugin.getStaff().containsKey(p.getUniqueId().toString())) {
-                        //todo: Make this show a report to all online staff members
-                        p.sendMessage();
+                    if (plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+
+                        if (player.getWorld() == p.getWorld()) {
+                            p.sendMessage(ChatColor.DARK_RED + "[REPORT] " + ChatColor.WHITE + target.getName() + ChatColor.RED
+                                    + " for " + ChatColor.WHITE + report + ChatColor.GRAY + " (from " + player.getName() + ")");
+                        } else {
+                            if (p.getWorld().equals(Bukkit.getWorld("kingdoms"))) {
+                                p.sendMessage(ChatColor.DARK_RED + "[REPORT] " + ChatColor.AQUA + "[Warzone] " + ChatColor.WHITE + target.getName() + ChatColor.RED
+                                        + " for " + ChatColor.WHITE + report + ChatColor.GRAY + " (from " + player.getName() + ")");
+                            } else if (p.getWorld().equals(Bukkit.getWorld("warzone"))) {
+                                p.sendMessage(ChatColor.DARK_RED + "[REPORT] " + ChatColor.AQUA + "[Kingdoms] " + ChatColor.WHITE + target.getName() + ChatColor.RED
+                                        + " for " + ChatColor.WHITE + report + ChatColor.GRAY + " (from " + player.getName() + ")");
+                            }
+                        }
                     }
                 }
             }

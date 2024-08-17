@@ -97,3 +97,5 @@ commands:
     aliases: [pu]
   confirm:
     description: Confirm punishment of players.
+  report:
+    description: Report players.
