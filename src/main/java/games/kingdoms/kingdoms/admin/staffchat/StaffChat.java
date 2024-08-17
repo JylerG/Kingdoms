@@ -36,8 +36,12 @@ public class StaffChat implements CommandExecutor {
             String message = String.join(" ", args); // Concatenate args into a single string
 
             for (Player p : Bukkit.getOnlinePlayers()) {
-                if (plugin.getStaff().containsKey(p.getUniqueId().toString())) {
-                    if (plugin.getStaff().containsKey(player.getUniqueId().toString())) {
+                if (plugin.getStaff().containsKey(player.getUniqueId().toString())) {
+                    if (plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                         String staff = plugin.getStaff().get(player.getUniqueId().toString());
 
                         //Player has JrMod Rank

@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update Code">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatTabCompleter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatTabCompleter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatTabCompleter.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -218,7 +211,23 @@
       <option name="project" value="LOCAL" />
       <updated>1723884993554</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1723889254739</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1723889254740</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1723889282463</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1723889282463</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="UnknownFeatures">

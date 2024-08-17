@@ -132,7 +132,7 @@ public class RankCMD implements CommandExecutor {
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT
                                         + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + player.getName());
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-                                plugin.getStaff().remove(target.getUniqueId().toString());
+                                plugin.getStaff().put(target.getUniqueId().toString(), "DEFAULT");
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.DARK_GRAY + ChatColor.BOLD + Rank.DEFAULT);
                                 if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
@@ -159,7 +159,7 @@ public class RankCMD implements CommandExecutor {
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.GREEN + ChatColor.BOLD + Rank.VIP
                                         + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + player.getName());
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP);
-                                plugin.getStaff().remove(target.getUniqueId().toString());
+                                plugin.getStaff().put(target.getUniqueId().toString(), "VIP");
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.GREEN + ChatColor.BOLD + Rank.VIP);
                                 if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
@@ -186,7 +186,7 @@ public class RankCMD implements CommandExecutor {
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.AQUA + ChatColor.BOLD + Rank.HERO
                                         + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + player.getName());
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO);
-                                plugin.getStaff().remove(target.getUniqueId().toString());
+                                plugin.getStaff().put(target.getUniqueId().toString(), "HERO");
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.AQUA + ChatColor.BOLD + Rank.HERO);
                                 if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
@@ -211,7 +211,7 @@ public class RankCMD implements CommandExecutor {
                                 }
                                 Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set youtube");
                                 target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.RED + ChatColor.BOLD + "YT");
-                                plugin.getStaff().remove(target.getUniqueId().toString());
+                                plugin.getStaff().put(target.getUniqueId().toString(), "YOUTUBE");
                                 plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.RED.toString() + ChatColor.BOLD + "YT");
                                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "You set " + ChatColor.WHITE + target.getName()
                                         + ChatColor.LIGHT_PURPLE + "'s rank to " + ChatColor.RED + ChatColor.BOLD + "YT");
