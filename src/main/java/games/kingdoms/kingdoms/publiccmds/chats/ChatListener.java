@@ -115,10 +115,10 @@ public class ChatListener implements Listener {
                     String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD + " " + ChatColor.GOLD + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 } else if (playerRank.get(player.getUniqueId().toString()).equals("JRADMIN")) {
-                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
+                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.JRADMIN + " " + ChatColor.RED + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 } else if (playerRank.get(player.getUniqueId().toString()).equals("ADMIN")) {
-                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN + " " + ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
+                    String format = ChatColor.AQUA.toString() + ChatColor.BOLD + "[S] " + ChatColor.RED + ChatColor.BOLD + Rank.ADMIN + " " + ChatColor.RED + player.getDisplayName() + ChatColor.AQUA + ": " + eventMessage;
                     event.setFormat(format);
                 }
                 event.setMessage(eventMessage);
