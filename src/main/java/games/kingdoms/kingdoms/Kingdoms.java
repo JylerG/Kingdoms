@@ -801,12 +801,16 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             money.put(player.getUniqueId().toString(), 0L);
             chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
             kingdoms.put(player.getUniqueId().toString(), "");
+            passwords.put(player.getUniqueId().toString(), "");
         } else {
             if (!kingdoms.containsKey(player.getUniqueId().toString())) {
                 kingdoms.put(player.getUniqueId().toString(), "");
             }
             if (!chatFocus.containsKey(player.getUniqueId().toString())) {
                 chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
+            }
+            if (!passwords.containsKey(player.getUniqueId().toString())) {
+                passwords.put(player.getUniqueId().toString(), "");
             }
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
@@ -1362,617 +1366,103 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData(Player player) {
-        if (!removePlayerFromKingdom.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> remove : removePlayerFromKingdom.entrySet()) {
-                    config.set("remove." + remove.getKey(), remove.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!reportAbuse.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> report : reportAbuse.entrySet()) {
-                    config.set("report." + report.getKey(), report.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!disrespect.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> disrespect : disrespect.entrySet()) {
-                    config.set("disrespect." + disrespect.getKey(), disrespect.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!language.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> language : language.entrySet()) {
-                    config.set("language." + language.getKey(), language.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!ipAdverts.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> ipAdverts : ipAdverts.entrySet()) {
-                    config.set("ipAdverts." + ipAdverts.getKey(), ipAdverts.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!mediaAdverts.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> mediaAdverts : mediaAdverts.entrySet()) {
-                    config.set("mediaAdverts." + mediaAdverts.getKey(), mediaAdverts.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!soliciting.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> soliciting : soliciting.entrySet()) {
-                    config.set("soliciting." + soliciting.getKey(), soliciting.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!spam.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> spam : spam.entrySet()) {
-                    config.set("spam." + spam.getKey(), spam.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!discrimination.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> discrimination : discrimination.entrySet()) {
-                    config.set("discrimination." + discrimination.getKey(), discrimination.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!threats.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> threats : threats.entrySet()) {
-                    config.set("threats." + threats.getKey(), threats.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!staffCount.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> online : staffCount.entrySet()) {
-                    config.set("online." + online.getKey(), online.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!bannedNames.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> bannedNames : bannedNames.entrySet()) {
-                    config.set("bannedNames." + bannedNames.getKey(), bannedNames.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!kingdomExists.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> exists : kingdomExists.entrySet()) {
-                    config.set("exists." + exists.getKey(), exists.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!kingdoms.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                    config.set("kingdoms." + kingdom.getKey(), kingdom.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!maxClaims.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
-                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!maxMembers.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
-                    config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!owner.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> owners : owner.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("owners." + kingdom.getKey()).exists()) {
-                            config.set("owners." + owners.getKey(), owners.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
-        if (!admin.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> admins : admin.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("admins." + kingdom.getKey()).exists()) {
-                            config.set("admins." + admins.getKey(), admins.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
-        if (!member.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> members : member.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("members." + kingdom.getKey()).exists()) {
-                            config.set("members." + members.getKey(), members.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
+        saveData(kingdomsConfig.getConfig(), removePlayerFromKingdom, "remove.");
+        saveData(punishmentConfig.getConfig(), reportAbuse, "report.");
+        saveData(punishmentConfig.getConfig(), disrespect, "disrespect.");
+        saveData(punishmentConfig.getConfig(), language, "language.");
+        saveData(punishmentConfig.getConfig(), ipAdverts, "ipAdverts.");
+        saveData(punishmentConfig.getConfig(), mediaAdverts, "mediaAdverts.");
+        saveData(punishmentConfig.getConfig(), soliciting, "soliciting.");
+        saveData(punishmentConfig.getConfig(), spam, "spam.");
+        saveData(punishmentConfig.getConfig(), discrimination, "discrimination.");
+        saveData(punishmentConfig.getConfig(), threats, "threats.");
+        saveData(staffConfig.getConfig(), staffCount, "online.");
+        saveData(kingdomsConfig.getConfig(), bannedNames, "bannedNames.");
+        saveData(kingdomsConfig.getConfig(), kingdomExists, "exists.");
+        saveData(kingdomsConfig.getConfig(), kingdoms, "kingdoms.");
+        saveData(kingdomsConfig.getConfig(), maxClaims, "maxClaims.");
+        saveData(kingdomsConfig.getConfig(), maxMembers, "maxMembers.");
+        saveNestedData(kingdomsConfig.getConfig(), owner, kingdoms, "owners.");
+        saveNestedData(kingdomsConfig.getConfig(), admin, kingdoms, "admins.");
+        saveNestedData(kingdomsConfig.getConfig(), member, kingdoms, "members.");
+        saveData(kingdomsConfig.getConfig(), inviteList, "invites.");
+        saveData(kingdomsConfig.getConfig(), canClaim, "canClaim.");
+        saveData(kingdomsConfig.getConfig(), canUnclaim, "canUnclaim.");
+        saveData(kingdomsConfig.getConfig(), kingdomSpawn, "spawns.");
+        saveMatchingData(kingdomsConfig.getConfig(), claimedChunks, kingdoms, "claims.");
+        saveData(kingdomsConfig.getConfig(), memberPrice, "memberPrice.");
+        saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
+        saveData(moneyConfig.getConfig(), money, "balance.");
+        saveData(staffConfig.getConfig(), playerRank, "rank.");
+        saveData(staffConfig.getConfig(), staff, "staff.");
+        saveData(staffConfig.getConfig(), chatFocus, "focus.");
+        saveData(staffConfig.getConfig(), passwords, "passwords.");
+    }
 
-        if (!inviteList.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                    config.set("invites." + invites.getKey(), invites.getValue());
-                }
-            }
-            config.save();
-        }
+    public void savePluginData() {
+        saveData(kingdomsConfig.getConfig(), removePlayerFromKingdom, "remove.");
+        saveData(punishmentConfig.getConfig(), reportAbuse, "report.");
+        saveData(punishmentConfig.getConfig(), disrespect, "disrespect.");
+        saveData(punishmentConfig.getConfig(), language, "language.");
+        saveData(punishmentConfig.getConfig(), ipAdverts, "ipAdverts.");
+        saveData(punishmentConfig.getConfig(), mediaAdverts, "mediaAdverts.");
+        saveData(punishmentConfig.getConfig(), soliciting, "soliciting.");
+        saveData(punishmentConfig.getConfig(), spam, "spam.");
+        saveData(punishmentConfig.getConfig(), discrimination, "discrimination.");
+        saveData(punishmentConfig.getConfig(), threats, "threats.");
+        saveData(staffConfig.getConfig(), staffCount, "online.");
+        saveData(kingdomsConfig.getConfig(), bannedNames, "bannedNames.");
+        saveData(kingdomsConfig.getConfig(), kingdomExists, "exists.");
+        saveData(kingdomsConfig.getConfig(), kingdoms, "kingdoms.");
+        saveData(kingdomsConfig.getConfig(), maxClaims, "maxClaims.");
+        saveData(kingdomsConfig.getConfig(), maxMembers, "maxMembers.");
+        saveNestedData(kingdomsConfig.getConfig(), owner, kingdoms, "owners.");
+        saveNestedData(kingdomsConfig.getConfig(), admin, kingdoms, "admins.");
+        saveNestedData(kingdomsConfig.getConfig(), member, kingdoms, "members.");
+        saveData(kingdomsConfig.getConfig(), inviteList, "invites.");
+        saveData(kingdomsConfig.getConfig(), canClaim, "canClaim.");
+        saveData(kingdomsConfig.getConfig(), canUnclaim, "canUnclaim.");
+        saveData(kingdomsConfig.getConfig(), kingdomSpawn, "spawns.");
+        saveMatchingData(kingdomsConfig.getConfig(), claimedChunks, kingdoms, "claims.");
+        saveData(kingdomsConfig.getConfig(), memberPrice, "memberPrice.");
+        saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
+        saveData(moneyConfig.getConfig(), money, "balance.");
+        saveData(staffConfig.getConfig(), playerRank, "rank.");
+        saveData(staffConfig.getConfig(), staff, "staff.");
+        saveData(staffConfig.getConfig(), chatFocus, "focus.");
+        saveData(staffConfig.getConfig(), passwords, "passwords.");
+    }
 
-        if (!canClaim.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
-                    config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!canUnclaim.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
-                    config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!kingdomSpawn.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Location> spawns : kingdomSpawn.entrySet()) {
-                    config.set("spawns." + spawns.getKey(), spawns.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!claimedChunks.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> claims : claimedChunks.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (claimedChunks.get(claims.getKey()).equalsIgnoreCase(kingdoms.get(kingdom.getKey()))) {
-                            config.set("claims." + claims.getKey(), claims.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
-
-        if (!memberPrice.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
-                    config.set("memberPrice." + price.getKey(), price.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!claimPrice.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
-                    config.set("claimPrice." + price.getKey(), price.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!money.isEmpty()) {
-            Configurable config = moneyConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> money : money.entrySet()) {
-                    config.set("balance." + money.getKey(), money.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!playerRank.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-                    config.set("rank." + rank.getKey(), rank.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!staff.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> staff : staff.entrySet()) {
-                    config.set("staff." + staff.getKey(), staff.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!chatFocus.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> focus : chatFocus.entrySet()) {
-                    config.set("focus." + focus.getKey(), focus.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!passwords.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
-                    config.set("passwords." + passwords.getKey(), passwords.getValue());
+    private <K, V> void saveData(Configurable config, Map<K, V> data, String pathPrefix) {
+        if (!data.isEmpty() && config != null) {
+            for (Map.Entry<K, V> entry : data.entrySet()) {
+                if (entry.getKey() != null && !entry.getKey().toString().trim().isEmpty()) { // Check for empty or null keys
+                    config.set(pathPrefix + entry.getKey(), entry.getValue());
                 }
             }
             config.save();
         }
     }
 
-    public void savePluginData() {
-        if (!removePlayerFromKingdom.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> remove : removePlayerFromKingdom.entrySet()) {
-                    config.set("remove." + remove.getKey(), remove.getValue());
+
+    private <K, V> void saveNestedData(Configurable config, Map<K, V> data, Map<K, String> kingdoms, String pathPrefix) {
+        if (!data.isEmpty() && config != null) {
+            for (Map.Entry<K, V> entry : data.entrySet()) {
+                if (kingdoms.containsKey(entry.getKey()) && config.getNode(pathPrefix + kingdoms.get(entry.getKey())).exists()) {
+                    config.set(pathPrefix + entry.getKey(), entry.getValue());
                 }
             }
             config.save();
         }
-        if (!reportAbuse.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> report : reportAbuse.entrySet()) {
-                    config.set("report." + report.getKey(), report.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!disrespect.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> disrespect : disrespect.entrySet()) {
-                    config.set("disrespect." + disrespect.getKey(), disrespect.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!language.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> language : language.entrySet()) {
-                    config.set("language." + language.getKey(), language.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!ipAdverts.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> ipAdverts : ipAdverts.entrySet()) {
-                    config.set("ipAdverts." + ipAdverts.getKey(), ipAdverts.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!mediaAdverts.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> mediaAdverts : mediaAdverts.entrySet()) {
-                    config.set("mediaAdverts." + mediaAdverts.getKey(), mediaAdverts.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!soliciting.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> soliciting : soliciting.entrySet()) {
-                    config.set("soliciting." + soliciting.getKey(), soliciting.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!spam.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> spam : spam.entrySet()) {
-                    config.set("spam." + spam.getKey(), spam.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!discrimination.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> discrimination : discrimination.entrySet()) {
-                    config.set("discrimination." + discrimination.getKey(), discrimination.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!threats.isEmpty()) {
-            Configurable config = punishmentConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> threats : threats.entrySet()) {
-                    config.set("threats." + threats.getKey(), threats.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!staffCount.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> online : staffCount.entrySet()) {
-                    config.set("online." + online.getKey(), online.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!bannedNames.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> bannedNames : bannedNames.entrySet()) {
-                    config.set("bannedNames." + bannedNames.getKey(), bannedNames.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!kingdomExists.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> exists : kingdomExists.entrySet()) {
-                    config.set("exists." + exists.getKey(), exists.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!kingdoms.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                    config.set("kingdoms." + kingdom.getKey(), kingdom.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!maxClaims.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> maxClaims : maxClaims.entrySet()) {
-                    config.set("maxClaims." + maxClaims.getKey(), maxClaims.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!maxMembers.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Integer> maxMembers : maxMembers.entrySet()) {
-                            config.set("maxMembers." + maxMembers.getKey(), maxMembers.getValue());
+    }
+
+    private <K, V> void saveMatchingData(Configurable config, Map<K, V> claimedChunks, Map<K, V> kingdoms, String pathPrefix) {
+        if (!claimedChunks.isEmpty() && config != null) {
+            for (Map.Entry<K, V> claims : claimedChunks.entrySet()) {
+                for (Map.Entry<K, V> kingdom : kingdoms.entrySet()) {
+                    if (claimedChunks.get(claims.getKey()).equals(kingdom.getValue())) {
+                        config.set(pathPrefix + claims.getKey(), claims.getValue());
                     }
-            }
-            config.save();
-        }
-        if (!owner.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> owners : owner.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("owners." + kingdom.getKey()).exists()) {
-                            config.set("owners." + owners.getKey(), owners.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
-        if (!admin.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> admins : admin.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("admins." + kingdom.getKey()).exists()) {
-                            config.set("admins." + admins.getKey(), admins.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
-        if (!member.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> members : member.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (config.getNode("members." + kingdom.getKey()).exists()) {
-                            config.set("members." + members.getKey(), members.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
-
-        if (!inviteList.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> invites : inviteList.entrySet()) {
-                            config.set("invites." + invites.getKey(), invites.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!canClaim.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> canClaim : canClaim.entrySet()) {
-                            config.set("canClaim." + canClaim.getKey(), canClaim.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!canUnclaim.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> canUnclaim : canUnclaim.entrySet()) {
-                            config.set("canUnclaim." + canUnclaim.getKey(), canUnclaim.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!kingdomSpawn.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Location> spawns : kingdomSpawn.entrySet()) {
-                    config.set("spawns." + spawns.getKey(), spawns.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!claimedChunks.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> claims : claimedChunks.entrySet()) {
-                    for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                        if (claimedChunks.get(claims.getKey()).equalsIgnoreCase(kingdoms.get(kingdom.getKey()))) {
-                            config.set("claims." + claims.getKey(), claims.getValue());
-                        }
-                    }
-                }
-            }
-            config.save();
-        }
-
-        if (!memberPrice.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> price : memberPrice.entrySet()) {
-                            config.set("memberPrice." + price.getKey(), price.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!claimPrice.isEmpty()) {
-            Configurable config = kingdomsConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> price : claimPrice.entrySet()) {
-                            config.set("claimPrice." + price.getKey(), price.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!money.isEmpty()) {
-            Configurable config = moneyConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, Long> money : money.entrySet()) {
-                    config.set("balance." + money.getKey(), money.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!playerRank.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-                    config.set("rank." + rank.getKey(), rank.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!staff.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> staff : staff.entrySet()) {
-                        config.set("staff." + staff.getKey(), staff.getValue());
-                }
-            }
-            config.save();
-        }
-        if (!chatFocus.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> focus : chatFocus.entrySet()) {
-                    config.set("focus." + focus.getKey(), focus.getValue());
-                }
-            }
-            config.save();
-        }
-
-        if (!passwords.isEmpty()) {
-            Configurable config = staffConfig.getConfig();
-            if (config != null) {
-                for (Map.Entry<String, String> passwords : passwords.entrySet()) {
-                    config.set("passwords." + passwords.getKey(), passwords.getValue());
                 }
             }
             config.save();

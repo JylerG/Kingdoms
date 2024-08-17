@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update Code">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/permissions/Permissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/permissions/Permissions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
@@ -502,7 +505,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723929030547</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1723929501805</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1723929501805</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="UnknownFeatures">

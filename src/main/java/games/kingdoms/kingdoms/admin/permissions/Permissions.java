@@ -52,6 +52,7 @@ public class Permissions implements CommandExecutor {
                     } else if (args[0].equalsIgnoreCase("admin")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.staff.modmode");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.move");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.join");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.disband");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.transfer");
@@ -61,6 +62,7 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.srmod.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.punish");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.punish.reset");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.password.reset");
                     } else if (args[0].equalsIgnoreCase("reload")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.staff.reload");
