@@ -49,6 +49,7 @@ import games.kingdoms.kingdoms.publiccmds.nightvision.Commands;
 import games.kingdoms.kingdoms.publiccmds.randomtp.RandomTeleportListener;
 import games.kingdoms.kingdoms.publiccmds.randomtp.rtp;
 import games.kingdoms.kingdoms.publiccmds.report.ReportCommand;
+import games.kingdoms.kingdoms.publiccmds.report.ReportTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.teleports.KingdomsCommandListener;
 import games.kingdoms.kingdoms.publiccmds.teleports.SpawnCommand;
 import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCMD;
@@ -228,6 +229,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void reportPlayer() {
+        getCommand("report").setTabCompleter(new ReportTabCompleter());
         getCommand("report").setExecutor(new ReportCommand());
     }
 
@@ -423,7 +425,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "King");
                 rank.setScore(13);
             }
-            if (admin.containsKey(player.getUniqueId().toString())) {
+            if (admin.containsKey(player.getUniqueId().toString()) && !owner.containsKey(player.getUniqueId().toString())) {
                 Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Knight");
                 rank.setScore(13);
             }

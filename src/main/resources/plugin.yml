@@ -8,9 +8,9 @@ website: www.kingdoms.games
 depend: [ Labyrinth, Vault, ProtocolLib, Citizens ]
 load: POSTWORLD
 commands:
-  #password:
-    #description: Confirm you are the owner of your account.
-    #aliases: [ pw ]
+  password:
+    description: Confirm you are the owner of your account.
+    aliases: [ pw ]
   chat:
     description: Switch between chat channels.
     aliases: [ c ]
