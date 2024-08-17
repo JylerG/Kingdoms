@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MerchantManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
 //    public List<Quest> MerchantItems() {
 //        List<Quest> merchantItems = new ArrayList<>();

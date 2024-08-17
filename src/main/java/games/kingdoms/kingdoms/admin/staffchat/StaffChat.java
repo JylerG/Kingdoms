@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class StaffChat implements CommandExecutor {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public StaffChat(Kingdoms plugin) {
         this.plugin = plugin;

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class StaffChatTabCompleter implements TabCompleter {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
     @Nullable
     @Override

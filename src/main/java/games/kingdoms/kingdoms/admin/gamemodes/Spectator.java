@@ -1,6 +1,5 @@
 package games.kingdoms.kingdoms.admin.gamemodes;
 
-import games.kingdoms.kingdoms.Kingdoms;
 import games.kingdoms.kingdoms.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,12 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class Spectator implements CommandExecutor {
-
-    private final Kingdoms plugin;
-
-    public Spectator(Kingdoms plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

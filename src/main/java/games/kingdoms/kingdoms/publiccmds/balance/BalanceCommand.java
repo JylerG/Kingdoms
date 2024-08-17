@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BalanceCommand implements CommandExecutor {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public BalanceCommand(Kingdoms plugin) {
         this.plugin = plugin;

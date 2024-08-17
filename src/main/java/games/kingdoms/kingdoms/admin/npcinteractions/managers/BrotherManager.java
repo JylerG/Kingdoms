@@ -8,7 +8,7 @@ import java.util.List;
 
 public class BrotherManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
 //    public List<Quest> GuideBrotherItems() {
 //        List<Quest> brotherItems = new ArrayList<>();

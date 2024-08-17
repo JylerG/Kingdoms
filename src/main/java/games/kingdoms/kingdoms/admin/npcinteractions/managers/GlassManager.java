@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GlassManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
 //    public List<Quest> GlassItems() {
 //        List<Quest> glassItems = new ArrayList<>();

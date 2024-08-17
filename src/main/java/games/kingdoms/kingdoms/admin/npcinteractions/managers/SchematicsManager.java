@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SchematicsManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
 //    public List<Quest> SchematicItems() {
 //        List<Quest> schematics = new ArrayList<>();

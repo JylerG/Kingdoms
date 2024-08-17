@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SpawnCommand implements CommandExecutor {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public SpawnCommand(Kingdoms plugin, KingdomsCommandListener kcl) {
         this.plugin = plugin;

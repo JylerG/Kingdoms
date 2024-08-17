@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class MerchantListener implements Listener {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public MerchantListener(Kingdoms plugin) {
         this.plugin = plugin;

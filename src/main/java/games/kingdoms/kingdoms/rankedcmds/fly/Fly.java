@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Fly implements CommandExecutor {
 
-    private final ArrayList<Player> list_of_flying_people = new ArrayList<>();
+    final ArrayList<Player> list_of_flying_people = new ArrayList<>();
     public final Kingdoms plugin;
 
     public Fly(Kingdoms plugin) {

@@ -15,9 +15,9 @@ public enum Rank {
     VIP("VIP", ChatColor.GREEN, 1),
     DEFAULT("DEFAULT", ChatColor.DARK_GRAY, 0);
 
-    private final String name;
-    private final ChatColor color;
-    private final int level;
+    final String name;
+    final ChatColor color;
+    final int level;
 
     Rank(String name, ChatColor color, int level) {
         this.name = name;

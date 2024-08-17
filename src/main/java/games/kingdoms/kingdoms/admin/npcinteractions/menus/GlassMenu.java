@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class GlassMenu extends Menu {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
     public GlassMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);

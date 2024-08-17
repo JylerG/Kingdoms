@@ -1,6 +1,5 @@
 package games.kingdoms.kingdoms.admin.gamemodes;
 
-import games.kingdoms.kingdoms.Kingdoms;
 import games.kingdoms.kingdoms.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,17 +12,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Adventure implements CommandExecutor {
 
-    private final Kingdoms plugin;
-
-    public Adventure(Kingdoms plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             if (sender.hasPermission("kingdoms.set.gamemode.adventure")) {
                 if (args.length == 0) {
                     if (!player.getGameMode().equals(GameMode.ADVENTURE)) {
@@ -51,7 +43,8 @@ public class Adventure implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "You do not have permission to use this command");
             }
         } else {
-            MessageManager.consoleBad("You must be a player to execute this command.");        }
+            MessageManager.consoleBad("You must be a player to execute this command.");
+        }
         return true;
     }
 }

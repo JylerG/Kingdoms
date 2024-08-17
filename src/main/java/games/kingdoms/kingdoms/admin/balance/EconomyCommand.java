@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EconomyCommand implements CommandExecutor {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public EconomyCommand(Kingdoms plugin) {
         this.plugin = plugin;

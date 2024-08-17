@@ -8,7 +8,7 @@ import java.util.List;
 
 public class NatureManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
 //    public List<Quest> NatureItems() {
 //        List<Quest> natureItems = new ArrayList<>();

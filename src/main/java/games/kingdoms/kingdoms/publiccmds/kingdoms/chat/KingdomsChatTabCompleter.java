@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class KingdomsChatTabCompleter implements TabCompleter {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public KingdomsChatTabCompleter(Kingdoms plugin) {
         this.plugin = plugin;

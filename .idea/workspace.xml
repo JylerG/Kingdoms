@@ -4,8 +4,66 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update Code">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Make staff chat use a player's name instead of display name">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/balance/EconomyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/balance/EconomyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/MerchantCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/MerchantCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/MerchantListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/MerchantListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/customores/CustomOreTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customitems/merchantitems/MerchantListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customores/CustomOreCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customores/CustomOreCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customores/CustomOreTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/customores/CustomOreTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Adventure.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Adventure.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Creative.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Creative.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Spectator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Spectator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Survival.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/gamemodes/Survival.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/modmode/ModMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/modmode/ModMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/BrotherManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/BrotherManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/ForgeManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/ForgeManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/GlassManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/GlassManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/GuideManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/GuideManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/MerchantManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/MerchantManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/NatureManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/NatureManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/QuestManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/QuestManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/SchematicsManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/managers/SchematicsManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/BrotherMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/BrotherMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/ForgeMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/ForgeMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/GlassMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/GlassMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/GuideMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/GuideMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/MerchantMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/MerchantMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/NatureMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/NatureMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/SchematicMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/npcinteractions/menus/SchematicMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/Rank.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/Rank.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChatTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChatTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/BalanceCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/BalanceCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/PayCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/PayCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChatTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChatTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomInviteList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomInviteList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomUpgradeListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomUpgradeListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/related/KingdomsListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/related/KingdomsListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/report/ReportCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/report/ReportCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/KingdomsCommandListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/KingdomsCommandListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/SpawnCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/SpawnCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/WarzoneCommandListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/teleports/WarzoneCommandListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/whisper/WhisperCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/whisper/WhisperCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/rankedcmds/fly/Fly.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/rankedcmds/fly/Fly.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,26 +90,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Maven.Kingdoms package.executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last.edited.regexp&quot;: &quot;#Mi3&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/pfram/IdeaProjects/Kingdoms&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Maven.Kingdoms package.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last.edited.regexp": "#Mi3",
+    "last_opened_file_path": "C:/Users/pfram/IdeaProjects/Kingdoms",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="games.kingdoms.kingdoms.publiccmds.chats" />
@@ -376,7 +434,31 @@
       <option name="project" value="LOCAL" />
       <updated>1723921388957</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1723921780160</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1723921780160</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1723921799803</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1723921799803</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Make staff chat use a player's name instead of display name">
+      <option name="closed" value="true" />
+      <created>1723922516985</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1723922516986</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -405,6 +487,7 @@
     <MESSAGE value="Create .gitignore" />
     <MESSAGE value="Make admin/jradmin more visible when talking in staff chat" />
     <MESSAGE value="Update Code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Code" />
+    <MESSAGE value="Make staff chat use a player's name instead of display name" />
+    <option name="LAST_COMMIT_MESSAGE" value="Make staff chat use a player's name instead of display name" />
   </component>
 </project>

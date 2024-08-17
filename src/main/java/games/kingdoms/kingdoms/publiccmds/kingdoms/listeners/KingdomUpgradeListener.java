@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class KingdomUpgradeListener implements Listener {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public KingdomUpgradeListener(Kingdoms plugin) {
         this.plugin = plugin;

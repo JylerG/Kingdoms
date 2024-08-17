@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class MerchantCommand implements CommandExecutor, Listener {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public MerchantCommand(Kingdoms plugin) {
         this.plugin = plugin;

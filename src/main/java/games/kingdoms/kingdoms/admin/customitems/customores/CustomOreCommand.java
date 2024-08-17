@@ -23,10 +23,10 @@ import java.util.Map;
 
 public class CustomOreCommand implements CommandExecutor, Listener {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
-    private final Map<Block, Material> originalBlockTypes = new HashMap<>();
-    private final long restoreTime = 600 * 20; // 600 seconds in ticks
+    final Map<Block, Material> originalBlockTypes = new HashMap<>();
+    final long restoreTime = 600 * 20; // 600 seconds in ticks
 
     public CustomOreCommand(Kingdoms plugin) {
         this.plugin = plugin;

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PayCommand implements CommandExecutor {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public PayCommand(Kingdoms plugin) {
         this.plugin = plugin;

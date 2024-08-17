@@ -21,12 +21,12 @@ import java.util.regex.Pattern;
 
 public class Password implements CommandExecutor, Listener {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
-    private static final Pattern PASSWORD_PATTERN =
+    static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\\$%\\^&\\*\\-\\_]).{5,}$");
 
-    private final Map<UUID, Boolean> passwordEnteredMap = new HashMap<>();
+    final Map<UUID, Boolean> passwordEnteredMap = new HashMap<>();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {

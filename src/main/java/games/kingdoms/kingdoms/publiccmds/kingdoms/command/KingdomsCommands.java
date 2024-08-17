@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class KingdomsCommands implements CommandExecutor {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin();
+    final Kingdoms plugin = Kingdoms.getPlugin();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

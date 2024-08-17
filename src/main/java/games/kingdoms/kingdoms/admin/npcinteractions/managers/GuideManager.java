@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GuideManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
 //    public List<Quest> GuideItems() {
 //        List<Quest> guideItems = new ArrayList<>();

@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class KingdomsCommandListener implements Listener {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
     private Player player;
 
     public KingdomsCommandListener(Kingdoms plugin) {

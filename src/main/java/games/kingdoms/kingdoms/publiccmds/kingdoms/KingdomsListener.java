@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class KingdomsListener implements Listener {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public KingdomsListener(Kingdoms plugin) {
         this.plugin = plugin;

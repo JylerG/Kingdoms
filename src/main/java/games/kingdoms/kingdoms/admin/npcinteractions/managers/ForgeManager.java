@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ForgeManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
 //    public List<Quest> ForgeItems() {
 //        List<Quest> forgeItems = new ArrayList<>();

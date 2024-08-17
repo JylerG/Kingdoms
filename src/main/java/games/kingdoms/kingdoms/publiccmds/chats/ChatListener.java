@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ChatListener implements Listener {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin();
+    final Kingdoms plugin = Kingdoms.getPlugin();
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {

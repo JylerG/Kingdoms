@@ -1,5 +1,7 @@
 package games.kingdoms.kingdoms.admin.ranks;
 
+import games.kingdoms.kingdoms.Kingdoms;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RankTabCompleter implements TabCompleter {
+
+    final Kingdoms plugin = Kingdoms.getPlugin();
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
@@ -25,17 +29,19 @@ public class RankTabCompleter implements TabCompleter {
 
                 if (args.length == 1) {
 
-                    if (sender.hasPermission("kingdoms.setrank.fake") && sender instanceof Player) {
-                        List<String> fake = new ArrayList<>();
-                        fake.add("fake");
-                        fake.add("set");
+                    if (sender.hasPermission("kingdoms.setrank.fake") && sender instanceof Player player) {
+                        List<String> reset = new ArrayList<>();
+                        if ((plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                                && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD))
+                                || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                                && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN))
+                                || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                                && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN))) {
+                            reset.add("reset");
 
-                        return fake;
+                            return reset;
+                        }
                     }
-
-                    List<String> set = new ArrayList<>();
-                    set.add("set");
-                    return set;
                 }
 
                 if (args.length == 2) {

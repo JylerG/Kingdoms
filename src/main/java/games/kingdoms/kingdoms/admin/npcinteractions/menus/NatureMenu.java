@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class NatureMenu extends Menu {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
     public NatureMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);

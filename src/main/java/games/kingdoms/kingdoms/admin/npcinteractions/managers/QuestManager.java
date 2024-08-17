@@ -12,7 +12,7 @@ import java.util.List;
 
 public class QuestManager {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
 
     public List<Quest> KillQuests() {
         List<Quest> availableQuests = new ArrayList<>();

@@ -6,6 +6,10 @@ import games.kingdoms.kingdoms.admin.CustomNPCs.CreateNPCCommand;
 import games.kingdoms.kingdoms.admin.CustomNPCs.NPCTabCompleter;
 import games.kingdoms.kingdoms.admin.balance.EconomyCommand;
 import games.kingdoms.kingdoms.admin.balance.EconomyTabCompleter;
+import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
+import games.kingdoms.kingdoms.admin.configs.MoneyConfig;
+import games.kingdoms.kingdoms.admin.configs.PunishmentConfig;
+import games.kingdoms.kingdoms.admin.configs.StaffConfig;
 import games.kingdoms.kingdoms.admin.customitems.customores.CustomOreCommand;
 import games.kingdoms.kingdoms.admin.customitems.customores.CustomOreTabCompleter;
 import games.kingdoms.kingdoms.admin.customitems.merchantitems.MerchantCommand;
@@ -38,10 +42,6 @@ import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomInviteList;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
-import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
-import games.kingdoms.kingdoms.admin.configs.MoneyConfig;
-import games.kingdoms.kingdoms.admin.configs.PunishmentConfig;
-import games.kingdoms.kingdoms.admin.configs.StaffConfig;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomUpgradeListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
 import games.kingdoms.kingdoms.publiccmds.nightvision.Commands;
@@ -59,7 +59,10 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 
@@ -86,7 +89,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, Integer> staffCount = new HashMap<>();
     private HashMap<String, String> customRank = new HashMap<>();
     private HashMap<String, String> kingdomExists = new HashMap<>();
-    private final ArrayList<Player> invisiblePlayers = new ArrayList<>();
+    final ArrayList<Player> invisiblePlayers = new ArrayList<>();
     private ArrayList<Player> modModePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
     private HashMap<String, Long> claimPrice = new HashMap<>();
@@ -380,10 +383,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void gameModes() {
-        getCommand("gmc").setExecutor(new Creative(this));
-        getCommand("gms").setExecutor(new Survival(this));
-        getCommand("gmsp").setExecutor(new Spectator(this));
-        getCommand("gma").setExecutor(new Adventure(this));
+        getCommand("gmc").setExecutor(new Creative());
+        getCommand("gms").setExecutor(new Survival());
+        getCommand("gmsp").setExecutor(new Spectator());
+        getCommand("gma").setExecutor(new Adventure());
     }
 
     private void ore() {

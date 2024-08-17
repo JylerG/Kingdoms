@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ReportCommand implements CommandExecutor {
 
-    private final Kingdoms plugin = Kingdoms.getPlugin();
+    final Kingdoms plugin = Kingdoms.getPlugin();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

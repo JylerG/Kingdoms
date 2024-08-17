@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CustomOreTabCompleter implements TabCompleter {
 
-    private final Kingdoms plugin;
+    final Kingdoms plugin;
 
     public CustomOreTabCompleter(Kingdoms plugin) {
         this.plugin = plugin;
