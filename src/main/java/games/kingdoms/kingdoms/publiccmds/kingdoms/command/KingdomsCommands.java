@@ -284,11 +284,11 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         plugin.getRemovePlayerFromKingdom().put(commandTarget, kingdom);
-        plugin.getKingdoms().put(commandTarget, "''");
-        plugin.getAdmin().remove(commandTarget, "''");
-        plugin.getMember().remove(commandTarget, "''");
-        plugin.getCanClaim().remove(commandTarget, "''");
-        plugin.getCanUnclaim().remove(commandTarget, "''");
+        plugin.getKingdoms().put(commandTarget, "");
+        plugin.getAdmin().remove(commandTarget, "");
+        plugin.getMember().remove(commandTarget, "");
+        plugin.getCanClaim().remove(commandTarget, "");
+        plugin.getCanUnclaim().remove(commandTarget, "");
 
         player.sendMessage(ChatColor.GREEN + "You kicked " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
         target.sendMessage(ChatColor.RED + "You were kicked from " + ChatColor.WHITE + plugin.getKingdoms().get(commandSender));
@@ -372,17 +372,17 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        if (plugin.getOwner().getOrDefault(playerUUID, "''").equals(args[1])) {
+        if (plugin.getOwner().getOrDefault(playerUUID, "").equals(args[1])) {
             player.sendMessage(ChatColor.RED + "You must transfer " + ChatColor.GOLD + args[1] + ChatColor.RED + " to another member before you can leave or " + ChatColor.GOLD + "/k disband " + args[1] + ChatColor.RED + " if you wish to delete the kingdom completely");
             return;
         }
 
         plugin.getRemovePlayerFromKingdom().put(playerUUID, kingdom);
-        plugin.getKingdoms().put(playerUUID, "''");
-        plugin.getAdmin().put(playerUUID, "''");
-        plugin.getMember().put(playerUUID, "''");
-        plugin.getCanClaim().put(playerUUID, "''");
-        plugin.getCanUnclaim().put(playerUUID, "''");
+        plugin.getKingdoms().put(playerUUID, "");
+        plugin.getAdmin().put(playerUUID, "");
+        plugin.getMember().put(playerUUID, "");
+        plugin.getCanClaim().put(playerUUID, "");
+        plugin.getCanUnclaim().put(playerUUID, "");
 
         player.sendMessage(ChatColor.GREEN + "You left " + ChatColor.WHITE + args[1]);
     }
@@ -394,12 +394,12 @@ public class KingdomsCommands implements CommandExecutor {
 
             if (invitedKingdom != null && invitedKingdom.equalsIgnoreCase(args[1])) {
                 World kingdoms = Bukkit.getWorld("kingdoms");
-                for (Player p : Bukkit.getOnlinePlayers()) {
+                for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
                     for (Chunk loaded : kingdoms.getLoadedChunks()) {
-                        if (plugin.getClaimedChunks().get(loaded.getX() + "," + loaded.getZ()).equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                        if (plugin.getClaimedChunks().get(loaded.getX() + "," + loaded.getZ()).equalsIgnoreCase(args[1])) {
                             int memberCount = 0;
 
-                            if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase(plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                            if (plugin.getKingdoms().get(offline.getUniqueId().toString()).equalsIgnoreCase(plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
                                 memberCount++;
                             }
 
@@ -488,7 +488,7 @@ public class KingdomsCommands implements CommandExecutor {
 
         // If the player is not an admin, check if they are trying to disband their own kingdom
         if (!player.hasPermission("kingdoms.disband.admin")) {
-            if (plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("''")) {
+            if (plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("")) {
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom");
                 return;
             }
@@ -521,12 +521,12 @@ public class KingdomsCommands implements CommandExecutor {
                 // Remove all associated entries from other maps
                 plugin.getRemovePlayerFromKingdom().put(playerObj, kingdom);
                 plugin.getKingdomSpawn().remove(kingdom);
-                plugin.getOwner().put(playerObj, "''");
-                plugin.getAdmin().put(playerObj, "''");
-                plugin.getMember().put(playerObj, "''");
-                plugin.getCanClaim().put(playerObj, "''");
-                plugin.getCanUnclaim().put(playerObj, "''");
-                plugin.getKingdoms().put(playerObj, "''");
+                plugin.getOwner().put(playerObj, "");
+                plugin.getAdmin().put(playerObj, "");
+                plugin.getMember().put(playerObj, "");
+                plugin.getCanClaim().put(playerObj, "");
+                plugin.getCanUnclaim().put(playerObj, "");
+                plugin.getKingdoms().put(playerObj, "");
 
                 // Remove claimed chunks associated with the kingdom
                 Iterator<Map.Entry<String, String>> chunkIterator = plugin.getClaimedChunks().entrySet().iterator();
@@ -544,7 +544,7 @@ public class KingdomsCommands implements CommandExecutor {
 
 
     private void createKingdom(Player player, String kingdom) {
-        if (!plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("''")) {
+        if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isBlank()) {
             player.sendMessage(ChatColor.RED + "You are already in a kingdom");
             return;
         }
