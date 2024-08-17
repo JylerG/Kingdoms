@@ -4,14 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Create .gitignore">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update Code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankCMD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/staffchat/StaffChat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -342,7 +336,47 @@
       <option name="project" value="LOCAL" />
       <updated>1723920294065</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Make admin/jradmin more visible when talking in staff chat">
+      <option name="closed" value="true" />
+      <created>1723921306870</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1723921306870</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Make admin/jradmin more visible when talking in staff chat">
+      <option name="closed" value="true" />
+      <created>1723921315593</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1723921315593</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Make admin/jradmin more visible when talking in staff chat">
+      <option name="closed" value="true" />
+      <created>1723921348697</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1723921348697</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Make admin/jradmin more visible when talking in staff chat">
+      <option name="closed" value="true" />
+      <created>1723921358694</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1723921358694</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1723921388957</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1723921388957</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -368,8 +402,9 @@
     <MESSAGE value="Removed unnecessary variables" />
     <MESSAGE value="Make it so players can't try to claim/unclaim chunks if they are not in a kingdom" />
     <MESSAGE value="Add ChatListener to imports" />
-    <MESSAGE value="Update Code" />
     <MESSAGE value="Create .gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create .gitignore" />
+    <MESSAGE value="Make admin/jradmin more visible when talking in staff chat" />
+    <MESSAGE value="Update Code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Code" />
   </component>
 </project>
