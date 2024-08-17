@@ -47,6 +47,7 @@ import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
 import games.kingdoms.kingdoms.publiccmds.nightvision.Commands;
 import games.kingdoms.kingdoms.publiccmds.randomtp.RandomTeleportListener;
 import games.kingdoms.kingdoms.publiccmds.randomtp.rtp;
+import games.kingdoms.kingdoms.publiccmds.report.ReportCommand;
 import games.kingdoms.kingdoms.publiccmds.teleports.KingdomsCommandListener;
 import games.kingdoms.kingdoms.publiccmds.teleports.SpawnCommand;
 import games.kingdoms.kingdoms.publiccmds.teleports.WarzoneCMD;
@@ -167,6 +168,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         //Commands
         chat();
+        reportPlayer();
         punishments();
         interactWithNPC();
         password();
@@ -222,6 +224,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void password() {
 //        getCommand("password").setExecutor(new Password());
+    }
+
+    private void reportPlayer() {
+        getCommand("report").setExecutor(new ReportCommand());
     }
 
     private void chat() {
