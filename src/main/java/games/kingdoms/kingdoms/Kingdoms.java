@@ -31,6 +31,7 @@ import games.kingdoms.kingdoms.admin.vanish.events.JoinEvent;
 import games.kingdoms.kingdoms.publiccmds.balance.BalanceCommand;
 import games.kingdoms.kingdoms.publiccmds.balance.PayCommand;
 import games.kingdoms.kingdoms.publiccmds.chats.ChatCMD;
+import games.kingdoms.kingdoms.publiccmds.chats.ChatListener;
 import games.kingdoms.kingdoms.publiccmds.chats.ChatTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
@@ -2044,6 +2045,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new RandomTeleportListener(this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new ChatCMD(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new ChatListener(), this);
     }
 }
