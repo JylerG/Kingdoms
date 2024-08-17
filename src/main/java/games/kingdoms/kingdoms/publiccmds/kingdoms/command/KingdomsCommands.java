@@ -599,17 +599,30 @@ public class KingdomsCommands implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "/kingdom list [page]");
     }
 
-    //TODO: figure out why this doesn't work
     private void setSpawn(Player player, String kingdom, Location spawn) {
-        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+
+        if (plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
             MessageManager.playerBad(player, "You are not in a kingdom");
             return;
         }
-        if (plugin.getAdmin().get(player.getUniqueId().toString()).equals(kingdom) || plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom)) {
-            plugin.getKingdomSpawn().put(kingdom, spawn);
-            player.sendMessage(ChatColor.GREEN + "You set " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s spawn");
-        } else {
+
+        boolean isAdmin = !plugin.getAdmin().containsKey(player.getUniqueId().toString());
+        boolean isOwner = !plugin.getOwner().containsKey(player.getUniqueId().toString());
+        if (!isAdmin && !isOwner) {
             player.sendMessage(ChatColor.RED + "You do not have permission to set " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s spawn");
+            return;
+        }
+        boolean isAdminOfKingdom = plugin.getAdmin().get(player.getUniqueId().toString()).equals(kingdom);
+        boolean isOwnerOfKingdom = plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom);
+        if (player.getWorld().equals(Bukkit.getWorld("kingdoms")) && (isAdminOfKingdom || isOwnerOfKingdom)) {
+            if (plugin.getAdmin().get(player.getUniqueId().toString()).equals(kingdom) || plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom)) {
+                plugin.getKingdomSpawn().put(kingdom, spawn);
+                player.sendMessage(ChatColor.GREEN + "You set " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s spawn");
+            } else {
+                player.sendMessage(ChatColor.RED + "You do not have permission to set " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s spawn");
+            }
+        } else {
+            player.sendMessage(ChatColor.RED + "You must be in the " + ChatColor.GOLD + "Kingdoms " + ChatColor.RED + "world to execute this command");
         }
     }
 
