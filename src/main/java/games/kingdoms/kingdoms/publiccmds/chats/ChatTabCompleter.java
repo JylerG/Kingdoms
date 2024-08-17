@@ -23,7 +23,7 @@ public class ChatTabCompleter implements TabCompleter {
             if (args.length == 1) {
                 List<String> chats = new ArrayList<>();
                 chats.add("global");
-                if (plugin.getKingdoms().containsKey(player.getUniqueId().toString()) && !plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("null")) {
+                if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
                     chats.add("kingdom");
                 }
                 if (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
