@@ -152,7 +152,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.getStaff().remove(target.getUniqueId().toString());
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to DEFAULT rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -179,7 +178,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.getStaff().remove(target.getUniqueId().toString());
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to VIP rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -206,7 +204,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.getStaff().remove(target.getUniqueId().toString());
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to HERO rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -232,7 +229,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.getStaff().remove(target.getUniqueId().toString());
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to YOUTUBE rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -256,7 +252,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to JRMOD rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -282,7 +277,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to MOD rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -308,7 +302,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to SRMOD rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -336,7 +329,6 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to JRADMIN rank by " + player.getName());
                                         }
                                     }
                                 }
@@ -363,13 +355,11 @@ public class RankCMD implements CommandExecutor {
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRADMIN") ||
                                                 plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                                             plugin.savePluginData(target);
-                                            target.kickPlayer("You were set to ADMIN rank by " + player.getName());
                                         }
                                     }
                                 }
                             }
                         }
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
                     }
                 }
             }
@@ -440,12 +430,13 @@ public class RankCMD implements CommandExecutor {
                             MessageManager.consoleBad(target.getName() + " is already rank " + Rank.HERO);
                             return true;
                         }
+
+                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.HERO);
                         Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set hero");
                         target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.AQUA + ChatColor.BOLD + Rank.HERO
                                 + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + "CONSOLE");
                         plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO);
                         plugin.getStaff().put(target.getUniqueId().toString(), "HERO");
-                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.HERO);
                         if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
                             if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
                                     plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
@@ -463,12 +454,13 @@ public class RankCMD implements CommandExecutor {
                             MessageManager.consoleBad(target.getName() + " is already rank " + Rank.YOUTUBE);
                             return true;
                         }
+
+                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.YOUTUBE);
                         Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set youtube");
                         target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.RED + ChatColor.BOLD + Rank.YOUTUBE
                                 + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + "CONSOLE");
                         plugin.getStaff().put(target.getUniqueId().toString(), "YOUTUBE");
                         plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.RED.toString() + ChatColor.BOLD + Rank.YOUTUBE);
-                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.YOUTUBE);
                         if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
                             if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
                                     plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
@@ -486,12 +478,13 @@ public class RankCMD implements CommandExecutor {
                             MessageManager.consoleBad(target.getName() + " is already rank " + Rank.JRMOD);
                             return true;
                         }
+
+                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.JRMOD);
                         Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set jrmod");
                         plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
                         plugin.getStaff().put(target.getUniqueId().toString(), "JRMOD");
                         target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.DARK_AQUA + ChatColor.BOLD + Rank.JRMOD
                                 + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + "CONSOLE");
-                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.JRMOD);
                         if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
                             if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
                                     plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
@@ -508,12 +501,13 @@ public class RankCMD implements CommandExecutor {
                             MessageManager.consoleBad(target.getName() + " is already rank " + Rank.MOD);
                             return true;
                         }
+
+                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.MOD);
                         Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set mod");
                         target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.YELLOW + ChatColor.BOLD + Rank.MOD
                                 + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + "CONSOLE");
                         plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
                         plugin.getStaff().put(target.getUniqueId().toString(), "MOD");
-                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.MOD);
                         if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
                             if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
                                     plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
@@ -530,12 +524,13 @@ public class RankCMD implements CommandExecutor {
                             MessageManager.consoleBad(target.getName() + " is already rank " + Rank.SRMOD);
                             return true;
                         }
+
+                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.SRMOD);
                         Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set srmod");
                         target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.GOLD + ChatColor.BOLD + Rank.SRMOD
                                 + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + "CONSOLE");
                         plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
                         plugin.getStaff().put(target.getUniqueId().toString(), "SRMOD");
-                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.SRMOD);
                         if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
                             if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
                                     plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
@@ -550,8 +545,8 @@ public class RankCMD implements CommandExecutor {
 
                     if (args[2].equalsIgnoreCase("jradmin")) {
                         if (!plugin.getPlayerRank().get(target.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
-                            Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set jradmin");
                             MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.JRADMIN);
+                            Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set jradmin");
                             target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.JRADMIN
                                     + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + "CONSOLE");
                             plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
@@ -577,12 +572,13 @@ public class RankCMD implements CommandExecutor {
                             MessageManager.consoleBad(target.getName() + " is already rank " + Rank.ADMIN);
                             return true;
                         }
+
                         plugin.getPlayerRank().put(target.getUniqueId().toString(), ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
                         plugin.getStaff().put(target.getUniqueId().toString(), "ADMIN");
+                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.ADMIN);
                         Bukkit.getServer().dispatchCommand(console, "pex user " + target.getName() + " group set admin");
                         target.sendMessage(ChatColor.LIGHT_PURPLE + "Your rank has been set to " + ChatColor.DARK_RED + ChatColor.BOLD + Rank.ADMIN
                                 + ChatColor.LIGHT_PURPLE + " by " + ChatColor.WHITE + "CONSOLE");
-                        MessageManager.consoleGood("You set " + target.getName() + "'s rank to " + Rank.ADMIN);
                         if (plugin.getStaff().containsKey(target.getUniqueId().toString())) {
                             if (plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("JRMOD") ||
                                     plugin.getStaff().get(target.getUniqueId().toString()).equalsIgnoreCase("MOD") ||
