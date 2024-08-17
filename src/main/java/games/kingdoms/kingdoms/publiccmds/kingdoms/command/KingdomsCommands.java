@@ -741,7 +741,7 @@ public class KingdomsCommands implements CommandExecutor {
 
     private void claimChunk(Player player, String kingdom, String chunkID) {
 
-        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+        if (plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
@@ -780,7 +780,7 @@ public class KingdomsCommands implements CommandExecutor {
 
     private void unclaimChunk(Player player, String kingdom, String chunkID) {
         try {
-            if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+            if (plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom");
                 return;
             }
