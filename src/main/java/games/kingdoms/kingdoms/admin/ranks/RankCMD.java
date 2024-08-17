@@ -172,7 +172,6 @@ public class RankCMD implements CommandExecutor {
                                         plugin.savePluginData(target);
                                         target.kickPlayer("You were set to VIP rank by " + player.getName());
                                     }
-
                                 }
                             }
                         }
