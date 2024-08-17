@@ -1,4 +1,4 @@
-package games.kingdoms.kingdoms.publiccmds.kingdoms.configs;
+package games.kingdoms.kingdoms.admin.configs;
 
 import com.github.sanctum.labyrinth.data.FileList;
 import com.github.sanctum.labyrinth.data.YamlExtension;
@@ -13,25 +13,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MoneyConfig {
+public class StaffConfig {
 
-    static MoneyConfig INSTANCE;
+    static StaffConfig INSTANCE;
     final FileList list;
     final Kingdoms plugin;
     String args;
     Map<String, Configurable> configMap = new HashMap<>();
 
-    public MoneyConfig(Kingdoms plugin) {
+    public StaffConfig(Kingdoms plugin) {
         this.plugin = plugin;
         this.list = FileList.search(plugin);
     }
 
-    public static @NotNull MoneyConfig getInstance() {
-        return INSTANCE != null ? INSTANCE : (INSTANCE = new MoneyConfig(Kingdoms.getPlugin(Kingdoms.class)));
-    }
-
     public Configurable getConfig() {
-        return list.get("Money", "Data", YamlExtension.INSTANCE).getRoot();
+        return list.get("Staff", "Data", YamlExtension.INSTANCE).getRoot();
     }
 
     public Configurable getConfig(String key) {
@@ -45,14 +41,31 @@ public class MoneyConfig {
         return config;
     }
 
+
+    /*
+    this.getConfig().getConfigurationSection("Invites").getKeys(false).forEach(key -> {
+            for (Map.Entry<String, String> inviteList : inviteList.entrySet()) {
+                if (this.getConfig().contains("Invites." + key + "." + inviteList.getValue())) {
+                    String inviteList1 = (String) this.getConfig().get("Invites." + key);
+                    this.inviteList.put(key, inviteList1);
+                } else {
+                    this.inviteList.put(key, null);
+                }
+            }
+        });
+     */
     public void save() {
-        Configurable config = configMap.get("Data/Money.yml");
+        Configurable config = configMap.get("Data/Staff.yml");
         if (config != null) {
-            for (Map.Entry<String, Long> money : plugin.getMoney().entrySet()) {
-                config.set("money." + money.getKey(), money.getValue());
+            for (Map.Entry<String, String> staff : plugin.getStaff().entrySet()) {
+                config.set("staff." + staff.getKey(), staff.getValue());
             }
         }
         config.save();
+    }
+
+    public static @NotNull StaffConfig getInstance() {
+        return INSTANCE != null ? INSTANCE : (INSTANCE = new StaffConfig(Kingdoms.getPlugin(Kingdoms.class)));
     }
 
     public Configurable getConfig(@NotNull String fileName, @Nullable String fileDirectory) {
@@ -71,14 +84,16 @@ public class MoneyConfig {
     }
 
     public void reload(Player player) {
-        plugin.getKingdoms().put("money." + player.getUniqueId().toString(), plugin.getKingdoms().get(player.getUniqueId().toString()));
+        if (plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+            plugin.getKingdoms().put("staff." + player.getUniqueId().toString(), plugin.getStaff().get(player.getUniqueId().toString()));
+        }
     }
 
     public void reload() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
                 for (Map.Entry<String, String> kingdoms : plugin.getKingdoms().entrySet()) {
-                    plugin.getKingdoms().put("money." + kingdoms.getKey(), kingdoms.getValue());
+                    plugin.getKingdoms().put("staff." + kingdoms.getKey(), kingdoms.getValue());
                 }
             }
         }

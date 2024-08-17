@@ -1,4 +1,4 @@
-package games.kingdoms.kingdoms.publiccmds.kingdoms.configs;
+package games.kingdoms.kingdoms.admin.configs;
 
 import com.github.sanctum.labyrinth.data.FileList;
 import com.github.sanctum.labyrinth.data.YamlExtension;
@@ -13,26 +13,26 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class KingdomsConfig {
+public class PunishmentConfig {
 
-    static KingdomsConfig INSTANCE;
+    static PunishmentConfig INSTANCE;
     final FileList list;
-    Kingdoms plugin;
+    final Kingdoms plugin;
     String args;
     int argLength;
     Map<String, Configurable> configMap = new HashMap<>();
 
-    public KingdomsConfig(Kingdoms plugin) {
+    public PunishmentConfig(Kingdoms plugin) {
         this.plugin = plugin;
         this.list = FileList.search(plugin);
     }
 
-    public static @NotNull KingdomsConfig getInstance() {
-        return INSTANCE != null ? INSTANCE : (INSTANCE = new KingdomsConfig(Kingdoms.getPlugin(Kingdoms.class)));
+    public static @NotNull PunishmentConfig getInstance() {
+        return INSTANCE != null ? INSTANCE : (INSTANCE = new PunishmentConfig(Kingdoms.getPlugin(Kingdoms.class)));
     }
 
     public Configurable getConfig() {
-        return list.get("Kingdoms", "Data", YamlExtension.INSTANCE).getRoot();
+        return list.get("Punishments", "Data", YamlExtension.INSTANCE).getRoot();
     }
 
     public Configurable getConfig(String key) {
@@ -47,7 +47,7 @@ public class KingdomsConfig {
     }
 
     public void save() {
-        Configurable config = configMap.get("Data/Kingdoms.yml");
+        Configurable config = configMap.get("Data/Punishments.yml");
         if (config != null) {
             for (Map.Entry<String, String> kingdoms : plugin.getKingdoms().entrySet()) {
                 config.set("kingdoms." + kingdoms.getKey(), kingdoms.getValue());

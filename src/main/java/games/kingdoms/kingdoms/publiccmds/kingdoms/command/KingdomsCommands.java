@@ -3,7 +3,7 @@ package games.kingdoms.kingdoms.publiccmds.kingdoms.command;
 import com.github.sanctum.panther.file.Configurable;
 import games.kingdoms.kingdoms.Kingdoms;
 import games.kingdoms.kingdoms.MessageManager;
-import games.kingdoms.kingdoms.publiccmds.kingdoms.configs.KingdomsConfig;
+import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
