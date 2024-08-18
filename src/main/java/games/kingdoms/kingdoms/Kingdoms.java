@@ -922,7 +922,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     // Method to check if a chunk is claimed
     private boolean isChunkClaimed(Chunk chunk) {
         String chunkID = chunk.getX() + "," + chunk.getZ();
-        return claimedChunks.containsKey(chunkID);
+        if (!claimedChunks.get(chunkID).isEmpty()) {
+            return claimedChunks.containsKey(chunkID);
+        }
+        return false;
     }
 
     // Method to send a title to a player

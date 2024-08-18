@@ -25,7 +25,6 @@ public class Password implements CommandExecutor, Listener {
     static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\\$%\\^&\\*\\-\\_]).{5,}$");
 
-    //todo: Figure out why onPlayerJoin throws a NullPointerException
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
 
