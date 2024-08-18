@@ -88,7 +88,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private StaffConfig staffConfig;
     private PunishmentConfig punishmentConfig;
     private static Kingdoms plugin;
-    private HashMap<String, String> removePlayerFromKingdom = new HashMap<>();
     private HashMap<String, Integer> staffCount = new HashMap<>();
     private HashMap<String, String> customRank = new HashMap<>();
     private HashMap<String, String> kingdomExists = new HashMap<>();
@@ -255,7 +254,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         spam = new HashMap<>();
         playerToPunish = new HashMap<>();
 
-        removePlayerFromKingdom = new HashMap<>();
         chatFocus = new HashMap<>();
         money = new HashMap<>();
         passwords = new HashMap<>();
@@ -683,15 +681,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             if (isChunkClaimed(toChunk)) {
                 String ownerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
-
-                title = " ";
-                subtitle = ChatColor.GREEN + ownerKingdom;
-            } else {
-                title = " ";
-                subtitle = ChatColor.RED + "Wilderness";
+                if (!ownerKingdom.isEmpty()) {
+                    title = " ";
+                    subtitle = ChatColor.GREEN + ownerKingdom;
+                } else {
+                    title = " ";
+                    subtitle = ChatColor.RED + "Wilderness";
+                }
+                sendTitle(player, title, subtitle, 10, 40, 10);
             }
-
-            sendTitle(player, title, subtitle, 10, 40, 10);
         }
 
         if (!fromChunk.equals(toChunk)) {
@@ -803,6 +801,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             kingdoms.put(player.getUniqueId().toString(), "");
             passwords.put(player.getUniqueId().toString(), "");
         } else {
+            restorePluginData(player);
             if (!kingdoms.containsKey(player.getUniqueId().toString())) {
                 kingdoms.put(player.getUniqueId().toString(), "");
             }
@@ -918,8 +917,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
             }
         }
-
-        restorePluginData();
     }
 
     // Method to check if a chunk is claimed
@@ -960,10 +957,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public HashMap<String, String> getStaff() {
         return staff;
-    }
-
-    public HashMap<String, String> getRemovePlayerFromKingdom() {
-        return removePlayerFromKingdom;
     }
 
     public HashMap<String, String> getKingdoms() {
@@ -1089,13 +1082,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                         String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
                         this.bannedNames.put(key, bannedNames);
                     });
-                }
-                if (kc.getNode("remove").exists()) {
-                    kc.getNode("remove").getKeys(false).forEach(key -> {
-                        String remove = kc.getNode("remove." + key).toPrimitive().getString();
-                        removePlayerFromKingdom.put(key, remove);
-                    });
-
                 }
                 if (kc.getNode("exists").exists()) {
                     kc.getNode("exists").getKeys(false).forEach(key -> {
@@ -1235,13 +1221,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     this.bannedNames.put(key, bannedNames);
                 });
             }
-            if (kc.getNode("remove").exists()) {
-                kc.getNode("remove").getKeys(false).forEach(key -> {
-                    String remove = kc.getNode("remove." + key).toPrimitive().getString();
-                    removePlayerFromKingdom.put(key, remove);
-                });
-
-            }
             if (kc.getNode("exists").exists()) {
                 kc.getNode("exists").getKeys(false).forEach(key -> {
                     String value = kc.getNode("exists." + key).toPrimitive().getString();
@@ -1366,7 +1345,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData(Player player) {
-        saveData(kingdomsConfig.getConfig(), removePlayerFromKingdom, "remove.");
         saveData(punishmentConfig.getConfig(), reportAbuse, "report.");
         saveData(punishmentConfig.getConfig(), disrespect, "disrespect.");
         saveData(punishmentConfig.getConfig(), language, "language.");
@@ -1400,7 +1378,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData() {
-        saveData(kingdomsConfig.getConfig(), removePlayerFromKingdom, "remove.");
         saveData(punishmentConfig.getConfig(), reportAbuse, "report.");
         saveData(punishmentConfig.getConfig(), disrespect, "disrespect.");
         saveData(punishmentConfig.getConfig(), language, "language.");

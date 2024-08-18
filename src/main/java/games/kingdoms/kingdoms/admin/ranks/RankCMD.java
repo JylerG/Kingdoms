@@ -51,32 +51,46 @@ public class RankCMD implements CommandExecutor {
             boolean isAdmin = plugin.getPlayerRank().get(player.getUniqueId().toString())
                     .equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)
                     && player.hasPermission("kingdoms.setrank.fake");
-            if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("reset")) {
-                    if (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                            && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
+            if (args.length == 1 && args[0].equalsIgnoreCase("reset")) {
+
+                // Check if player is SRMOD
+                if (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")) {
+                    if (!plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
                         plugin.getPlayerRank().put(player.getUniqueId().toString(), ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
                         player.sendMessage(ChatColor.LIGHT_PURPLE + "You reset your rank to " + ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
                     } else {
                         player.sendMessage(ChatColor.RED + "You are already " + ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD + ChatColor.RED + " rank");
+                        return true;
                     }
-                    if (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                            && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
+                }
+
+                // Check if player is JRADMIN
+                if (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")) {
+                    if (!plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
                         plugin.getPlayerRank().put(player.getUniqueId().toString(), ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
                         player.sendMessage(ChatColor.LIGHT_PURPLE + "You reset your rank to " + ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
                     } else {
                         player.sendMessage(ChatColor.RED + "You are already " + ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN + ChatColor.RED + " rank");
+                        return true;
                     }
-                    if (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                            && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
+                }
+
+                // Check if player is ADMIN
+                if (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                    if (!plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
                         plugin.getPlayerRank().put(player.getUniqueId().toString(), ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
                         player.sendMessage(ChatColor.LIGHT_PURPLE + "You reset your rank to " + ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
                     } else {
                         player.sendMessage(ChatColor.RED + "You are already " + ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN + ChatColor.RED + " rank");
+                        return true;
                     }
                 }
+
+                // Save plugin data
                 plugin.savePluginData();
             }
+
+
             if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("fake") && args[1].equalsIgnoreCase("default")) {
                     if (!isDefault) {

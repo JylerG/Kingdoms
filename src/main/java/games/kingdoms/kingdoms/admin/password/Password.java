@@ -25,37 +25,38 @@ public class Password implements CommandExecutor, Listener {
     static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\\$%\\^&\\*\\-\\_]).{5,}$");
 
+    //todo: Figure out why onPlayerJoin throws a NullPointerException
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
 
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
 
-        String rank = plugin.getPlayerRank().get(playerUUID.toString());
+        plugin.restorePluginData();
 
-        if ((rank.equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD) ||
-                rank.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD) ||
-                rank.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD) ||
-                rank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN) ||
-                rank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN))) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove kingdoms.move");
-            if (plugin.getStaffPasswords().get(playerUUID.toString()).isEmpty()) {
+        boolean isJrMod = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
+        boolean isMod = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
+        boolean isSrMod = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
+        boolean isJrAdmin = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
+        boolean isAdmin = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
 
-                player.sendMessage(ChatColor.GREEN + "Please enter your new password\n" +
-                        "Use " + ChatColor.WHITE + "/password <your new password>\n" +
-                        ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
-                        ChatColor.YELLOW + "◼ At least 5 Characters\n" +
-                        ChatColor.YELLOW + "◼ Contains Numbers\n" +
-                        ChatColor.YELLOW + "◼ Contains Uppercase Letters\n" +
-                        ChatColor.YELLOW + "◼ Contains Lowercase Letters\n" +
-                        ChatColor.YELLOW + "◼ Contains Symbols\n" +
-                        ChatColor.DARK_AQUA + "Please enter a valid password");
-            } else {
+        if ((!isJrMod && !isMod && !isSrMod && !isJrAdmin && !isAdmin) && player.hasPermission("kingdoms.move")) return;
 
-                // Password Entered = false
-
-                player.sendMessage(ChatColor.GREEN + "Please enter your password. " + ChatColor.WHITE + "/password <your password>");
-            }
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove kingdoms.move");
+        String password = plugin.getStaffPasswords().get(playerUUID.toString());
+        if (password == null || password.isEmpty()) {
+            player.sendMessage(ChatColor.GREEN + "Please enter your new password\n" +
+                    "Use " + ChatColor.WHITE + "/password <your new password>\n" +
+                    ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
+                    ChatColor.YELLOW + "◼ At least 5 Characters\n" +
+                    ChatColor.YELLOW + "◼ Contains Numbers\n" +
+                    ChatColor.YELLOW + "◼ Contains Uppercase Letters\n" +
+                    ChatColor.YELLOW + "◼ Contains Lowercase Letters\n" +
+                    ChatColor.YELLOW + "◼ Contains Symbols\n" +
+                    ChatColor.DARK_AQUA + "Please enter a valid password");
+        } else {
+            // Password Entered = false
+            player.sendMessage(ChatColor.GREEN + "Please enter your password. " + ChatColor.WHITE + "/password <your password>");
         }
     }
 
@@ -64,25 +65,33 @@ public class Password implements CommandExecutor, Listener {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
 
-        if (plugin.getPlayerRank().containsKey(playerUUID.toString())
-                && !player.hasPermission("kingdoms.move")) {
+        boolean isJrMod = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
+        boolean isMod = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
+        boolean isSrMod = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
+        boolean isJrAdmin = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
+        boolean isAdmin = plugin.getPlayerRank().get(playerUUID.toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
 
-            if (plugin.getStaffPasswords().get(player.getUniqueId().toString()).isEmpty()) {
-                player.sendMessage(ChatColor.GREEN + "Please enter your new password\n" +
-                        "Use " + ChatColor.WHITE + "/password <your new password>\n" +
-                        ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
-                        ChatColor.YELLOW + "◼ At least 5 Characters\n" +
-                        ChatColor.YELLOW + "◼ Contains Numbers\n" +
-                        ChatColor.YELLOW + "◼ Contains Uppercase Letters\n" +
-                        ChatColor.YELLOW + "◼ Contains Lowercase Letters\n" +
-                        ChatColor.YELLOW + "◼ Contains Symbols\n" +
-                        ChatColor.DARK_AQUA + "Please enter a valid password");
-            } else {
-                player.sendMessage(ChatColor.GREEN + "Please enter your password. " + ChatColor.WHITE + "/password <your password>");
-            }
+        if ((!isJrMod && !isMod && !isSrMod && !isJrAdmin && !isAdmin) && player.hasPermission("kingdoms.move")) return;
+
+        String password = plugin.getStaffPasswords().get(playerUUID.toString());
+        if ((password.isEmpty() || password == null)
+                && (isJrMod || isMod || isSrMod || isJrAdmin || isAdmin)
+                && !player.hasPermission("kingdoms.move")) {
+            player.sendMessage(ChatColor.GREEN + "Please enter your new password\n" +
+                    "Use " + ChatColor.WHITE + "/password <your new password>\n" +
+                    ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
+                    ChatColor.YELLOW + "◼ At least 5 Characters\n" +
+                    ChatColor.YELLOW + "◼ Contains Numbers\n" +
+                    ChatColor.YELLOW + "◼ Contains Uppercase Letters\n" +
+                    ChatColor.YELLOW + "◼ Contains Lowercase Letters\n" +
+                    ChatColor.YELLOW + "◼ Contains Symbols\n" +
+                    ChatColor.DARK_AQUA + "Please enter a valid password");
             e.setCancelled(true);
-        } else if (plugin.getPlayerRank().containsKey(playerUUID.toString())
-                && player.hasPermission("kingdoms.move")) {
+        } else if (!plugin.getStaffPasswords().get(player.getUniqueId().toString()).isEmpty() &&
+                (isJrMod || isMod || isSrMod || isJrAdmin || isAdmin) && !player.hasPermission("kingdoms.move")) {
+            player.sendMessage(ChatColor.GREEN + "Please enter your password. " + ChatColor.WHITE + "/password <your password>");
+            e.setCancelled(true);
+        } else if ((isJrMod || isMod || isSrMod || isJrAdmin || isAdmin) && player.hasPermission("kingdoms.move")) {
             e.setCancelled(false);
         }
     }
@@ -123,10 +132,17 @@ public class Password implements CommandExecutor, Listener {
             return true;
         } else {
             if (!plugin.getStaffPasswords().get(playerUUID.toString()).equals(password)) {
-                player.sendMessage(ChatColor.GREEN + "Incorrect password. Please try again");
+                player.sendMessage(ChatColor.RED + "Incorrect password");
             } else {
                 player.sendMessage(ChatColor.GREEN + "You entered the correct password");
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " add kingdoms.move");
+            }
+        }
+
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("reset")) {
+                Player target = Bukkit.getPlayer(args[1]);
+                plugin.getStaffPasswords().put(target.getUniqueId().toString(), "");
             }
         }
         return true;
