@@ -494,7 +494,7 @@ public class KingdomsCommands implements CommandExecutor {
 
         // If the player is not an admin, check if they are trying to disband their own kingdom
         if (!player.hasPermission("kingdoms.disband.admin")) {
-            if (plugin.getKingdoms().get(player.getUniqueId().toString()).equalsIgnoreCase("")) {
+            if (plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom");
                 return;
             }
