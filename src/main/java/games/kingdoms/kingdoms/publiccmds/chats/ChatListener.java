@@ -1,6 +1,7 @@
 package games.kingdoms.kingdoms.publiccmds.chats;
 
 import games.kingdoms.kingdoms.Kingdoms;
+import games.kingdoms.kingdoms.MessageManager;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +23,11 @@ public class ChatListener implements Listener {
         Map<String, String> playerRank = plugin.getPlayerRank();
         String eventMessage = event.getMessage();
         Player player = event.getPlayer();
+        if (!player.hasPermission("kingdoms.move")) {
+            MessageManager.playerBad(player, "You must enter your password before you can chat");
+            event.setCancelled(true);
+            return;
+        }
         if (plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("GLOBAL")) {
             if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
                 String kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());

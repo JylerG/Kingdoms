@@ -528,9 +528,11 @@ public class KingdomsCommands implements CommandExecutor {
             if (entry.getValue().equals(kingdom)) {
                 String playerObj = entry.getKey();
                 Player kingdomOwner = Bukkit.getPlayer(UUID.fromString(playerObj));
-                if (kingdomOwner != null) {
-                    kingdomOwner.sendMessage(kingdom + ChatColor.GREEN + " disbanded");
-                }
+                OfflinePlayer offlineOwner = Bukkit.getOfflinePlayer(UUID.fromString(playerObj));
+                String offlineKingdom = plugin.getOwner().get(offlineOwner);
+                if (offlineKingdom != null || kingdomOwner != null) {
+                    player.sendMessage(kingdom + ChatColor.GREEN + " disbanded");
+                } else return;
                 iterator.remove(); // Remove the kingdom entry
 
                 // Remove all associated entries from other maps
