@@ -138,6 +138,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+
+
         //Save default config
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -165,6 +167,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         initMapList();
 
         //Restore Plugin Data
+        restoreOfflineData();
         restoreServerData();
 
         //Commands
@@ -1206,6 +1209,145 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 //                if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
 //                        passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
 //                }
+            }
+        }
+    }
+
+    public void restoreOfflineData() {
+        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+
+            Configurable kc = kingdomsConfig.getConfig();
+            Configurable sc = staffConfig.getConfig();
+            Configurable mc = moneyConfig.getConfig();
+            Configurable pu = punishmentConfig.getConfig();
+
+            if (kc != null) {
+                if (kc.getNode("bannedNames").exists()) {
+                    kc.getNode("bannedNames").getKeys(false).forEach(key -> {
+                        String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
+                        this.bannedNames.put(key, bannedNames);
+                    });
+                }
+                if (kc.getNode("exists").exists()) {
+                    kc.getNode("exists").getKeys(false).forEach(key -> {
+                        String value = kc.getNode("exists." + key).toPrimitive().getString();
+                        this.kingdomExists.put(key, value);
+                    });
+                }
+                if (kc.getNode("invites").getNode(offline.getUniqueId().toString()).exists()) {
+                    inviteList.put(offline.getUniqueId().toString(), kc.getNode("invites." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (kc.getNode("kingdoms").getNode(offline.getUniqueId().toString()).exists()) {
+                    kingdoms.put(offline.getUniqueId().toString(), kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (kc.getNode("maxClaims").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
+                    maxClaims.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("maxClaims." + kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getInt());
+                }
+                if (kc.getNode("owners").getNode(offline.getUniqueId().toString()).exists()) {
+                    owner.put(offline.getUniqueId().toString(), kc.getNode("owners." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (kc.getNode("admins").getNode(offline.getUniqueId().toString()).exists()) {
+                    admin.put(offline.getUniqueId().toString(), kc.getNode("admins." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (kc.getNode("members").getNode(offline.getUniqueId().toString()).exists()) {
+                    member.put(offline.getUniqueId().toString(), kc.getNode("members." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
+                    if (kc.getNode("exists").getNode(kingdom.getValue()).exists()) {
+                        kingdomExists.put(kingdom.getValue(), kingdom.getValue());
+                    }
+                }
+                if (kc.getNode("canClaim").getNode(offline.getUniqueId().toString()).exists()) {
+                    canClaim.put(offline.getUniqueId().toString(), kc.getNode("canClaim." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (kc.getNode("canUnclaim").getNode(offline.getUniqueId().toString()).exists()) {
+                    canUnclaim.put(offline.getUniqueId().toString(), kc.getNode("canUnclaim." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (kc.getNode("spawns").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
+                    kingdomSpawn.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(offline.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
+                }
+                if (kc.getNode("maxMembers").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
+                    maxMembers.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getInt());
+                }
+                if (kc.getNode("claimPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
+                    claimPrice.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getLong());
+                }
+                if (kc.getNode("memberPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
+                    memberPrice.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getLong());
+                }
+                for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
+                    if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
+                        if (kingdoms.containsKey(offline.getUniqueId().toString())) {
+                            //chunkID, kingdom
+                            kc.getNode("claims").getKeys(false).forEach(key -> {
+                                String chunkClaimer = kc.getNode("claims." + key).toPrimitive().getString();
+                                claimedChunks.put(key, chunkClaimer);
+                            });
+                        }
+                    }
+                }
+            }
+
+            if (pu != null) {
+                if (pu.getNode("report").getNode(offline.getUniqueId().toString()).exists()) {
+                    reportAbuse.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("discrimination").getNode(offline.getUniqueId().toString()).exists()) {
+                    discrimination.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("language").getNode(offline.getUniqueId().toString()).exists()) {
+                    language.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("ipAdverts").getNode(offline.getUniqueId().toString()).exists()) {
+                    ipAdverts.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("mediaAdverts").getNode(offline.getUniqueId().toString()).exists()) {
+                    mediaAdverts.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("soliciting").getNode(offline.getUniqueId().toString()).exists()) {
+                    soliciting.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("spam").getNode(offline.getUniqueId().toString()).exists()) {
+                    spam.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("threats").getNode(offline.getUniqueId().toString()).exists()) {
+                    threats.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+                if (pu.getNode("disrespect").getNode(offline.getUniqueId().toString()).exists()) {
+                    disrespect.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
+                }
+            }
+
+            if (mc != null) {
+                if (mc.getNode("balance").getNode(offline.getUniqueId().toString()).exists()) {
+                    money.put(offline.getUniqueId().toString(), mc.getNode("balance." + offline.getUniqueId().toString()).toPrimitive().getLong());
+                } else {
+                    money.put(offline.getUniqueId().toString(), 0L);
+                }
+            }
+
+            if (sc != null) {
+                if (sc.getNode("rank").getNode(offline.getUniqueId().toString()).exists()) {
+                    playerRank.put(offline.getUniqueId().toString(), sc.getNode("rank." + offline.getUniqueId().toString()).toPrimitive().getString());
+                } else {
+                    playerRank.put(offline.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+                }
+                if (sc.getNode("staff").getNode(offline.getUniqueId().toString()).exists()) {
+                    staff.put(offline.getUniqueId().toString(), sc.getNode("staff." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                try {
+                    if (Integer.parseInt(sc.getNode("online.online").toPrimitive().getString()) > -1) {
+                        staffCount.put("online", sc.getNode("online.online").toPrimitive().getInt());
+                    }
+                } catch (NumberFormatException e) {
+                    staffCount.put("online", 0);
+                }
+                if (sc.getNode("focus." + offline.getUniqueId().toString()).exists()) {
+                    chatFocus.put(offline.getUniqueId().toString(), sc.getNode("focus." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
+                if (sc.getNode("passwords").getNode(offline.getUniqueId().toString()).exists()) {
+                    passwords.put(offline.getUniqueId().toString(), sc.getNode("passwords." + offline.getUniqueId().toString()).toPrimitive().getString());
+                }
             }
         }
     }

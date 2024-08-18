@@ -16,10 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class KingdomsCommands implements CommandExecutor {
 
@@ -527,10 +524,7 @@ public class KingdomsCommands implements CommandExecutor {
             Map.Entry<String, String> entry = iterator.next();
             if (entry.getValue().equals(kingdom)) {
                 String playerObj = entry.getKey();
-                Player kingdomOwner = Bukkit.getPlayer(UUID.fromString(playerObj));
-                OfflinePlayer offlineOwner = Bukkit.getOfflinePlayer(UUID.fromString(playerObj));
-                String offlineKingdom = plugin.getOwner().get(offlineOwner);
-                if (offlineKingdom != null || kingdomOwner != null) {
+                if (plugin.getKingdoms().containsValue(args[1])) {
                     player.sendMessage(kingdom + ChatColor.GREEN + " disbanded");
                 } else return;
                 iterator.remove(); // Remove the kingdom entry
@@ -542,6 +536,7 @@ public class KingdomsCommands implements CommandExecutor {
                 plugin.getCanClaim().put(playerObj, "");
                 plugin.getCanUnclaim().put(playerObj, "");
                 plugin.getKingdoms().put(playerObj, "");
+                plugin.getInviteList().put(playerObj, "");
 
                 // Remove claimed chunks associated with the kingdom
                 Iterator<Map.Entry<String, String>> chunkIterator = plugin.getClaimedChunks().entrySet().iterator();
