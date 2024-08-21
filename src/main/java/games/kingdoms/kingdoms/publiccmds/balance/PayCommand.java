@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 public class PayCommand implements CommandExecutor {
 
     final Kingdoms plugin;
@@ -21,8 +23,7 @@ public class PayCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
 
             switch (args.length) {
                 case 0:
@@ -44,27 +45,18 @@ public class PayCommand implements CommandExecutor {
                         MessageManager.playerBad(player, "You cannot send yourself money");
                         return true;
                     } else {
-                        //player can't send 0 coins
-                        if (Integer.parseInt(args[1]) < 1) {
-                            player.sendMessage(ChatColor.RED + "You cannot send " + ChatColor.WHITE + args[1] + ChatColor.RED + " coins to a player");
-                        }
-                        //player is sending 1 coin
-                        if (Integer.parseInt(args[1]) == 1 && Integer.parseInt(args[1]) <= plugin.getMoney().get(player.getUniqueId().toString())) {
-                            plugin.getMoney().put(target.getUniqueId().toString(), plugin.getMoney().get(target.getUniqueId().toString()) + Integer.parseInt(args[1]));
-                            plugin.getMoney().put(player.getUniqueId().toString(), plugin.getMoney().get(player.getUniqueId().toString()) - Integer.parseInt(args[1]));
-                            player.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "[-] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.RED + " coins to " + ChatColor.WHITE + target.getName());
-                            target.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD + "[+] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.GREEN + " coins from " + ChatColor.WHITE + player.getName());
-                        }
-                        //player is sending more than 1 coin
-                        if (Integer.parseInt(args[1]) > 1 && Integer.parseInt(args[1]) < plugin.getMoney().get(player.getUniqueId().toString())) {
-                            plugin.getMoney().put(target.getUniqueId().toString(),  plugin.getMoney().get(target.getUniqueId().toString()) + Integer.parseInt(args[1]));
-                            plugin.getMoney().put(player.getUniqueId().toString(), plugin.getMoney().get(player.getUniqueId().toString()) - Integer.parseInt(args[1]));
-                            player.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "[-] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.RED + " coins to " + ChatColor.WHITE + target.getName());
-                            target.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD + "[+] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.GREEN + " coins from " + ChatColor.WHITE + player.getName());
-                        }
-                        if (Integer.parseInt(args[1]) >= 1 && Integer.parseInt(args[1]) > plugin.getMoney().get(player.getUniqueId().toString())) {
+                        DecimalFormat formatter = new DecimalFormat("#,###.##");
+                        String formattedMoney = formatter.format(args[1]);
+
+
+                        if (Double.parseDouble(formattedMoney) > 1 && Double.parseDouble(formattedMoney) > plugin.getMoney().get(player.getUniqueId().toString())) {
                             player.sendMessage(ChatColor.RED + "You do not have " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.RED + " coins");
+                            return true;
                         }
+
+                        plugin.getMoney().put(target.getUniqueId().toString(), Double.valueOf(formattedMoney));
+                        player.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "[-] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.RED + " coins to " + ChatColor.WHITE + target.getName());
+                        target.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD + "[+] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.GREEN + " coins from " + ChatColor.WHITE + player.getName());
                     }
                     break;
             }

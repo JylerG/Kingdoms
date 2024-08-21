@@ -48,7 +48,7 @@ public class MoneyConfig {
     public void save() {
         Configurable config = configMap.get("Data/Money.yml");
         if (config != null) {
-            for (Map.Entry<String, Long> money : plugin.getMoney().entrySet()) {
+            for (Map.Entry<String, Double> money : plugin.getMoney().entrySet()) {
                 config.set("money." + money.getKey(), money.getValue());
             }
         }

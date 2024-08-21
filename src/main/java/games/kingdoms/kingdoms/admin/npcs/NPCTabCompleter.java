@@ -1,4 +1,4 @@
-package games.kingdoms.kingdoms.admin.CustomNPCs;
+package games.kingdoms.kingdoms.admin.npcs;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

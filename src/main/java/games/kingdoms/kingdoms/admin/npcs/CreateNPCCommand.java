@@ -1,4 +1,4 @@
-package games.kingdoms.kingdoms.admin.CustomNPCs;
+package games.kingdoms.kingdoms.admin.npcs;
 
 import games.kingdoms.kingdoms.MessageManager;
 import net.citizensnpcs.api.CitizensAPI;

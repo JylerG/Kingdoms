@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 public class BalanceCommand implements CommandExecutor {
 
     final Kingdoms plugin;
@@ -27,31 +29,11 @@ public class BalanceCommand implements CommandExecutor {
 
             switch (args.length) {
                 case 0:
-                    long moneyValue = plugin.getMoney().get(player.getUniqueId().toString());
-
-                    String formattedMoney;
-
-                    if (moneyValue == 0) {
-                        formattedMoney = "0";
-                    } else if (moneyValue == 1) {
-                        formattedMoney = "1";
-                    } else if (moneyValue < 1_000.0) {
-                        formattedMoney = String.valueOf(moneyValue);
-                    } else if (moneyValue < 1_000_000.0) {
-                        formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
-                    } else if (moneyValue < 1_000_000_000.0) {
-                        formattedMoney = String.format("%.3fM", moneyValue / 1_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000L) {
-                        formattedMoney = String.format("%.3fB", moneyValue / 1_000_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000_000L) {
-                        formattedMoney = String.format("%.3fT", moneyValue / 1_000_000_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000_000_000L) {
-                        formattedMoney = String.format("%.3fQ", moneyValue / 1_000_000_000_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000_000_000_000.0) {
-                        formattedMoney = String.format("%.3fQU", moneyValue / 1_000_000_000_000_000_000.0);
-                    } else {
-                        formattedMoney = String.format("%.3fS", moneyValue / 1_000_000_000_000_000_000_000.0);
+                    DecimalFormat formatter = new DecimalFormat("#,###.##");
+                    if (!plugin.getMoney().containsKey(player.getUniqueId().toString())) {
+                        plugin.getMoney().put(player.getUniqueId().toString(), 0.0);
                     }
+                    String formattedMoney = formatter.format(plugin.getMoney().get(player.getUniqueId().toString()));
 
                     player.sendMessage(ChatColor.GREEN + "Your balance is " + ChatColor.WHITE + formattedMoney + ChatColor.GREEN + " coins");
 
@@ -59,31 +41,13 @@ public class BalanceCommand implements CommandExecutor {
 
                 case 1:
                     Player target = Bukkit.getPlayer(args[0]);
-                    moneyValue = plugin.getMoney().get(target.getUniqueId().toString());
-
-                    if (moneyValue == 0) {
-                        formattedMoney = "0";
-                    } else if (moneyValue == 1) {
-                        formattedMoney = "1";
-                    } else if (moneyValue < 1_000.0) {
-                        formattedMoney = String.valueOf(moneyValue);
-                    } else if (moneyValue < 1_000_000.0) {
-                        formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
-                    } else if (moneyValue < 1_000_000_000.0) {
-                        formattedMoney = String.format("%.3fM", moneyValue / 1_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000L) {
-                        formattedMoney = String.format("%.3fB", moneyValue / 1_000_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000_000L) {
-                        formattedMoney = String.format("%.3fT", moneyValue / 1_000_000_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000_000_000L) {
-                        formattedMoney = String.format("%.3fQ", moneyValue / 1_000_000_000_000_000.0);
-                    } else if (moneyValue < 1_000_000_000_000_000_000_000.0) {
-                        formattedMoney = String.format("%.3fQU", moneyValue / 1_000_000_000_000_000_000.0);
-                    } else {
-                        formattedMoney = String.format("%.3fS", moneyValue / 1_000_000_000_000_000_000_000.0);
+                    formatter = new DecimalFormat("#,###.##");
+                    if (!plugin.getMoney().containsKey(player.getUniqueId().toString())) {
+                        plugin.getMoney().put(player.getUniqueId().toString(), 0.0);
                     }
+                    formattedMoney = formatter.format(plugin.getMoney().get(target.getUniqueId().toString()));
 
-                    player.sendMessage(target.getName() + ChatColor.GREEN + "'s balance is " + ChatColor.WHITE + formattedMoney + ChatColor.GREEN + " coins");
+                    player.sendMessage(ChatColor.YELLOW + target.getName() + "'s balance: " + ChatColor.AQUA + formattedMoney + " coins");
                     break;
             }
         } else {

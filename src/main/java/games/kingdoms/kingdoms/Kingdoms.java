@@ -2,8 +2,8 @@ package games.kingdoms.kingdoms;
 
 import com.github.sanctum.labyrinth.data.BukkitGeneric;
 import com.github.sanctum.panther.file.Configurable;
-import games.kingdoms.kingdoms.admin.CustomNPCs.CreateNPCCommand;
-import games.kingdoms.kingdoms.admin.CustomNPCs.NPCTabCompleter;
+import games.kingdoms.kingdoms.admin.npcs.CreateNPCCommand;
+import games.kingdoms.kingdoms.admin.npcs.NPCTabCompleter;
 import games.kingdoms.kingdoms.admin.balance.EconomyCommand;
 import games.kingdoms.kingdoms.admin.balance.EconomyTabCompleter;
 import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
@@ -110,7 +110,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, Location> kingdomSpawn = new HashMap<>();
     private HashMap<String, String> staff = new HashMap<>();
     private HashMap<String, String> kingdoms = new HashMap<>();
-    private HashMap<String, Long> money = new HashMap<>();
+    private HashMap<String, Double> money = new HashMap<>();
     private HashMap<String, String> onlineStaff = new HashMap<>();
     private HashMap<String, Integer> maxMembers = new HashMap<>();
     private HashMap<String, Integer> maxClaims = new HashMap<>();
@@ -407,7 +407,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     //Player is in a chunk of the kingdom they are in
     public void inPlayersKingdomBoard(Player player, Chunk chunk) {
         if (claimedChunks.get(chunk.getX() + "," + chunk.getZ()).equals(kingdoms.get(player.getUniqueId().toString()))) {
-            long moneyValue = money.get(player.getUniqueId().toString());
             String formattedMoney;
             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
             Date date = new Date();
@@ -418,54 +417,29 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Objective obj = board.registerNewObjective("inChunk", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             Score divider = obj.getScore(" ");
-            divider.setScore(15);
+            divider.setScore(14);
             Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
-            p.setScore(14);
+            p.setScore(13);
             //Player rank
             if (owner.containsKey(player.getUniqueId().toString())) {
                 Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "King");
-                rank.setScore(13);
+                rank.setScore(12);
             }
             if (admin.containsKey(player.getUniqueId().toString()) && !owner.containsKey(player.getUniqueId().toString())) {
                 Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Knight");
-                rank.setScore(13);
+                rank.setScore(12);
             }
             if (member.containsKey(player.getUniqueId().toString()) && !owner.containsKey(player.getUniqueId().toString())) {
                 Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Citizen");
-                rank.setScore(13);
+                rank.setScore(12);
             }
             if (customRank.containsKey(player.getUniqueId().toString())) {
                 Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + customRank.get(player.getUniqueId().toString()));
-                rank.setScore(13);
+                rank.setScore(12);
             }
             //Coins
-            if (moneyValue == 0) {
-                Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
-                coins.setScore(12);
-            } else {
-                if (moneyValue == 1) {
-                    formattedMoney = "1";
-                } else if (moneyValue < 1_000.0) {
-                    formattedMoney = String.valueOf(moneyValue);
-                } else if (moneyValue < 1_000_000.0) {
-                    formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
-                } else if (moneyValue < 1_000_000_000.0) {
-                    formattedMoney = String.format("%.3fM", moneyValue / 1_000_000.0);
-                } else if (moneyValue < 1_000_000_000_000.0) {
-                    formattedMoney = String.format("%.3fB", moneyValue / 1_000_000_000.0);
-                } else if (moneyValue < 1_000_000_000_000_000.0) {
-                    formattedMoney = String.format("%.3fT", moneyValue / 1_000_000_000_000.0);
-                } else if (moneyValue < 1_000_000_000_000_000_000.0) {
-                    formattedMoney = String.format("%.3fQ", moneyValue / 1_000_000_000_000_000.0);
-                } else if (moneyValue < 1_000_000_000_000_000_000_000.0) {
-                    formattedMoney = String.format("%.3fQU", moneyValue / 1_000_000_000_000_000_000.0);
-                } else {
-                    formattedMoney = String.format("%.3fS", moneyValue / 1_000_000_000_000_000_000_000.0);
-                }
-                Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
-                coins.setScore(11);
-            }
-
+            Score coins = obj.getScore("Coins " + ChatColor.GOLD + money.get(player.getUniqueId().toString()));
+            coins.setScore(11);
             //Kill/Death Ratio
             Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
             kdr.setScore(10);
@@ -527,8 +501,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     //Player is not in a chunk owned by their kingdom
     public void notInPlayersKingdomBoard(Player player) {
-        long moneyValue = money.get(player.getUniqueId().toString());
-        String formattedMoney = money.get(player.getUniqueId().toString()).toString();
         Chunk chunk = player.getLocation().getChunk();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
@@ -539,39 +511,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Objective obj = board.registerNewObjective("notInClaim", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         Score divider = obj.getScore(" ");
-        divider.setScore(15);
+        divider.setScore(14);
         Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
-        p.setScore(14);
+        p.setScore(13);
         //Rank
         Score rank = obj.getScore("Rank " + playerRank.get(player.getUniqueId().toString()));
-        rank.setScore(13);
+        rank.setScore(12);
         //Coins
-        if (moneyValue == 0) {
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
-            coins.setScore(12);
-        } else {
-            if (moneyValue == 1) {
-                formattedMoney = "1";
-            } else if (moneyValue < 1_000.0) {
-                formattedMoney = String.valueOf(moneyValue);
-            } else if (moneyValue < 1_000_000.0) {
-                formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
-            } else if (moneyValue < 1_000_000_000.0) {
-                formattedMoney = String.format("%.3fM", moneyValue / 1_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fB", moneyValue / 1_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fT", moneyValue / 1_000_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fQ", moneyValue / 1_000_000_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fQU", moneyValue / 1_000_000_000_000_000_000.0);
-            } else {
-                formattedMoney = String.format("%.3fS", moneyValue / 1_000_000_000_000_000_000_000.0);
-            }
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
-            coins.setScore(11);
-        }
+        Score coins = obj.getScore("Coins " + ChatColor.GOLD + money.get(player.getUniqueId().toString()));
+        coins.setScore(11);
         //Kill/Death Ratio
         Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
         kdr.setScore(10);
@@ -599,8 +547,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     //Player is not in a kingdom
     public void notInKingdomBoard(Player player) {
-        long moneyValue = money.getOrDefault(player.getUniqueId().toString(), 0L);
-        String formattedMoney = money.getOrDefault(player.getUniqueId().toString(), 0L).toString();
+        String formattedMoney = money.get(player.getUniqueId().toString()).toString();
         Chunk chunk = player.getLocation().getChunk();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
@@ -608,42 +555,21 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
         //Scoreboard Name
-        Objective obj = board.registerNewObjective("notInKingdom", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
+        Objective obj = board.registerNewObjective("notInClaim", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         Score divider = obj.getScore(" ");
-        divider.setScore(15);
+        divider.setScore(14);
         Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
-        p.setScore(14);
+        p.setScore(13);
         //Rank
         Score rank = obj.getScore("Rank " + playerRank.get(player.getUniqueId().toString()));
-        rank.setScore(13);
+        rank.setScore(12);
         //Coins
-        if (moneyValue == 0) {
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + 0);
-            coins.setScore(12);
-        } else {
-            if (moneyValue == 1) {
-                formattedMoney = "1";
-            } else if (moneyValue < 1_000.0) {
-                formattedMoney = String.valueOf(moneyValue);
-            } else if (moneyValue < 1_000_000.0) {
-                formattedMoney = String.format("%.3fK", moneyValue / 1_000.0);
-            } else if (moneyValue < 1_000_000_000.0) {
-                formattedMoney = String.format("%.3fM", moneyValue / 1_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fB", moneyValue / 1_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fT", moneyValue / 1_000_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fQ", moneyValue / 1_000_000_000_000_000.0);
-            } else if (moneyValue < 1_000_000_000_000_000_000_000.0) {
-                formattedMoney = String.format("%.3fQU", moneyValue / 1_000_000_000_000_000_000.0);
-            } else {
-                formattedMoney = String.format("%.3fS", moneyValue / 1_000_000_000_000_000_000_000.0);
-            }
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
-            coins.setScore(11);
+        if (!money.containsKey(player.getUniqueId().toString())) {
+            money.put(player.getUniqueId().toString(), 0.0);
         }
+        Score coins = obj.getScore("Coins " + ChatColor.GOLD + money.get(player.getUniqueId().toString()));
+        coins.setScore(11);
         //Kill/Death Ratio
         Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
         kdr.setScore(10);
@@ -799,7 +725,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             defaultTeam.addEntry(player.getUniqueId().toString());
             playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-            money.put(player.getUniqueId().toString(), 0L);
+            money.put(player.getUniqueId().toString(), 0.00);
             chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
             kingdoms.put(player.getUniqueId().toString(), "");
             passwords.put(player.getUniqueId().toString(), "");
@@ -819,7 +745,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             }
             if (!money.containsKey(player.getUniqueId().toString())) {
-                money.put(player.getUniqueId().toString(), 0L);
+                money.put(player.getUniqueId().toString(), 0.00);
             }
 
             int staffCount = 0;
@@ -838,7 +764,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
 
             if (!money.containsKey(player.getUniqueId().toString())) {
-                money.put(player.getUniqueId().toString(), 0L);
+                money.put(player.getUniqueId().toString(), 0.0);
             }
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
@@ -925,7 +851,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     // Method to check if a chunk is claimed
     private boolean isChunkClaimed(Chunk chunk) {
         String chunkID = chunk.getX() + "," + chunk.getZ();
-        if (!claimedChunks.get(chunkID).isEmpty()) {
+        if (!(claimedChunks == null) || !claimedChunks.get(chunkID).isEmpty()) {
             return claimedChunks.containsKey(chunkID);
         }
         return false;
@@ -1069,7 +995,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return inviteList;
     }
 
-    public HashMap<String, Long> getMoney() {
+    public HashMap<String, Double > getMoney() {
         return money;
     }
 
@@ -1181,9 +1107,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             if (mc != null) {
                 if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
-                    money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
+                    money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getDouble());
                 } else {
-                    money.put(player.getUniqueId().toString(), 0L);
+                    money.put(player.getUniqueId().toString(), 0.0);
                 }
             }
 
@@ -1320,9 +1246,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             if (mc != null) {
                 if (mc.getNode("balance").getNode(offline.getUniqueId().toString()).exists()) {
-                    money.put(offline.getUniqueId().toString(), mc.getNode("balance." + offline.getUniqueId().toString()).toPrimitive().getLong());
+                    money.put(offline.getUniqueId().toString(), mc.getNode("balance." + offline.getUniqueId().toString()).toPrimitive().getDouble());
                 } else {
-                    money.put(offline.getUniqueId().toString(), 0L);
+                    money.put(offline.getUniqueId().toString(), 0.0);
                 }
             }
 
@@ -1458,9 +1384,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         if (mc != null) {
             if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
-                money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
+                money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getDouble());
             } else {
-                money.put(player.getUniqueId().toString(), 0L);
+                money.put(player.getUniqueId().toString(), 0.0);
             }
         }
 
