@@ -1,7 +1,6 @@
 package games.kingdoms.kingdoms.publiccmds.report;
 
 import games.kingdoms.kingdoms.Kingdoms;
-import games.kingdoms.kingdoms.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,6 +31,7 @@ public class ReportCommand implements CommandExecutor {
 
                 if (target == null) {
                     player.sendMessage(args[0] + ChatColor.RED + " is not online");
+                    return true;
                 }
 
                 if (!(target.getWorld() == player.getWorld())) {
@@ -39,7 +39,7 @@ public class ReportCommand implements CommandExecutor {
                     return true;
                 }
 
-                MessageManager.playerGood(player, "Report sent successfully");
+                player.sendMessage(ChatColor.GREEN + "Staff have been notified of your report against " + ChatColor.WHITE + target);
 
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")

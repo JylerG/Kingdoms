@@ -2,8 +2,6 @@ package games.kingdoms.kingdoms;
 
 import com.github.sanctum.labyrinth.data.BukkitGeneric;
 import com.github.sanctum.panther.file.Configurable;
-import games.kingdoms.kingdoms.admin.npcs.CreateNPCCommand;
-import games.kingdoms.kingdoms.admin.npcs.NPCTabCompleter;
 import games.kingdoms.kingdoms.admin.balance.EconomyCommand;
 import games.kingdoms.kingdoms.admin.balance.EconomyTabCompleter;
 import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
@@ -19,6 +17,8 @@ import games.kingdoms.kingdoms.admin.gamemodes.Creative;
 import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
+import games.kingdoms.kingdoms.admin.npcs.CreateNPCCommand;
+import games.kingdoms.kingdoms.admin.npcs.NPCTabCompleter;
 import games.kingdoms.kingdoms.admin.password.Password;
 import games.kingdoms.kingdoms.admin.permissions.Permissions;
 import games.kingdoms.kingdoms.admin.punishCMD.ConfirmPunishment;
@@ -137,7 +137,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-
 
 
         //Save default config
@@ -603,32 +602,36 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Chunk toChunk = event.getTo().getChunk();
 
         if (!fromChunk.equals(toChunk)) {
-
-            // The player entered a new chunk
-
             String title, subtitle;
 
-            if (isChunkClaimed(toChunk)) {
+            // Check if the toChunk is claimed
+            if (isChunkClaimed(toChunk, player)) {
                 String ownerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
-                if (!ownerKingdom.isEmpty()) {
+
+                // If the chunk is claimed by a kingdom
+                if (ownerKingdom != null && !ownerKingdom.isEmpty()) {
                     title = " ";
                     subtitle = ChatColor.GREEN + ownerKingdom;
                 } else {
+                    // If the chunk is not claimed, consider it wilderness
                     title = " ";
                     subtitle = ChatColor.RED + "Wilderness";
                 }
-                sendTitle(player, title, subtitle, 10, 40, 10);
+            } else {
+                // If the chunk is not claimed, consider it wilderness
+                title = " ";
+                subtitle = ChatColor.RED + "Wilderness";
             }
-        }
 
-        if (!fromChunk.equals(toChunk)) {
+            sendTitle(player, title, subtitle, 10, 40, 10);
+
+            // Update the player's scoreboard or other relevant information
             if (kingdoms.containsKey(player.getUniqueId().toString())) {
-                if (isChunkClaimed(toChunk)) {
+                if (isChunkClaimed(toChunk, player)) {
                     inPlayersKingdomBoard(player, toChunk);
                 } else {
                     notInPlayersKingdomBoard(player);
                 }
-
             } else {
                 notInKingdomBoard(player);
             }
@@ -725,7 +728,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             defaultTeam.addEntry(player.getUniqueId().toString());
             playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-            money.put(player.getUniqueId().toString(), 0.00);
+            money.put(player.getUniqueId().toString(), 0.0);
             chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
             kingdoms.put(player.getUniqueId().toString(), "");
             passwords.put(player.getUniqueId().toString(), "");
@@ -745,7 +748,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             }
             if (!money.containsKey(player.getUniqueId().toString())) {
-                money.put(player.getUniqueId().toString(), 0.00);
+                money.put(player.getUniqueId().toString(), 0.0);
             }
 
             int staffCount = 0;
@@ -849,13 +852,27 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     // Method to check if a chunk is claimed
-    private boolean isChunkClaimed(Chunk chunk) {
+    private boolean isChunkClaimed(Chunk chunk, Player player) {
         String chunkID = chunk.getX() + "," + chunk.getZ();
-        if (!(claimedChunks == null) || !claimedChunks.get(chunkID).isEmpty()) {
-            return claimedChunks.containsKey(chunkID);
+
+        // Check if claimedChunks is not empty
+        if (claimedChunks.isEmpty()) {
+            return false;
         }
-        return false;
+
+        // Check if the chunk is not claimed
+        if (!claimedChunks.containsKey(chunkID)) {
+            return false;
+        }
+
+        // Check if the chunk is claimed by a kingdom the player isn't in
+        String playerKingdom = kingdoms.get(player.getUniqueId().toString());
+        String chunkKingdom = claimedChunks.get(chunkID);
+
+        // Check if chunk is claimed by player's kingdom
+        return chunkKingdom.equals(playerKingdom);
     }
+
 
     // Method to send a title to a player
     public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
@@ -995,7 +1012,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return inviteList;
     }
 
-    public HashMap<String, Double > getMoney() {
+    public HashMap<String, Double> getMoney() {
         return money;
     }
 

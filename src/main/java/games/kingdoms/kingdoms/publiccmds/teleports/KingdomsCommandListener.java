@@ -47,8 +47,6 @@ public class KingdomsCommandListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) throws InterruptedException {
-        if (event.getPlayer().equals(player)) {
-            throw new InterruptedException();
-        }
+        throw new InterruptedException();
     }
 }

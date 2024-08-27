@@ -44,7 +44,7 @@ public class EconomyCommand implements CommandExecutor {
                             try {
                                 for (Player p : Bukkit.getOnlinePlayers()) {
                                     if (!plugin.getMoney().containsKey(p.getUniqueId().toString())) {
-                                        plugin.getMoney().put(p.getUniqueId().toString(), 0.0);
+                                        plugin.getMoney().put(p.getUniqueId().toString(), 0.00);
                                     }
                                 }
 

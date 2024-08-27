@@ -26,9 +26,7 @@ public class WarzoneCommandListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) throws InterruptedException {
-        if (event.getPlayer().equals(player)) {
-            throw new InterruptedException();
-        }
+        throw new InterruptedException();
     }
 
     public void start() {
@@ -43,10 +41,8 @@ public class WarzoneCommandListener implements Listener {
                 }
             }
             World world = Bukkit.getWorld("warzone");
-            Location loc = new Location(world, 1, 1, 1);
-            int highestY = world.getHighestBlockYAt(loc);
-            Location kingdomsSpawn = new Location(world, 1, highestY, 1);
-            player.teleport(kingdomsSpawn);
+            Location loc = new Location(world, -940.5, 115, -607.5);
+            player.teleport(loc);
         } catch (InterruptedException e) {
             plugin.sendTitle(player, " ", ChatColor.RED + "Countdown canceled", 0, 20, 10);
         }
