@@ -6,9 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class KingdomsCommandListener implements Listener {
 
@@ -23,6 +21,11 @@ public class KingdomsCommandListener implements Listener {
         this.plugin = plugin;
         this.player = player;
     }
+
+//    @EventHandler
+//    public void onPlayerMove(PlayerMoveEvent event) throws InterruptedException {
+//        throw new InterruptedException();
+//    }
 
     public void start() {
         try {
@@ -45,8 +48,5 @@ public class KingdomsCommandListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) throws InterruptedException {
-        throw new InterruptedException();
-    }
+
 }

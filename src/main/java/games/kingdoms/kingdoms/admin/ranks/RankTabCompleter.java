@@ -19,11 +19,16 @@ public class RankTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
 
-        if (args.length == 1) {
+        if (args.length == 0) {
+            List<String> rank = new ArrayList<>();
+            rank.add("rank");
+            return rank;
+        }
 
+        if (args.length == 1) {
             if (sender instanceof Player player) {
-                List<String> reset = new ArrayList<>();
                 if (player.hasPermission("kingdoms.setrank.fake")) {
+                    List<String> reset = new ArrayList<>();
                     if ((plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
                             && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD))
                             || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
@@ -31,24 +36,24 @@ public class RankTabCompleter implements TabCompleter {
                             || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
                             && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN))) {
                         reset.add("reset");
+                        reset.add("fake");
+                        reset.add("set");
+                        return reset;
                     }
-                    reset.add("fake");
-                }
-                if (player.hasPermission("kingdoms.setrank.default")
-                        || player.hasPermission("kingdoms.setrank.vip")
-                        || player.hasPermission("kingdoms.setrank.hero")
-                        || player.hasPermission("kingdoms.setrank.youtube")
-                        || player.hasPermission("kingdoms.setrank.jrmod")
-                        || player.hasPermission("kingdoms.setrank.mod")
-                        || player.hasPermission("kingdoms.setrank.srmod")
-                        || player.hasPermission("kingdoms.setrank.jradmin")
-                        || player.hasPermission("kingdoms.setrank.admin")) {
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        reset.add(p.getName());
+                } else {
+                    if (player.hasPermission("kingdoms.setrank.default")
+                            || player.hasPermission("kingdoms.setrank.vip")
+                            || player.hasPermission("kingdoms.setrank.hero")
+                            || player.hasPermission("kingdoms.setrank.jrmod")
+                            || player.hasPermission("kingdoms.setrank.mod")
+                            || player.hasPermission("kingdoms.setrank.srmod")
+                            || player.hasPermission("kingdoms.setrank.jradmin")
+                            || player.hasPermission("kingdoms.setrank.admin")) {
+                        List<String> set = new ArrayList<>();
+                        set.add("set");
+                        return set;
                     }
                 }
-
-                return reset;
             }
         }
 
@@ -58,6 +63,22 @@ public class RankTabCompleter implements TabCompleter {
                     List<String> rank = new ArrayList<>();
                     rank.add("<rank>");
                     return rank;
+                }
+            }
+
+            if (sender.hasPermission("kingdoms.setrank.default")
+                    || sender.hasPermission("kingdoms.setrank.vip")
+                    || sender.hasPermission("kingdoms.setrank.hero")
+                    || sender.hasPermission("kingdoms.setrank.youtube")
+                    || sender.hasPermission("kingdoms.setrank.jrmod")
+                    || sender.hasPermission("kingdoms.setrank.mod")
+                    || sender.hasPermission("kingdoms.setrank.srmod")
+                    || sender.hasPermission("kingdoms.setrank.jradmin")
+                    || sender.hasPermission("kingdoms.setrank.admin")) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    List<String> online = new ArrayList<>();
+                    online.add(p.getName());
+                    return online;
                 }
             }
         }

@@ -420,7 +420,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
             p.setScore(13);
             //Player rank
-            if (owner.containsKey(player.getUniqueId().toString())) {
+            if (owner.containsKey(player.getUniqueId().toString()) && !admin.containsKey(player.getUniqueId().toString())) {
                 Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "King");
                 rank.setScore(12);
             }
