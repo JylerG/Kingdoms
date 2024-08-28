@@ -58,14 +58,13 @@ import games.kingdoms.kingdoms.publiccmds.whisper.WhisperCommand;
 import games.kingdoms.kingdoms.publiccmds.whisper.WhisperCommandTabCompleter;
 import games.kingdoms.kingdoms.rankedcmds.feed.Feed;
 import games.kingdoms.kingdoms.rankedcmds.fly.Fly;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 
@@ -135,6 +134,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 //    private HashMap<String, Integer> ipAdverts = new HashMap<>();
 //    private HashMap<String, Integer> ipAdverts = new HashMap<>();
 
+    private static Chat chat = null;
+    PlayerJoinListener pjl = new PlayerJoinListener();
+
     @Override
     public void onEnable() {
 
@@ -143,7 +145,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
+        setupChat();
         plugin = this;
+        pjl = new PlayerJoinListener();
         punishmentConfig = new PunishmentConfig(this);
         kingdomsConfig = new KingdomsConfig(this);
         moneyConfig = new MoneyConfig(this);
@@ -223,6 +227,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 restorePluginData();
             }
         }
+    }
+
+    private boolean setupChat() {
+        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        if (rsp != null) {
+            chat = rsp.getProvider();
+        }
+        return chat != null;
     }
 
     private void password() {
@@ -597,35 +609,38 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-
         Chunk fromChunk = event.getFrom().getChunk();
         Chunk toChunk = event.getTo().getChunk();
 
+        // Only proceed if the player moved to a different chunk
         if (!fromChunk.equals(toChunk)) {
             String title, subtitle;
 
-            // Check if the toChunk is claimed
+            // Update the player's tab list name and scoreboard
+            updateTabListWithScoreboard(player);
+
+            // Check if the target chunk is claimed
             if (isChunkClaimed(toChunk, player)) {
                 String ownerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
 
-                // If the chunk is claimed by a kingdom
-                if (ownerKingdom != null && !ownerKingdom.isEmpty()) {
+                // Display the kingdom name or "Wilderness" if not claimed
+                if (!ownerKingdom.isEmpty()) {
                     title = " ";
                     subtitle = ChatColor.GREEN + ownerKingdom;
                 } else {
-                    // If the chunk is not claimed, consider it wilderness
                     title = " ";
                     subtitle = ChatColor.RED + "Wilderness";
                 }
             } else {
-                // If the chunk is not claimed, consider it wilderness
+                // Default to "Wilderness" if the chunk isn't claimed
                 title = " ";
                 subtitle = ChatColor.RED + "Wilderness";
             }
 
+            // Send title and subtitle to the player
             sendTitle(player, title, subtitle, 10, 40, 10);
 
-            // Update the player's scoreboard or other relevant information
+            // Update the player's scoreboard based on their kingdom status
             if (kingdoms.containsKey(player.getUniqueId().toString())) {
                 if (isChunkClaimed(toChunk, player)) {
                     inPlayersKingdomBoard(player, toChunk);
@@ -636,6 +651,31 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 notInKingdomBoard(player);
             }
         }
+    }
+
+    private void updateTabListWithScoreboard(Player player) {
+        // Retrieve the player's current scoreboard or create a new one
+        Scoreboard scoreboard = player.getScoreboard();
+
+        if (scoreboard == null || scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
+            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        }
+
+        // Example: Update the player's scoreboard with their prefix
+        Objective objective = scoreboard.getObjective("prefix");
+
+        if (objective == null) {
+            objective = scoreboard.registerNewObjective("prefix", "dummy", "Player Info");
+            objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+        }
+        String prefix = pjl.getPrefixForPlayer(player); // Method to get the player's prefix
+        objective.getScore(player.getName()).setScore(1); // Example score
+
+        // Set the player's display name in the tab list
+        player.setPlayerListName(prefix + ChatColor.WHITE + player.getName());
+
+        // Apply the updated scoreboard to the player
+        player.setScoreboard(scoreboard);
     }
 
     @EventHandler
@@ -732,6 +772,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
             kingdoms.put(player.getUniqueId().toString(), "");
             passwords.put(player.getUniqueId().toString(), "");
+
+            // Update the player's tab list name
+            updateTabListWithScoreboard(player);
         } else {
             restorePluginData(player);
             if (!kingdoms.containsKey(player.getUniqueId().toString())) {
@@ -772,54 +815,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
             }
+
             savePluginData(player);
 
-            // Register teams
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard board = manager.getNewScoreboard();
-
-            Team admin = registerTeam(board, "admin", "§4§lADMIN ");
-            Team jradmin = registerTeam(board, "jradmin", "§4§lJRADMIN ");
-            Team srmod = registerTeam(board, "srmod", "§6§lSRMOD ");
-            Team mod = registerTeam(board, "mod", "§e§lMOD ");
-            Team jrmod = registerTeam(board, "jrmod", "§3§lJRMOD ");
-            Team hero = registerTeam(board, "hero", "§b§lHERO ");
-            Team vip = registerTeam(board, "vip", "§a§lVIP ");
-            Team defaultTeam = registerTeam(board, "default", "");
-
-            // Set players' teams based on their ranks
-            String playerRank = this.playerRank.get(player.getUniqueId().toString());
-            if (playerRank.equalsIgnoreCase(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT)) {
-//                    playerTeam = defaultTeam;
-                defaultTeam.addEntry(player.getUniqueId().toString());
-            } else if (playerRank.equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD + Rank.VIP)) {
-//                    playerTeam = vip;
-                vip.addEntry(player.getUniqueId().toString());
-            } else if (playerRank.equalsIgnoreCase(ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO)) {
-//                    playerTeam = hero;
-                hero.addEntry(player.getUniqueId().toString());
-            } else if (playerRank.equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD)) {
-//                    playerTeam = jrmod;
-                jrmod.addEntry(player.getUniqueId().toString());
-            } else if (playerRank.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD)) {
-//                    playerTeam = mod;
-                mod.addEntry(player.getUniqueId().toString());
-            } else if (playerRank.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD)) {
-//                    playerTeam = srmod;
-                srmod.addEntry(player.getUniqueId().toString());
-            } else if (playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN)) {
-//                    playerTeam = jradmin;
-                jradmin.addEntry(player.getUniqueId().toString());
-            } else if (playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN)) {
-//                    playerTeam = admin;
-                admin.addEntry(player.getUniqueId().toString());
-            }
-
-            // Set the player's team if found
-            player.setScoreboard(board); // Set scoreboard for the player
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.setScoreboard(board);
-            }
+            updateTabListWithScoreboard(player);
 
             // Check if player is in a kingdom onJoin
             if (kingdoms.containsKey(player.getUniqueId().toString())) {
@@ -910,6 +909,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public HashMap<String, String> getKingdoms() {
         return kingdoms;
+    }
+
+    public static Chat getChat() {
+        return chat;
     }
 
     public HashMap<String, String> getPlayerToPunish() {
@@ -1535,17 +1538,17 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void events() {
+        Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new Password(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsCommandListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WarzoneCommandListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomUpgradeListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WarzoneCommandListener(this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new CustomOreCommand(this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new RandomTeleportListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
     }
 }

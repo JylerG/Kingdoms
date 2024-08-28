@@ -456,6 +456,7 @@ public class KingdomsCommands implements CommandExecutor {
 
         if (!player.hasPermission("kingdoms.admin.join")) return;
 
+        kingdom = kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).toPrimitive().getString();
         if (kingdom != null && kingdom.equalsIgnoreCase(args[1])) {
             player.sendMessage(ChatColor.RED + "You are already a member of " + ChatColor.WHITE + args[1]);
             return;
