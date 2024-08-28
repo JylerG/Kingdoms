@@ -8,7 +8,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,37 +39,33 @@ public class KingdomInviteList implements TabCompleter {
 
                     // Process online players
                     for (Player p : Bukkit.getOnlinePlayers()) {
-                        processPlayerInvites(kc, p.getUniqueId());
+                        // Ensure the section is not null
+                        kc.getNode("kingdoms").getKeys(false).forEach(key -> {
+                            String kingdom = kc.getNode("kingdoms." + key).toPrimitive().getString();
+                            if (kingdom != null && !kingdom.isEmpty()) {
+                                invites.add(key);
+                            } else {
+                                invites.remove(key);
+                            }
+                        });
                     }
 
                     // Process offline players
                     for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-                        processPlayerInvites(kc, offline.getUniqueId());
+                        // Ensure the section is not null
+                        kc.getNode("kingdoms").getKeys(false).forEach(key -> {
+                            String kingdom = kc.getNode("kingdoms." + key).toPrimitive().getString();
+                            if (kingdom != null && !kingdom.isEmpty()) {
+                                invites.add(key);
+                            } else {
+                                invites.remove(key);
+                            }
+                        });
                     }
                     return invites;
                 }
             }
         }
         return null;
-    }
-
-    // Function to process players
-    private void processPlayerInvites(Configurable kc, UUID playerUUID) {
-        String nodePath = "kingdoms." + playerUUID.toString();
-        ConfigurationSection section = kc.getNode(nodePath).get(ConfigurationSection.class);
-
-        Set<String> invites = new HashSet<>();
-
-        // Ensure the section is not null
-        if (section != null) {
-            section.getKeys(false).forEach(key -> {
-                String kingdom = kc.getNode(nodePath).toPrimitive().getString();
-                if (kingdom != null && !kingdom.isEmpty()) {
-                    invites.add(key);
-                } else {
-                    invites.remove(key);
-                }
-            });
-        }
     }
 }
