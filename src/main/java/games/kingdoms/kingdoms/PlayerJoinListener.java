@@ -59,9 +59,9 @@ public class PlayerJoinListener implements Listener {
 
         return switch (rank) {
             case "§a§lVIP" -> GREEN.toString() + BOLD + "VIP ";
-            case "§b§lHero" -> AQUA.toString() + BOLD + "HERO ";
+            case "§b§lHERO" -> AQUA.toString() + BOLD + "HERO ";
             case "§c§lYT" -> RED.toString() + BOLD + "YT ";
-            case "§3§lJrMod" -> DARK_AQUA.toString() + BOLD + "JRMOD ";
+            case "§3§lJRMOD" -> DARK_AQUA.toString() + BOLD + "JRMOD ";
             case "§e§lMOD" -> YELLOW.toString() + BOLD + "MOD ";
             case "§6§lSRMOD" -> GOLD.toString() + BOLD + "SRMOD ";
             case "§4§lJRADMIN" -> DARK_RED.toString() + BOLD + "JRADMIN ";

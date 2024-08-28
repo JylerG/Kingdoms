@@ -631,17 +631,19 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     title = " ";
                     subtitle = ChatColor.RED + "Wilderness";
                 }
-            } else {
-                // Default to "Wilderness" if the chunk isn't claimed
-                title = " ";
-                subtitle = ChatColor.RED + "Wilderness";
+                sendTitle(player, title, subtitle, 10, 40, 10);
+            } else if (isChunkClaimed(toChunk, player) && claimedChunks.get(toChunk.getX() + "," + toChunk.getZ()).isEmpty()) {
+                    // Default to "Wilderness" if the chunk isn't claimed
+                    title = " ";
+                    subtitle = ChatColor.RED + "Wilderness";
+                sendTitle(player, title, subtitle, 10, 40, 10);
             }
 
             // Send title and subtitle to the player
-            sendTitle(player, title, subtitle, 10, 40, 10);
+
 
             // Update the player's scoreboard based on their kingdom status
-            if (kingdoms.containsKey(player.getUniqueId().toString())) {
+            if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
                 if (isChunkClaimed(toChunk, player)) {
                     inPlayersKingdomBoard(player, toChunk);
                 } else {
@@ -773,8 +775,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             kingdoms.put(player.getUniqueId().toString(), "");
             passwords.put(player.getUniqueId().toString(), "");
 
+            PlayerJoinListener pjl = new PlayerJoinListener();
             // Update the player's tab list name
-            updateTabListWithScoreboard(player);
+            pjl.updateTabListWithScoreboard(player);
         } else {
             restorePluginData(player);
             if (!kingdoms.containsKey(player.getUniqueId().toString())) {
@@ -818,7 +821,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             savePluginData(player);
 
-            updateTabListWithScoreboard(player);
+            PlayerJoinListener pjl = new PlayerJoinListener();
+            // Update the player's tab list name
+            pjl.updateTabListWithScoreboard(player);
 
             // Check if player is in a kingdom onJoin
             if (kingdoms.containsKey(player.getUniqueId().toString())) {
