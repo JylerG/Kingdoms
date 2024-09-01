@@ -39,28 +39,27 @@ public class KingdomInviteList implements TabCompleter {
 
                     // Process online players
                     for (Player p : Bukkit.getOnlinePlayers()) {
-                        // Ensure the section is not null
-                        kc.getNode("kingdoms").getKeys(false).forEach(key -> {
-                            String kingdom = kc.getNode("kingdoms." + key).toPrimitive().getString();
+                        if (plugin.getKingdoms().containsKey(p.getUniqueId().toString())) {
+                            String kingdom = kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString();
                             if (kingdom != null && !kingdom.isEmpty()) {
-                                invites.add(key);
+                                invites.add(kingdom);
                             } else {
-                                invites.remove(key);
+                                invites.remove(kingdom);
                             }
-                        });
+                        }
                     }
 
                     // Process offline players
                     for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
                         // Ensure the section is not null
-                        kc.getNode("kingdoms").getKeys(false).forEach(key -> {
-                            String kingdom = kc.getNode("kingdoms." + key).toPrimitive().getString();
+                        if (plugin.getKingdoms().containsKey(offline.getUniqueId().toString())) {
+                            String kingdom = kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString();
                             if (kingdom != null && !kingdom.isEmpty()) {
-                                invites.add(key);
+                                invites.add(kingdom);
                             } else {
-                                invites.remove(key);
+                                invites.remove(kingdom);
                             }
-                        });
+                        }
                     }
                     return invites;
                 }
