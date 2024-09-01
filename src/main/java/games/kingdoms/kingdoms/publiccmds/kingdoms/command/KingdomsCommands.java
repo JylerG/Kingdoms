@@ -772,72 +772,84 @@ public class KingdomsCommands implements CommandExecutor {
         }
     }
 
+    //TODO: Figure out why claimChunk() and unclaimChunk() don't work
     private void claimChunk(Player player, String kingdom, String chunkID) {
+        String playerUUID = player.getUniqueId().toString();
+        String playerKingdom = plugin.getKingdoms().get(playerUUID);
 
-        if (plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
+        // Check if the player is in a kingdom
+        if (playerKingdom == null || playerKingdom.isEmpty()) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
 
-        if (!plugin.getCanClaim().containsKey(player.getUniqueId().toString())) {
+        // Check if the player has permission to claim chunks
+        if (!plugin.getCanClaim().containsKey(playerUUID)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to claim chunks for " + ChatColor.WHITE + kingdom);
             return;
         }
 
+        // Check if the chunk is already claimed
         if (plugin.getClaimedChunks().containsKey(chunkID)) {
             String ownerKingdom = plugin.getClaimedChunks().get(chunkID);
             if (ownerKingdom.equals(kingdom)) {
                 player.sendMessage(ChatColor.RED + "Chunk is already claimed by your kingdom");
-            } else {
-                if (!ownerKingdom.isEmpty()) {
-                    player.sendMessage(ChatColor.RED + "Chunk is claimed by " + ChatColor.WHITE + ownerKingdom);
-                }
+            } else if (!ownerKingdom.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "Chunk is claimed by " + ChatColor.WHITE + ownerKingdom);
             }
             return;
         }
 
-        int claimCount = 0;
-        for (String ChunkID : plugin.getClaimedChunks().keySet()) {
-            if (plugin.getClaimedChunks().get(ChunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
-                claimCount++;
-            }
-        }
-        if (plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString())) > claimCount) {
+        // Check the number of chunks claimed by the player's kingdom
+        long claimCount = plugin.getClaimedChunks().values().stream()
+                .filter(k -> k.equals(kingdom))
+                .count();
+
+        int maxClaims = plugin.getMaxClaims().getOrDefault(kingdom, 0);
+        if (claimCount < maxClaims) {
             plugin.getClaims().put(kingdom, chunkID);
             plugin.getClaimedChunks().put(chunkID, kingdom);
             player.sendMessage(ChatColor.GREEN + "Chunk claimed");
         } else {
             player.sendMessage(kingdom + ChatColor.RED + " has claimed " +
-                    ChatColor.YELLOW + claimCount + "/" + plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString()))
-                    + ChatColor.RED + " chunks. " + ChatColor.GOLD + "/k upgrade " + ChatColor.RED + "to increase this amount");
+                    ChatColor.YELLOW + claimCount + "/" + maxClaims +
+                    ChatColor.RED + " chunks. " + ChatColor.GOLD + "/k upgrade " + ChatColor.RED + "to increase this amount");
         }
     }
 
     private void unclaimChunk(Player player, String kingdom, String chunkID) {
+        String playerUUID = player.getUniqueId().toString();
+        String playerKingdom = plugin.getKingdoms().get(playerUUID);
+
         try {
-            if (plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
+            // Check if the player is in a kingdom
+            if (playerKingdom == null || playerKingdom.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom");
                 return;
             }
 
-            if (!plugin.getClaimedChunks().get(chunkID).equals(kingdom)) {
-                player.sendMessage(ChatColor.RED + "You are not a member of " + ChatColor.WHITE + plugin.getClaimedChunks().get(chunkID));
+            // Check if the player has permission to unclaim chunks
+            if (!plugin.getCanUnclaim().containsKey(playerUUID)) {
+                player.sendMessage(ChatColor.RED + "You do not have permission to unclaim chunks for " + ChatColor.WHITE + playerKingdom);
                 return;
             }
 
-            if (!plugin.getCanUnclaim().containsKey(player.getUniqueId().toString())) {
-                player.sendMessage(ChatColor.RED + "You do not have permission to unclaim chunks for " + ChatColor.WHITE + plugin.getKingdoms().get(player.getUniqueId().toString()));
+            // Check if the chunk is claimed by the player's kingdom
+            if (!plugin.getClaimedChunks().containsKey(chunkID) || !plugin.getClaimedChunks().get(chunkID).equals(kingdom)) {
+                player.sendMessage(ChatColor.RED + "This chunk is not claimed by your kingdom or does not exist");
                 return;
             }
 
             plugin.getClaims().remove(kingdom, chunkID);
-            plugin.getClaimedChunks().remove(chunkID, kingdom);
+            plugin.getClaimedChunks().remove(chunkID);
             player.sendMessage(ChatColor.GREEN + "Chunk unclaimed");
 
-        } catch (NullPointerException e) {
-            player.sendMessage(ChatColor.RED + "This chunk is not claimed");
+        } catch (Exception e) {
+            player.sendMessage(ChatColor.RED + "An error occurred while unclaiming the chunk");
+            e.printStackTrace();
         }
     }
+
 
     private void invitePlayerToKingdom(Player player, Player target, String kingdom, String[] args) {
         if (target == null) {

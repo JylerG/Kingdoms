@@ -31,6 +31,9 @@ public class Permissions implements CommandExecutor {
                 } else if (args.length == 1) {
                     if (args[0].equalsIgnoreCase("rank")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.fly");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.feed");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.staff");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.default");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.vip");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.hero");
@@ -39,8 +42,6 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.srmod");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.jradmin");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.admin");
-                        player.sendMessage(ChatColor.GOLD + "kingdoms.fly");
-                        player.sendMessage(ChatColor.GOLD + "kingdoms.feed");
                     } else if (args[0].equalsIgnoreCase("npcs")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.npc.spawn");
