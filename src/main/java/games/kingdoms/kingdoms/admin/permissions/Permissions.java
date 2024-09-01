@@ -39,6 +39,8 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.srmod");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.jradmin");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.setrank.admin");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.fly");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.feed");
                     } else if (args[0].equalsIgnoreCase("npcs")) {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.npc.spawn");

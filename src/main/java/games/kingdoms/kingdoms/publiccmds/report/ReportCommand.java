@@ -39,7 +39,7 @@ public class ReportCommand implements CommandExecutor {
                     return true;
                 }
 
-                player.sendMessage(ChatColor.GREEN + "Staff have been notified of your report against " + ChatColor.WHITE + target);
+                player.sendMessage(ChatColor.GREEN + "Staff have been notified of your report against " + ChatColor.WHITE + target.getName());
 
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")

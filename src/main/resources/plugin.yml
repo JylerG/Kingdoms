@@ -94,8 +94,16 @@ commands:
     aliases: [ w, msg ]
   punish:
     description: Punish players.
-    aliases: [pu]
+    aliases: [ pu ]
   confirm:
     description: Confirm punishment of players.
+    aliases: [ ]
   report:
     description: Report players.
+    aliases: [ ]
+  modmode:
+    description: Enter modmode.
+    aliases: [ mm ]
+  help:
+    description: Get all commands
+    aliases: [ ? ]

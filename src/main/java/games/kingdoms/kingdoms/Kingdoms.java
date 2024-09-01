@@ -16,6 +16,7 @@ import games.kingdoms.kingdoms.admin.gamemodes.Adventure;
 import games.kingdoms.kingdoms.admin.gamemodes.Creative;
 import games.kingdoms.kingdoms.admin.gamemodes.Spectator;
 import games.kingdoms.kingdoms.admin.gamemodes.Survival;
+import games.kingdoms.kingdoms.admin.modmode.ModMode;
 import games.kingdoms.kingdoms.admin.npcinteractions.managers.*;
 import games.kingdoms.kingdoms.admin.npcs.CreateNPCCommand;
 import games.kingdoms.kingdoms.admin.npcs.NPCTabCompleter;
@@ -39,6 +40,7 @@ import games.kingdoms.kingdoms.publiccmds.chats.ChatCMD;
 import games.kingdoms.kingdoms.publiccmds.chats.ChatListener;
 import games.kingdoms.kingdoms.publiccmds.chats.ChatTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
+import games.kingdoms.kingdoms.publiccmds.help.HelpCommand;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomInviteList;
@@ -60,14 +62,24 @@ import games.kingdoms.kingdoms.rankedcmds.feed.Feed;
 import games.kingdoms.kingdoms.rankedcmds.fly.Fly;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -192,12 +204,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Rtp();
         Vanish();
         kingdom();
+        modMode();
+        help();
         viewPerms();
         gameModes();
         rank();
         ore();
         Pay();
-        Eco();
+        Economy();
         balanceCMDs();
         Merchant();
         staffChat();
@@ -350,7 +364,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         getCommand("staffreload").setExecutor(new StaffReload());
     }
 
-    private void Eco() {
+    private void Economy() {
         getCommand("eco").setExecutor(new EconomyCommand(this));
         getCommand("eco").setTabCompleter(new EconomyTabCompleter());
     }
@@ -386,6 +400,61 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         schematicsManager = new SchematicsManager();
     }
 
+    private static class CommandWrapper extends org.bukkit.command.Command {
+
+        private final CommandExecutor executor;
+
+        protected CommandWrapper(String name, CommandExecutor executor) {
+            super(name);
+            this.executor = executor;
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, @NotNull String label, String[] args) {
+            if (executor != null) {
+                return executor.onCommand(sender, this, label, args);
+            }
+            return false;
+        }
+    }
+
+    private void registerCommand(String commandName, CommandExecutor executor) {
+        try {
+            // Get the command map
+            Field commandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
+            commandMapField.setAccessible(true);
+            CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getPluginManager());
+
+            // Create and register a new command
+            commandMap.register(commandName, new CommandWrapper(commandName, executor));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void unregisterCommand(String commandName) {
+        try {
+            // Get the command map
+            Field commandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
+            commandMapField.setAccessible(true);
+            CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getPluginManager());
+
+            // Get the command
+            Command command = commandMap.getCommand(commandName);
+            if (command != null) {
+                // Unregister the command
+                command.unregister(commandMap);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void modMode() {
+        getCommand("modmode").setExecutor(new ModMode());
+    }
+
     private void kingdom() {
         getCommand("kingdom").setExecutor(new KingdomsCommands());
         getCommand("kingdom").setTabCompleter(new KingdomInviteList());
@@ -393,6 +462,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void viewPerms() {
         getCommand("view").setExecutor(new Permissions());
+    }
+
+    private void help() {
+        registerCommand("help", new HelpCommand());
+        unregisterCommand("?");
+        unregisterCommand("help");
     }
 
     private void rank() {
@@ -419,96 +494,102 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     //Player is in a chunk of the kingdom they are in
     public void inPlayersKingdomBoard(Player player, Chunk chunk) {
-        if (claimedChunks.get(chunk.getX() + "," + chunk.getZ()).equals(kingdoms.get(player.getUniqueId().toString()))) {
-            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
-            Date date = new Date();
-            String formattedMoney = formatter.format(money.get(player.getUniqueId().toString()));
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
-            //Scoreboard Name
-            Objective obj = board.registerNewObjective("inChunk", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-            Score divider = obj.getScore(" ");
-            divider.setScore(14);
-            Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
-            p.setScore(13);
-            //Player rank
-            if (owner.containsKey(player.getUniqueId().toString()) && !admin.containsKey(player.getUniqueId().toString())) {
-                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "King");
-                rank.setScore(12);
-            }
-            if (admin.containsKey(player.getUniqueId().toString()) && !owner.containsKey(player.getUniqueId().toString())) {
-                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Knight");
-                rank.setScore(12);
-            }
-            if (member.containsKey(player.getUniqueId().toString()) && !owner.containsKey(player.getUniqueId().toString())) {
-                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Citizen");
-                rank.setScore(12);
-            }
-            if (customRank.containsKey(player.getUniqueId().toString())) {
-                Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + customRank.get(player.getUniqueId().toString()));
-                rank.setScore(12);
-            }
-            //Coins
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
-            coins.setScore(11);
-            //Kill/Death Ratio
-            Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
-            kdr.setScore(10);
-            //edit this to show how many challenges have been completed
-            Score challenges = obj.getScore(ChatColor.WHITE + "Challenges " + ChatColor.YELLOW + "WIP");
-            challenges.setScore(9);
-            Score blank = obj.getScore(" ");
-            blank.setScore(8);
-            Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
-            kingdom.setScore(7);
-
-            //loop through players and add to member count if they are in the kingdom of the chunk the player goes into
-            int memberCount = 0;  // Initialize memberCount outside the loop
-
-            // Get the kingdom of the chunk the player is going into
-            String chunkKey = chunk.getX() + "," + chunk.getZ();
-            String kingdomOfChunk = claimedChunks.get(chunkKey);
-
-            for (Player player1 : Bukkit.getOnlinePlayers()) {
-                // Check if the player is in the same kingdom as the kingdom of the chunk
-                String playerKingdom = kingdoms.get(player1.getUniqueId().toString());
-                if (kingdomOfChunk != null && kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
-                    memberCount++;
-                }
-            }
-
-            // Set the score for the scoreboard with the updated memberCount
-            Score members = obj.getScore("Members " + ChatColor.YELLOW + memberCount + "/" + maxMembers.get(kingdomOfChunk));
-            members.setScore(6);
-
-
-            for (String chunkID : claimedChunks.keySet()) {
-                if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
-                    // This chunk is claimed by the player's kingdom
-                    // You can increment the claim count and update the scoreboard here
-                    int claimCount = 0;
-                    for (String otherChunkID : claimedChunks.keySet()) {
-                        if (claimedChunks.get(otherChunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
-                            claimCount++;
-                        }
-                    }
-                    Score claims = obj.getScore("Claims " + ChatColor.YELLOW + claimCount + "/" + maxClaims.get(kingdoms.get(player.getUniqueId().toString())));
-                    claims.setScore(5);
-                }
-            }
-
-
-            Score energy = obj.getScore("Energy " + ChatColor.YELLOW + "0.0/0" + ChatColor.AQUA + " 0");
-            energy.setScore(4);
-            Score separator = obj.getScore(ChatColor.WHITE + " ");
-            separator.setScore(3);
-            Score user = obj.getScore(ChatColor.RED + player.getName() + " " + ChatColor.GRAY + dateFormat.format(date));
-            user.setScore(2);
-            Score server_ip = obj.getScore(ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "play.kingdoms.games");
-            server_ip.setScore(1);
-            player.setScoreboard(board);
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
+        Date date = new Date();
+        String formattedMoney = formatter.format(money.get(player.getUniqueId().toString()));
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
+        //Scoreboard Name
+        Objective obj = board.registerNewObjective("inChunk", "dummy", ChatColor.translateAlternateColorCodes('&', "&e&lKingdoms"));
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Score divider = obj.getScore(" ");
+        divider.setScore(14);
+        Score p = obj.getScore(ChatColor.BLUE.toString() + ChatColor.BOLD + "PLAYER");
+        p.setScore(13);
+        //Player rank
+        String playerObj = player.getUniqueId().toString();
+        if (owner.containsKey(player.getUniqueId().toString()) && !admin.containsKey(playerObj)) {
+            Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "King");
+            rank.setScore(12);
         }
+        if (admin.containsKey(player.getUniqueId().toString()) && !owner.containsKey(playerObj)) {
+            Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Knight");
+            rank.setScore(12);
+        }
+        if (member.containsKey(playerObj) && !admin.containsKey(playerObj) && !owner.containsKey(playerObj)) {
+            Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + "Citizen");
+            rank.setScore(12);
+        }
+        if (customRank.containsKey(player.getUniqueId().toString())) {
+            Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + customRank.get(player.getUniqueId().toString()));
+            rank.setScore(12);
+        }
+        //Coins
+        Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
+        coins.setScore(11);
+        //Kill/Death Ratio
+        Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
+        kdr.setScore(10);
+        //edit this to show how many challenges have been completed
+        Score challenges = obj.getScore(ChatColor.WHITE + "Challenges " + ChatColor.YELLOW + "WIP");
+        challenges.setScore(9);
+        Score blank = obj.getScore(" ");
+        blank.setScore(8);
+        Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
+        kingdom.setScore(7);
+
+        //loop through players and add to member count if they are in the kingdom of the chunk the player goes into
+        int memberCount = 0;  // Initialize memberCount outside the loop
+
+        // Get the kingdom of the chunk the player is going into
+        String chunkKey = chunk.getX() + "," + chunk.getZ();
+        String kingdomOfChunk = claimedChunks.get(chunkKey);
+
+        for (Player player1 : Bukkit.getOnlinePlayers()) {
+            // Check if the player is in the same kingdom as the kingdom of the chunk
+            String playerKingdom = kingdoms.get(player1.getUniqueId().toString());
+            if (kingdomOfChunk != null && kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
+                memberCount++;
+            }
+        }
+        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+            // Check if the player is in the same kingdom as the kingdom of the chunk
+            String playerKingdom = kingdoms.get(offline.getUniqueId().toString());
+            if (kingdomOfChunk != null && kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
+                memberCount++;
+            }
+        }
+
+        // Set the score for the scoreboard with the updated memberCount
+        Score members = obj.getScore("Members " + ChatColor.YELLOW + memberCount + "/" + maxMembers.get(kingdomOfChunk));
+        members.setScore(6);
+
+
+        for (String chunkID : claimedChunks.keySet()) {
+            if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
+                // This chunk is claimed by the player's kingdom
+                // You can increment the claim count and update the scoreboard here
+                int claimCount = 0;
+                for (String otherChunkID : claimedChunks.keySet()) {
+                    if (claimedChunks.get(otherChunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
+                        claimCount++;
+                    }
+                }
+                Score claims = obj.getScore("Claims " + ChatColor.YELLOW + claimCount + "/" + maxClaims.get(kingdoms.get(player.getUniqueId().toString())));
+                claims.setScore(5);
+            }
+        }
+
+
+        Score energy = obj.getScore("Energy " + ChatColor.YELLOW + "0.0/0" + ChatColor.AQUA + " 0");
+        energy.setScore(4);
+        Score separator = obj.getScore(ChatColor.WHITE + " ");
+        separator.setScore(3);
+        Score user = obj.getScore(ChatColor.RED + player.getName() + " " + ChatColor.GRAY + dateFormat.format(date));
+        user.setScore(2);
+        Score server_ip = obj.getScore(ChatColor.GREEN.toString() + ChatColor.UNDERLINE + "play.kingdoms.games");
+        server_ip.setScore(1);
+        player.setScoreboard(board);
     }
 
     //Player is not in a chunk owned by their kingdom
@@ -625,26 +706,30 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 String ownerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
 
                 // Display the kingdom name or "Wilderness" if not claimed
-                if (!ownerKingdom.isEmpty()) {
-                    title = " ";
-                    subtitle = ChatColor.GREEN + ownerKingdom;
+                if (ownerKingdom != null && !ownerKingdom.isEmpty()) {
+                    if (plugin.getKingdoms().get(player.getUniqueId().toString()).equals(ownerKingdom)) {
+                        title = " ";
+                        subtitle = ChatColor.GREEN + ownerKingdom;
+                    } else {
+                        title = " ";
+                        subtitle = ChatColor.RED + "Owned by " + ChatColor.GREEN + ownerKingdom;
+                    }
                 } else {
-                    title = " ";
-                    subtitle = ChatColor.RED + "Wilderness";
-                }
-                sendTitle(player, title, subtitle, 10, 40, 10);
-            } else if (isChunkClaimed(toChunk, player) && claimedChunks.get(toChunk.getX() + "," + toChunk.getZ()).isEmpty()) {
                     // Default to "Wilderness" if the chunk isn't claimed
                     title = " ";
                     subtitle = ChatColor.RED + "Wilderness";
-                sendTitle(player, title, subtitle, 10, 40, 10);
+                }
+            } else {
+                // If the chunk is not claimed, it's wilderness
+                title = " ";
+                subtitle = ChatColor.RED + "Wilderness";
             }
 
             // Send title and subtitle to the player
-
+            sendTitle(player, title, subtitle, 10, 40, 10);
 
             // Update the player's scoreboard based on their kingdom status
-            if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
+            if (plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
                 if (isChunkClaimed(toChunk, player)) {
                     inPlayersKingdomBoard(player, toChunk);
                 } else {
