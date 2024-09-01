@@ -34,9 +34,6 @@ public class EconomyCommand implements CommandExecutor {
                         break;
                     case 3:
 
-                        //TODO: Figure out why give and set display the message three times upon command execution
-                        //TODO: Figure out why remove command doesn't display anything
-                        //TODO: Figure out how to use commands with letters (ie K for thousand/M for million)
                         Player target = Bukkit.getPlayer(args[1]);
                         if (!args[1].equalsIgnoreCase("*") && target == null) {
                             player.sendMessage(args[1] + ChatColor.RED + " is not online");
