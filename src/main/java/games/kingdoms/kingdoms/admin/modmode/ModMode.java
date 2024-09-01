@@ -18,7 +18,6 @@ public class ModMode implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (sender instanceof Player player) {
-            //TODO: make this work
             if (player.hasPermission("kingdoms.staff.modmode")) {
                 if (!plugin.getModModePlayers().contains(player)) {
                     plugin.getModModePlayers().add(player);
@@ -26,7 +25,15 @@ public class ModMode implements CommandExecutor {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         if (plugin.getStaff().containsKey(p.getUniqueId().toString())) {
                             p.sendMessage(player.getName() + ChatColor.GRAY + " has entered modmode. They can now " +
-                                    "interact with other players in spectator.");
+                                    "interact with other players in spectator mode");
+                        }
+                    }
+                } else {
+                    plugin.getModModePlayers().remove(player);
+                    player.setGameMode(GameMode.SURVIVAL);
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (plugin.getStaff().containsKey(p.getUniqueId().toString())) {
+                            p.sendMessage(player.getName() + ChatColor.GRAY + " has left modmode");
                         }
                     }
                 }
