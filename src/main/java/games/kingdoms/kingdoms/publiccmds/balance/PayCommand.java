@@ -49,14 +49,14 @@ public class PayCommand implements CommandExecutor {
                         String formattedMoney = formatter.format(args[1]);
 
 
-                        if (Double.parseDouble(formattedMoney) > 1 && Double.parseDouble(formattedMoney) > plugin.getMoney().get(player.getUniqueId().toString())) {
+                        if (Long.parseLong(formattedMoney) > 1 && Long.parseLong(formattedMoney) > plugin.getMoney().get(player.getUniqueId().toString())) {
                             player.sendMessage(ChatColor.RED + "You do not have " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.RED + " coins");
                             return true;
                         }
 
-                        plugin.getMoney().put(target.getUniqueId().toString(), Double.valueOf(formattedMoney));
-                        player.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "[-] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.RED + " coins to " + ChatColor.WHITE + target.getName());
-                        target.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD + "[+] " + ChatColor.WHITE + Integer.parseInt(args[1]) + ChatColor.GREEN + " coins from " + ChatColor.WHITE + player.getName());
+                        plugin.getMoney().put(target.getUniqueId().toString(), Long.valueOf(formattedMoney));
+                        player.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "[-] " + ChatColor.WHITE + formattedMoney + ChatColor.RED + " coins to " + ChatColor.WHITE + target.getName());
+                        target.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD + "[+] " + ChatColor.WHITE + formattedMoney + ChatColor.GREEN + " coins from " + ChatColor.WHITE + player.getName());
                     }
                     break;
             }

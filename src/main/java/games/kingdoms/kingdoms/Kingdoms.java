@@ -69,6 +69,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -87,14 +88,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private StaffConfig staffConfig;
     private PunishmentConfig punishmentConfig;
     private static Kingdoms plugin;
+    final DecimalFormat formatter = new DecimalFormat("#,###.##");
     private HashMap<String, Integer> staffCount = new HashMap<>();
     private HashMap<String, String> customRank = new HashMap<>();
     private HashMap<String, String> kingdomExists = new HashMap<>();
     final ArrayList<Player> invisiblePlayers = new ArrayList<>();
     private ArrayList<Player> modModePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
-    private HashMap<String, Long> claimPrice = new HashMap<>();
-    private HashMap<String, Long> memberPrice = new HashMap<>();
+    private HashMap<String, Integer> claimPrice = new HashMap<>();
+    private HashMap<String, Integer> memberPrice = new HashMap<>();
     private HashMap<String, String> bannedNames = new HashMap<>();
     private HashMap<String, String> canUnclaim = new HashMap<>();
     private HashMap<String, String> canClaim = new HashMap<>();
@@ -109,7 +111,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, Location> kingdomSpawn = new HashMap<>();
     private HashMap<String, String> staff = new HashMap<>();
     private HashMap<String, String> kingdoms = new HashMap<>();
-    private HashMap<String, Double> money = new HashMap<>();
+    private HashMap<String, Long> money = new HashMap<>();
     private HashMap<String, String> onlineStaff = new HashMap<>();
     private HashMap<String, Integer> maxMembers = new HashMap<>();
     private HashMap<String, Integer> maxClaims = new HashMap<>();
@@ -418,10 +420,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     //Player is in a chunk of the kingdom they are in
     public void inPlayersKingdomBoard(Player player, Chunk chunk) {
         if (claimedChunks.get(chunk.getX() + "," + chunk.getZ()).equals(kingdoms.get(player.getUniqueId().toString()))) {
-            String formattedMoney;
             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
             Date date = new Date();
-
+            String formattedMoney = formatter.format(money.get(player.getUniqueId().toString()));
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
             //Scoreboard Name
@@ -449,7 +450,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 rank.setScore(12);
             }
             //Coins
-            Score coins = obj.getScore("Coins " + ChatColor.GOLD + money.get(player.getUniqueId().toString()));
+            Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
             coins.setScore(11);
             //Kill/Death Ratio
             Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
@@ -515,7 +516,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Chunk chunk = player.getLocation().getChunk();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
-
+        String formattedMoney = formatter.format(money.get(player.getUniqueId().toString()));
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
         //Scoreboard Name
@@ -529,7 +530,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Score rank = obj.getScore("Rank " + playerRank.get(player.getUniqueId().toString()));
         rank.setScore(12);
         //Coins
-        Score coins = obj.getScore("Coins " + ChatColor.GOLD + money.get(player.getUniqueId().toString()));
+        Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
         coins.setScore(11);
         //Kill/Death Ratio
         Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
@@ -562,7 +563,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Chunk chunk = player.getLocation().getChunk();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
-
+        formattedMoney = formatter.format(plugin.getMoney().get(player.getUniqueId().toString()));
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = Objects.requireNonNull(manager).getNewScoreboard();
         //Scoreboard Name
@@ -577,9 +578,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         rank.setScore(12);
         //Coins
         if (!money.containsKey(player.getUniqueId().toString())) {
-            money.put(player.getUniqueId().toString(), 0.0);
+            money.put(player.getUniqueId().toString(), 0L);
         }
-        Score coins = obj.getScore("Coins " + ChatColor.GOLD + money.get(player.getUniqueId().toString()));
+        Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
         coins.setScore(11);
         //Kill/Death Ratio
         Score kdr = obj.getScore("KDR " + ChatColor.YELLOW + player.getStatistic(Statistic.PLAYER_KILLS) + ChatColor.WHITE + "/" + ChatColor.YELLOW + player.getStatistic(Statistic.DEATHS));
@@ -770,7 +771,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             defaultTeam.addEntry(player.getUniqueId().toString());
             playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
-            money.put(player.getUniqueId().toString(), 0.0);
+            money.put(player.getUniqueId().toString(), 0L);
             chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
             kingdoms.put(player.getUniqueId().toString(), "");
             passwords.put(player.getUniqueId().toString(), "");
@@ -794,7 +795,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
             }
             if (!money.containsKey(player.getUniqueId().toString())) {
-                money.put(player.getUniqueId().toString(), 0.0);
+                money.put(player.getUniqueId().toString(), 0L);
             }
 
             int staffCount = 0;
@@ -813,7 +814,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
 
             if (!money.containsKey(player.getUniqueId().toString())) {
-                money.put(player.getUniqueId().toString(), 0.0);
+                money.put(player.getUniqueId().toString(), 0L);
             }
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
@@ -964,11 +965,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return kingdomExists;
     }
 
-    public HashMap<String, Long> getClaimPrice() {
+    public HashMap<String, Integer> getClaimPrice() {
         return claimPrice;
     }
 
-    public HashMap<String, Long> getMemberPrice() {
+    public HashMap<String, Integer> getMemberPrice() {
         return memberPrice;
     }
 
@@ -1020,7 +1021,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return inviteList;
     }
 
-    public HashMap<String, Double> getMoney() {
+    public HashMap<String, Long> getMoney() {
         return money;
     }
 
@@ -1082,10 +1083,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     maxMembers.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 if (kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
-                    claimPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
+                    claimPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 if (kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
-                    memberPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
+                    memberPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
                     if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
@@ -1132,9 +1133,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             if (mc != null) {
                 if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
-                    money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getDouble());
+                    money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
                 } else {
-                    money.put(player.getUniqueId().toString(), 0.0);
+                    money.put(player.getUniqueId().toString(), 0L);
                 }
             }
 
@@ -1221,10 +1222,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     maxMembers.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 if (kc.getNode("claimPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
-                    claimPrice.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getLong());
+                    claimPrice.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 if (kc.getNode("memberPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
-                    memberPrice.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getLong());
+                    memberPrice.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getInt());
                 }
                 for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
                     if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
@@ -1271,9 +1272,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             if (mc != null) {
                 if (mc.getNode("balance").getNode(offline.getUniqueId().toString()).exists()) {
-                    money.put(offline.getUniqueId().toString(), mc.getNode("balance." + offline.getUniqueId().toString()).toPrimitive().getDouble());
+                    money.put(offline.getUniqueId().toString(), mc.getNode("balance." + offline.getUniqueId().toString()).toPrimitive().getLong());
                 } else {
-                    money.put(offline.getUniqueId().toString(), 0.0);
+                    money.put(offline.getUniqueId().toString(), 0L);
                 }
             }
 
@@ -1359,10 +1360,10 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 maxMembers.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxMembers." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
             }
             if (kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
-                claimPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
+                claimPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("claimPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
             }
             if (kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
-                memberPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getLong());
+                memberPrice.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("memberPrice").getNode(kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
             }
             for (Chunk chunk : Bukkit.getWorld("kingdoms").getLoadedChunks()) {
                 if (kc.getNode("claims").getNode(chunk.getX() + "," + chunk.getZ()).exists()) {
@@ -1409,9 +1410,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
         if (mc != null) {
             if (mc.getNode("balance").getNode(player.getUniqueId().toString()).exists()) {
-                money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getDouble());
+                money.put(player.getUniqueId().toString(), mc.getNode("balance." + player.getUniqueId().toString()).toPrimitive().getLong());
             } else {
-                money.put(player.getUniqueId().toString(), 0.0);
+                money.put(player.getUniqueId().toString(), 0L);
             }
         }
 

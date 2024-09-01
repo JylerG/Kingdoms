@@ -23,15 +23,13 @@ public class BalanceCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (sender instanceof Player) {
-
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
 
             switch (args.length) {
                 case 0:
                     DecimalFormat formatter = new DecimalFormat("#,###.##");
                     if (!plugin.getMoney().containsKey(player.getUniqueId().toString())) {
-                        plugin.getMoney().put(player.getUniqueId().toString(), 0.0);
+                        plugin.getMoney().put(player.getUniqueId().toString(), 0L);
                     }
                     String formattedMoney = formatter.format(plugin.getMoney().get(player.getUniqueId().toString()));
 
@@ -43,7 +41,7 @@ public class BalanceCommand implements CommandExecutor {
                     Player target = Bukkit.getPlayer(args[0]);
                     formatter = new DecimalFormat("#,###.##");
                     if (!plugin.getMoney().containsKey(player.getUniqueId().toString())) {
-                        plugin.getMoney().put(player.getUniqueId().toString(), 0.0);
+                        plugin.getMoney().put(player.getUniqueId().toString(), 0L);
                     }
                     formattedMoney = formatter.format(plugin.getMoney().get(target.getUniqueId().toString()));
 

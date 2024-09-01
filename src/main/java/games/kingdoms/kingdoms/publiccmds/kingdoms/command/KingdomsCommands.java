@@ -21,6 +21,14 @@ import java.util.*;
 public class KingdomsCommands implements CommandExecutor {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
+    final HashMap<String, String> kingdoms = Kingdoms.getPlugin().getKingdoms();
+    final HashMap<String, Integer> maxMembers = Kingdoms.getPlugin().getMaxMembers();
+    final HashMap<String, Integer> maxClaims = Kingdoms.getPlugin().getMaxClaims();
+    final HashMap<String, String> claims = Kingdoms.getPlugin().getClaims();
+    final HashMap<String, Integer> claimPrice = Kingdoms.getPlugin().getClaimPrice();
+    final HashMap<String, String> admin = Kingdoms.getPlugin().getAdmin();
+    final HashMap<String, String> owner = Kingdoms.getPlugin().getOwner();
+    final HashMap<String, String> member = Kingdoms.getPlugin().getMember();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -413,48 +421,62 @@ public class KingdomsCommands implements CommandExecutor {
     private void joinKingdom(Player player, String kingdom, String[] args) {
         plugin.restorePluginData();
         Configurable kc = KingdomsConfig.getInstance().getConfig();
-
         if (plugin.getOwner().containsKey(player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "You are a kingdom owner. If you wish to join a different kingdom, " +
                     "you must disband your current kingdom " + ChatColor.GOLD + "/k disband " + kingdom
                     + ChatColor.RED + " or transfer it " + ChatColor.GOLD + "/k transfer " + kingdom);
             return;
         }
-
-
-        if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
-            MessageManager.playerBad(player, "You are already in a kingdom");
+        if (!plugin.getKingdoms().containsValue(args[1])) {
+            player.sendMessage(args[1] + ChatColor.RED + " doesn't exist");
             return;
         }
+        if (!player.hasPermission("kingdoms.admin.join")) {
+            if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
+                MessageManager.playerBad(player, "You are already in a kingdom");
+                return;
+            }
 
-        boolean invitedKingdom = plugin.getInviteList().get(player.getUniqueId().toString()).equalsIgnoreCase(args[1]);
+            boolean invitedKingdom = plugin.getInviteList().get(player.getUniqueId().toString()).equalsIgnoreCase(args[1]);
 
-        if (!plugin.getInviteList().containsKey(player.getUniqueId().toString())) {
-            MessageManager.playerBad(player, "You have not been invited to any kingdoms");
-            return;
-        }
-        if (invitedKingdom) {
-            player.sendMessage(ChatColor.RED + "You have not been invited to " + ChatColor.WHITE + args[1]);
-            return;
-        }
-        int memberCount = 0;
-        World kingdoms = Bukkit.getWorld("kingdoms");
-        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-
-                if (kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString().equals(args[1])
-                        || kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString().equals(args[1])) {
-
+            if (!plugin.getInviteList().containsKey(player.getUniqueId().toString())) {
+                MessageManager.playerBad(player, "You have not been invited to any kingdoms");
+                return;
+            }
+            if (!invitedKingdom) {
+                player.sendMessage(ChatColor.RED + "You have not been invited to " + ChatColor.WHITE + args[1]);
+                return;
+            }
+            int memberCount = 0;
+            World kingdoms = Bukkit.getWorld("kingdoms");
+            //todo: make this check if the kingdom args[1] exists for offline and online player and increment memberCount if it does
+            for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+                String offlineKingdom = kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString();
+                if (offlineKingdom.equalsIgnoreCase(args[1])) {
                     memberCount++;
-                } else return;
-                if (kc.getNode("maxMembers." + kc.getNode("kingdoms." + p.getUniqueId().toString())).toPrimitive().getInt() > memberCount
-                        || kc.getNode("maxMembers." + kc.getNode("kingdoms." + offline.getUniqueId().toString())).toPrimitive().getInt() > memberCount) {
-                    plugin.getMember().put(player.getUniqueId().toString(), args[1]);
                 }
             }
-        }
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String playerKingdom = kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString();
+                if (playerKingdom.equalsIgnoreCase(args[1])) {
+                    memberCount++;
+                }
+            }
 
-        if (!player.hasPermission("kingdoms.admin.join")) return;
+            List<OfflinePlayer> allPlayers = new ArrayList<>();
+            allPlayers.addAll(Arrays.asList(Bukkit.getOfflinePlayers()));
+            allPlayers.addAll(Bukkit.getOnlinePlayers()); // Online players are also added
+
+            for (OfflinePlayer p : allPlayers) {
+                if (maxMembers.get(this.kingdoms.get(p.getUniqueId().toString())) > memberCount) {
+                    this.kingdoms.put(player.getUniqueId().toString(), args[1]);
+                } else {
+                    player.sendMessage(args[1] + ChatColor.RED + " is at max capacity");
+                }
+            }
+
+            return;
+        }
 
         kingdom = kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).toPrimitive().getString();
         if (kingdom != null && kingdom.equalsIgnoreCase(args[1])) {
@@ -574,8 +596,8 @@ public class KingdomsCommands implements CommandExecutor {
         plugin.getMember().put(player.getUniqueId().toString(), kingdom);
         plugin.getCanClaim().put(player.getUniqueId().toString(), kingdom);
         plugin.getCanUnclaim().put(player.getUniqueId().toString(), kingdom);
-        plugin.getClaimPrice().put(kingdom, 10_000L);
-        plugin.getMemberPrice().put(kingdom, 10_000L);
+        plugin.getClaimPrice().put(kingdom, 10_000);
+        plugin.getMemberPrice().put(kingdom, 10_000);
         plugin.getMaxClaims().put(kingdom, 10);
         plugin.getMaxMembers().put(kingdom, 6);
         player.sendMessage(kingdom + ChatColor.GREEN + " created");

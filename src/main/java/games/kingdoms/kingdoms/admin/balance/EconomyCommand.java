@@ -41,15 +41,15 @@ public class EconomyCommand implements CommandExecutor {
                         if (!args[1].equalsIgnoreCase("*") && target == null) {
                             player.sendMessage(args[1] + ChatColor.RED + " is not online");
                         } else {
+                            DecimalFormat formatter = new DecimalFormat("#,###.##");
                             try {
                                 for (Player p : Bukkit.getOnlinePlayers()) {
                                     if (!plugin.getMoney().containsKey(p.getUniqueId().toString())) {
-                                        plugin.getMoney().put(p.getUniqueId().toString(), 0.00);
+                                        plugin.getMoney().put(p.getUniqueId().toString(), 0L);
                                     }
                                 }
 
-                                DecimalFormat formatter = new DecimalFormat("#,###.##");
-                                String formattedMoney = formatter.format(args[2]);
+                                String formattedMoney = formatter.format(Long.parseLong(args[2]));
                                 if (args[0].equalsIgnoreCase("give")) {
 
 
@@ -57,7 +57,7 @@ public class EconomyCommand implements CommandExecutor {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
 
                                             p.sendMessage(ChatColor.GREEN + "[+] " + ChatColor.WHITE + formattedMoney + " coins");
-                                            plugin.getMoney().put(p.getUniqueId().toString(), plugin.getMoney().get(p.getUniqueId().toString()) + Double.parseDouble(args[2]));
+                                            plugin.getMoney().put(p.getUniqueId().toString(), plugin.getMoney().get(p.getUniqueId().toString()) + Long.parseLong(args[2]));
                                         }
                                     } else {
                                         target.sendMessage(ChatColor.GREEN + "[+] " + ChatColor.WHITE + formattedMoney + ChatColor.GREEN + " coins");
@@ -69,13 +69,13 @@ public class EconomyCommand implements CommandExecutor {
                                     if (args[1].equalsIgnoreCase("*")) {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
                                             p.sendMessage(ChatColor.YELLOW + "Your balance was set to " + ChatColor.WHITE + formattedMoney + " coins");
-                                            plugin.getMoney().put(p.getUniqueId().toString(), Double.parseDouble(args[2]));
+                                            plugin.getMoney().put(p.getUniqueId().toString(), Long.parseLong(args[2]));
                                         }
                                     } else {
 
                                         target.sendMessage(ChatColor.YELLOW + "Your balance was set to " + ChatColor.WHITE + formattedMoney + " coins");
 
-                                        plugin.getMoney().put(target.getUniqueId().toString(), Double.parseDouble(args[2]));
+                                        plugin.getMoney().put(target.getUniqueId().toString(), Long.parseLong(args[2]));
                                     }
                                     return true;
                                 }
@@ -87,7 +87,7 @@ public class EconomyCommand implements CommandExecutor {
                                             p.sendMessage(ChatColor.RED + "[-] " + ChatColor.WHITE + formattedMoney + " coins");
                                             player.sendMessage(ChatColor.RED + "[-] " + ChatColor.WHITE + formattedMoney + " coins");
 
-                                            plugin.getMoney().put(p.getUniqueId().toString(), plugin.getMoney().get(p.getUniqueId().toString()) - Double.parseDouble(args[2]));
+                                            plugin.getMoney().put(p.getUniqueId().toString(), plugin.getMoney().get(p.getUniqueId().toString()) - Long.parseLong(args[2]));
 
                                         }
 
@@ -98,10 +98,10 @@ public class EconomyCommand implements CommandExecutor {
                                         plugin.getMoney().put(target.getUniqueId().toString(), plugin.getMoney().get(target.getUniqueId().toString()) - Long.parseLong(args[2]));
                                     }
                                 }
-                                break;
                             } catch (NumberFormatException e) {
-                                player.sendMessage(ChatColor.RED + "Amount must be" + ChatColor.WHITE + ChatColor.BOLD + " <= " + ChatColor.GOLD + Double.MAX_VALUE);
+                                player.sendMessage(ChatColor.RED + "Amount must be" + ChatColor.WHITE + ChatColor.BOLD + " <= " + ChatColor.GOLD + formatter.format(Long.MAX_VALUE));
                             }
+                                break;
                         }
                 }
             } else {
