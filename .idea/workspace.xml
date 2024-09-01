@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update KingdomInviteList.java">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/balance/EconomyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/balance/EconomyCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/configs/MoneyConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/configs/MoneyConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/BalanceCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/BalanceCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/PayCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/balance/PayCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
-    </list>
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update EconomyCommand.java" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,30 +109,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Remove KingdomsConfigTest.java">
-      <option name="closed" value="true" />
-      <created>1723915395029</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1723915395029</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Move config files to admin folder">
-      <option name="closed" value="true" />
-      <created>1723915512939</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1723915512939</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Create a seperate class for chat listening">
-      <option name="closed" value="true" />
-      <created>1723919794513</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1723919794513</updated>
     </task>
     <task id="LOCAL-00021" summary="Remove chat listener">
       <option name="closed" value="true" />
@@ -514,7 +478,31 @@
       <option name="project" value="LOCAL" />
       <updated>1725154201713</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="Update money hashmap to use a long and format it in various files">
+      <option name="closed" value="true" />
+      <created>1725158484111</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1725158484111</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Update ModMode.java">
+      <option name="closed" value="true" />
+      <created>1725158687515</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1725158687516</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Update EconomyCommand.java">
+      <option name="closed" value="true" />
+      <created>1725158706080</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1725158706080</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -526,9 +514,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Rename onlinePlayer to &quot;p&quot;" />
-    <MESSAGE value="Update Commands" />
-    <MESSAGE value="Update Plugin" />
     <MESSAGE value="Update kingdom when player is not in a kingdom" />
     <MESSAGE value="Update File Exclusions" />
     <MESSAGE value="Remove KingdomsConfigTest.java" />
@@ -551,6 +536,9 @@
     <MESSAGE value="Create Enchantments" />
     <MESSAGE value="Update Code" />
     <MESSAGE value="Update KingdomInviteList.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update KingdomInviteList.java" />
+    <MESSAGE value="Update money hashmap to use a long and format it in various files" />
+    <MESSAGE value="Update ModMode.java" />
+    <MESSAGE value="Update EconomyCommand.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update EconomyCommand.java" />
   </component>
 </project>
