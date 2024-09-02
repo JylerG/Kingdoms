@@ -778,13 +778,13 @@ public class KingdomsCommands implements CommandExecutor {
         String playerKingdom = plugin.getKingdoms().get(playerUUID);
 
         // Check if the player is in a kingdom
-        if (playerKingdom == null || playerKingdom.isEmpty()) {
+        if ((playerKingdom == null || playerKingdom.isEmpty())) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
 
         // Check if the player has permission to claim chunks
-        if (!plugin.getCanClaim().containsKey(playerUUID)) {
+        if (!plugin.getOwner().containsKey(playerUUID)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to claim chunks for " + ChatColor.WHITE + kingdom);
             return;
         }
@@ -800,6 +800,8 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
+        plugin.restorePluginData();
+        plugin.restoreOfflineData();
         // Check the number of chunks claimed by the player's kingdom
         long claimCount = plugin.getClaimedChunks().values().stream()
                 .filter(k -> k.equals(kingdom))
@@ -822,8 +824,11 @@ public class KingdomsCommands implements CommandExecutor {
         String playerKingdom = plugin.getKingdoms().get(playerUUID);
 
         try {
+            plugin.restoreOfflineData();
+            plugin.restorePluginData();
+
             // Check if the player is in a kingdom
-            if (playerKingdom == null || playerKingdom.isEmpty()) {
+            if ((playerKingdom == null || playerKingdom.isEmpty())) {
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom");
                 return;
             }
@@ -835,9 +840,13 @@ public class KingdomsCommands implements CommandExecutor {
             }
 
             // Check if the chunk is claimed by the player's kingdom
-            if (!plugin.getClaimedChunks().containsKey(chunkID) || !plugin.getClaimedChunks().get(chunkID).equals(kingdom)) {
-                player.sendMessage(ChatColor.RED + "This chunk is not claimed by your kingdom or does not exist");
+            if (!plugin.getClaimedChunks().containsKey(chunkID)) {
+                player.sendMessage(ChatColor.RED + "This chunk is not claimed");
                 return;
+            }
+
+            if (!plugin.getClaimedChunks().get(chunkID).equals(kingdom)) {
+                player.sendMessage("This chunk is not claimed by " + kingdom);
             }
 
             plugin.getClaims().remove(kingdom, chunkID);
@@ -849,7 +858,6 @@ public class KingdomsCommands implements CommandExecutor {
             e.printStackTrace();
         }
     }
-
 
     private void invitePlayerToKingdom(Player player, Player target, String kingdom, String[] args) {
         if (target == null) {

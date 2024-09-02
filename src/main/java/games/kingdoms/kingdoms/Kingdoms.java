@@ -593,7 +593,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     //Player is not in a chunk owned by their kingdom
-    public void notInPlayersKingdomBoard(Player player) {
+    public void notInPlayersKingdomBoard(@NotNull Player player) {
         Chunk chunk = player.getLocation().getChunk();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
@@ -621,12 +621,25 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         challenges.setScore(9);
         Score blank = obj.getScore(" ");
         blank.setScore(8);
-        Score kingdom = obj.getScore(ChatColor.YELLOW.toString() + ChatColor.BOLD + "SERVER");
-        kingdom.setScore(7);
+        Score server = obj.getScore(ChatColor.YELLOW.toString() + ChatColor.BOLD + "SERVER");
+        server.setScore(7);
+        //All online players
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staffConfig.getConfig().getNode("online.online").toPrimitive().getInt());
+        //Online Staff Count
+        int staff = 0;
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            if (this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                staff++;
+            }
+        }
+        Score onlineStaff = obj.getScore("Staff " + staff);
         onlineStaff.setScore(5);
+        //PvP is on/off
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
         Score separator = obj.getScore(ChatColor.WHITE + " ");
@@ -675,8 +688,18 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         kingdom.setScore(7);
         Score online = obj.getScore("Online " + ChatColor.YELLOW + Bukkit.getOnlinePlayers().size());
         online.setScore(6);
-        Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staffConfig.getConfig().getNode("online.online").toPrimitive().getInt());
-        onlineStaff.setScore(5);
+        int staff = 0;
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            if (this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                staff++;
+                Score onlineStaff = obj.getScore("Staff " + staff);
+                onlineStaff.setScore(5);
+            }
+        }
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
         Score separator = obj.getScore(ChatColor.WHITE + " ");
@@ -729,7 +752,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             sendTitle(player, title, subtitle, 10, 40, 10);
 
             // Update the player's scoreboard based on their kingdom status
-            if (plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+            if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
                 if (isChunkClaimed(toChunk, player)) {
                     inPlayersKingdomBoard(player, toChunk);
                 } else {
