@@ -28,7 +28,7 @@ public class PlayerJoinListener implements Listener {
         Team team = scoreboard.getTeam(player.getName());
 
         if (team == null) {
-            team = scoreboard.registerNewTeam(player.getName());
+            team = scoreboard.registerNewTeam(player.getDisplayName());
         }
 
         team.setPrefix(prefix);

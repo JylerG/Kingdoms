@@ -783,7 +783,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         objective.getScore(player.getName()).setScore(1); // Example score
 
         // Set the player's display name in the tab list
-        player.setPlayerListName(prefix + ChatColor.WHITE + player.getName());
+        player.setPlayerListName(prefix + ChatColor.WHITE + player.getDisplayName());
 
         // Apply the updated scoreboard to the player
         player.setScoreboard(scoreboard);
@@ -886,7 +886,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             PlayerJoinListener pjl = new PlayerJoinListener();
             // Update the player's tab list name
-            pjl.updateTabListWithScoreboard(player);
+            updateTabListWithScoreboard(player);
         } else {
             restorePluginData(player);
             if (!kingdoms.containsKey(player.getUniqueId().toString())) {
@@ -932,7 +932,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             PlayerJoinListener pjl = new PlayerJoinListener();
             // Update the player's tab list name
-            pjl.updateTabListWithScoreboard(player);
+            updateTabListWithScoreboard(player);
 
             // Check if player is in a kingdom onJoin
             if (kingdoms.containsKey(player.getUniqueId().toString())) {

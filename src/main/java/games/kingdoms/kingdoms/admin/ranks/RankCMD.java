@@ -113,12 +113,12 @@ public class RankCMD implements CommandExecutor {
                     } else {
                         player.sendMessage(ChatColor.RED + "You are already " + ChatColor.AQUA.toString() + ChatColor.BOLD + Rank.HERO + ChatColor.RED + " rank");
                     }
-                } else if (args[0].equalsIgnoreCase("fake") && args[1].equalsIgnoreCase("youtube")) {
+                } else if (args[0].equalsIgnoreCase("fake") && (args[1].equalsIgnoreCase("youtube") || args[1].equalsIgnoreCase("yt"))) {
                     if (!isYoutube) {
-                        plugin.getPlayerRank().put(player.getUniqueId().toString(), ChatColor.RED.toString() + ChatColor.BOLD + Rank.YOUTUBE);
-                        player.sendMessage(ChatColor.LIGHT_PURPLE + "You set your rank to appear as " + ChatColor.RED.toString() + ChatColor.BOLD + Rank.YOUTUBE);
+                        plugin.getPlayerRank().put(player.getUniqueId().toString(), ChatColor.RED.toString() + ChatColor.BOLD + "YT");
+                        player.sendMessage(ChatColor.LIGHT_PURPLE + "You set your rank to appear as " + ChatColor.RED.toString() + ChatColor.BOLD + "YT");
                     } else {
-                        player.sendMessage(ChatColor.RED + "You are already " + ChatColor.RED.toString() + ChatColor.BOLD + Rank.YOUTUBE + ChatColor.RED + " rank");
+                        player.sendMessage(ChatColor.RED + "You are already " + ChatColor.RED.toString() + ChatColor.BOLD + "YT" + ChatColor.RED + " rank");
                     }
                 } else if (args[0].equalsIgnoreCase("fake") && args[1].equalsIgnoreCase("jrmod")) {
                     if (!isJrMod) {
