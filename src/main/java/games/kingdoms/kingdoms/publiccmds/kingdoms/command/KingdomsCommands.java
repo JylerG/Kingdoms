@@ -552,13 +552,9 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        // Flag to check if the kingdom was found
-        boolean kingdomFound = false;
-
         // Disband the kingdom and clean up associated data
-        Iterator<Map.Entry<String, String>> iterator = plugin.getKingdoms().entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entry = iterator.next();
+        boolean kingdomFound = false;
+        for (Map.Entry<String, String> entry : plugin.getKingdoms().entrySet()) {
             if (entry.getValue().equalsIgnoreCase(kingdom)) {
                 String playerObj = entry.getKey();
 
@@ -572,25 +568,24 @@ public class KingdomsCommands implements CommandExecutor {
                 plugin.getInviteList().put(playerObj, "");
 
                 // Update claimed chunks associated with the kingdom
-                Iterator<Map.Entry<String, String>> chunkIterator = plugin.getClaimedChunks().entrySet().iterator();
-                while (chunkIterator.hasNext()) {
-                    Map.Entry<String, String> chunk = chunkIterator.next();
+                for (Map.Entry<String, String> chunk : plugin.getClaimedChunks().entrySet()) {
                     if (chunk.getValue().equalsIgnoreCase(kingdom)) {
                         plugin.getClaimedChunks().put(chunk.getKey(), ""); // Set the value to an empty string
                     }
                 }
 
-                player.sendMessage(ChatColor.WHITE + kingdom + ChatColor.GREEN + " disbanded");
                 kingdomFound = true;
-                break;
+                break; // Exit the loop once the kingdom is found and disbanded
             }
         }
 
-        if (!kingdomFound) {
+        // Notify the player about the result
+        if (kingdomFound) {
+            player.sendMessage(ChatColor.WHITE + kingdom + ChatColor.GREEN + " disbanded");
+        } else {
             player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
         }
     }
-
 
     private void createKingdom(Player player, String kingdom) {
         if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {

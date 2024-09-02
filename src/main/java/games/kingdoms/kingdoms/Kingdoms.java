@@ -637,7 +637,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 staff++;
             }
         }
-        Score onlineStaff = obj.getScore("Staff " + staff);
+        Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staff);
         onlineStaff.setScore(5);
         //PvP is on/off
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
@@ -696,7 +696,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
                     || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                 staff++;
-                Score onlineStaff = obj.getScore("Staff " + staff);
+                Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staff);
                 onlineStaff.setScore(5);
             }
         }
