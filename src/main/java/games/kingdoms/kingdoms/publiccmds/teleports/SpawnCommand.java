@@ -139,7 +139,7 @@ public class SpawnCommand implements CommandExecutor {
                 .append(openArrow)
                 .append(warzone)
                 .append(closeArrow)
-                .append(ChatColor.stripColor("    "))
+                .append(ChatColor.stripColor("   "))
                 .append(openArrow)
                 .append(kingdoms)
                 .append(closeArrow)
@@ -174,7 +174,7 @@ public class SpawnCommand implements CommandExecutor {
         }
 
         int halvedMessageSize = messagePxSize / 2;
-        int toCompensate = CENTER_PX - halvedMessageSize;
+        int toCompensate = 128 - halvedMessageSize;
         int spaceLength = FontInfo.SPACE.getLength() + 1;
         int compensated = 0;
         StringBuilder sb = new StringBuilder();

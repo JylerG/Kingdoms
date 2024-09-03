@@ -465,9 +465,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void help() {
-        registerCommand("help", new HelpCommand());
         unregisterCommand("?");
         unregisterCommand("help");
+        registerCommand("help", new HelpCommand());
     }
 
     private void rank() {
