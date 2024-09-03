@@ -378,7 +378,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void Spawns() {
-        getCommand("spawn").setExecutor(new SpawnCommand(this, new KingdomsCommandListener(this)));
+        getCommand("spawn").setExecutor(new SpawnCommand(this));
     }
 
     private void Vanish() {

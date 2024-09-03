@@ -15,8 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PunishCommand implements CommandExecutor, Listener {
 
-    private Kingdoms plugin;
-    public String sep;
+    final Kingdoms plugin;
     public PunishCommand(Kingdoms plugin) {
         this.plugin = plugin;
     }
@@ -28,7 +27,6 @@ public class PunishCommand implements CommandExecutor, Listener {
                 + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash
                 + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash
                 + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash;
-        this.sep = sep;
         if (sender instanceof Player player) {
             if (player.hasPermission("kingdoms.jrmod.punish")
                     || player.hasPermission("kingdoms.mod.punish")
