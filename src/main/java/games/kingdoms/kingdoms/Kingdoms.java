@@ -538,32 +538,45 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
         kingdom.setScore(7);
 
-        //loop through players and add to member count if they are in the kingdom of the chunk the player goes into
-        int memberCount = 0;  // Initialize memberCount outside the loop
+        // Initialize memberCount and ensure it is reset for each chunk
+        int memberCount = 0;
 
-        // Get the kingdom of the chunk the player is going into
+        // Get the chunk coordinates (the key used to store the claimed chunk data)
         String chunkKey = chunk.getX() + "," + chunk.getZ();
+
+        // Find the kingdom that owns this chunk
         String kingdomOfChunk = claimedChunks.get(chunkKey);
 
-        for (Player player1 : Bukkit.getOnlinePlayers()) {
-            // Check if the player is in the same kingdom as the kingdom of the chunk
-            String playerKingdom = kingdoms.get(player1.getUniqueId().toString());
-            if (kingdomOfChunk != null && kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
-                memberCount++;
-            }
-        }
-        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-            // Check if the player is in the same kingdom as the kingdom of the chunk
-            String playerKingdom = kingdoms.get(offline.getUniqueId().toString());
-            if (kingdomOfChunk != null && kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
-                memberCount++;
-            }
-        }
+        // Check if the chunk belongs to a kingdom
+        if (kingdomOfChunk != null) {
 
-        // Set the score for the scoreboard with the updated memberCount
-        Score members = obj.getScore("Members " + ChatColor.YELLOW + memberCount + "/" + maxMembers.get(kingdomOfChunk));
-        members.setScore(6);
+            // Loop through all online players
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                // Get the player's kingdom
+                String playerKingdom = kingdoms.get(onlinePlayer.getUniqueId().toString());
 
+                // Check if the player belongs to the same kingdom as the one that owns the chunk
+                if (kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
+                    memberCount++;
+                }
+            }
+
+            // Loop through all offline players (if needed)
+            for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+                // Get the player's kingdom from the UUID
+                String playerKingdom = kingdoms.get(offlinePlayer.getUniqueId().toString());
+
+                // Check if the offline player belongs to the same kingdom
+                if (kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
+                    memberCount++;
+                }
+            }
+
+            // Set the score for the scoreboard with the updated memberCount
+            int maxAllowedMembers = maxMembers.getOrDefault(kingdomOfChunk, 0); // Get max members, default to 0 if none
+            Score membersScore = obj.getScore("Members " + ChatColor.YELLOW + memberCount + "/" + maxAllowedMembers);
+            membersScore.setScore(6);
+        }
 
         for (String chunkID : claimedChunks.keySet()) {
             if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
@@ -1630,22 +1643,20 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private <K, V> void saveNestedData(Configurable config, Map<K, V> data, Map<K, String> kingdoms, String pathPrefix) {
         if (!data.isEmpty() && config != null) {
             for (Map.Entry<K, V> entry : data.entrySet()) {
-                K key = entry.getKey();
-                V value = entry.getValue();
+                K key = entry.getKey(); // Key, e.g., player's UUID
+                String kingdom = kingdoms.get(key); // Get the player's kingdom from the kingdoms map
 
-                // Ensure the key exists in the kingdoms map
-                if (kingdoms.containsKey(key)) {
-                    String kingdomPath = kingdoms.get(key);
-                    String fullPath = pathPrefix + kingdomPath;
+                // Ensure the kingdom is valid (not null)
+                if (kingdom != null && !kingdom.isEmpty()) {
+                    String fullPath = pathPrefix + key; // Set key as the player's UUID in the path
 
-                    // Set the data in the config, and don't check for existence, just set it
-                    config.set(fullPath, value);
+                    // Set the kingdom as the value for the player's UUID key
+                    config.set(fullPath, kingdom);
                 }
             }
-            config.save(); // Save after all data is set
+            config.save(); // Save the configuration after updating all entries
         }
     }
-
 
     private <K, V> void saveMatchingData(Configurable config, Map<K, V> claimedChunks, Map<K, V> kingdoms, String pathPrefix) {
         if (!claimedChunks.isEmpty() && config != null) {

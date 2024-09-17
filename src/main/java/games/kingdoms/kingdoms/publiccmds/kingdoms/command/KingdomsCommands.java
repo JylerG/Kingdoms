@@ -800,14 +800,23 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
+        // Get the player's membership status
+        String playerMember = plugin.getMember().get(playerUUID);
+        String playerAdmin = plugin.getAdmin().get(playerUUID);
+        String playerOwner = plugin.getOwner().get(playerUUID);
+
+        // Check if the player is a member of the kingdom
+        boolean isMember = playerMember != null && playerMember.equals(kingdom);
+        boolean isAdmin = playerAdmin != null && playerAdmin.equals(kingdom);
+
         // Check if the player has permission to claim chunks
-        if (!plugin.getAdmin().containsKey(playerUUID)) {
+        if (isMember && !isAdmin) {
             player.sendMessage(ChatColor.RED + "You do not have permission to claim chunks for " + ChatColor.WHITE + kingdom);
             return;
         }
 
         // Check if the chunk is already claimed
-        if (plugin.getClaimedChunks().containsKey(chunkID)) {
+        if (plugin.getClaimedChunks().containsKey(chunkID) && !plugin.getClaimedChunks().get(chunkID).isEmpty()) {
             String ownerKingdom = plugin.getClaimedChunks().get(chunkID);
             if (ownerKingdom.equals(kingdom)) {
                 player.sendMessage(ChatColor.RED + "Chunk is already claimed by your kingdom");
@@ -849,8 +858,17 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
+        // Get the player's membership status
+        String playerMember = plugin.getMember().get(playerUUID);
+        String playerAdmin = plugin.getAdmin().get(playerUUID);
+        String playerOwner = plugin.getOwner().get(playerUUID);
+
+        // Check if the player is a member of the kingdom
+        boolean isMember = playerMember != null && playerMember.equals(kingdom);
+        boolean isAdmin = playerAdmin != null && playerAdmin.equals(kingdom);
+
         // Check if the player has permission to unclaim chunks
-        if (!plugin.getAdmin().containsKey(playerUUID)) {
+        if (isMember && !isAdmin) {
             player.sendMessage(ChatColor.RED + "You do not have permission to unclaim chunks for " + ChatColor.WHITE + playerKingdom);
             return;
         }
