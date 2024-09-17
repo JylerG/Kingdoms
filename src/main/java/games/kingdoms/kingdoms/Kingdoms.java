@@ -538,7 +538,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
         kingdom.setScore(7);
 
-        // Initialize memberCount and ensure it is reset for each chunk
+        //todo: Figure out why this double counts
+        //Initialize memberCount and ensure it is reset for each chunk
         int memberCount = 0;
 
         // Get the chunk coordinates (the key used to store the claimed chunk data)
