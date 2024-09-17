@@ -1598,9 +1598,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveData(kingdomsConfig.getConfig(), kingdoms, "kingdoms.");
         saveData(kingdomsConfig.getConfig(), maxClaims, "maxClaims.");
         saveData(kingdomsConfig.getConfig(), maxMembers, "maxMembers.");
-        saveNestedData(kingdomsConfig.getConfig(), owner, kingdoms, "owners.");
-        saveNestedData(kingdomsConfig.getConfig(), admin, kingdoms, "admins.");
         saveNestedData(kingdomsConfig.getConfig(), member, kingdoms, "members.");
+        saveNestedData(kingdomsConfig.getConfig(), admin, kingdoms, "admins.");
+        saveNestedData(kingdomsConfig.getConfig(), owner, kingdoms, "owners.");
         saveData(kingdomsConfig.getConfig(), inviteList, "invites.");
         saveData(kingdomsConfig.getConfig(), canClaim, "canClaim.");
         saveData(kingdomsConfig.getConfig(), canUnclaim, "canUnclaim.");
@@ -1630,13 +1630,22 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private <K, V> void saveNestedData(Configurable config, Map<K, V> data, Map<K, String> kingdoms, String pathPrefix) {
         if (!data.isEmpty() && config != null) {
             for (Map.Entry<K, V> entry : data.entrySet()) {
-                if (kingdoms.containsKey(entry.getKey()) && config.getNode(pathPrefix + kingdoms.get(entry.getKey())).exists()) {
-                    config.set(pathPrefix + entry.getKey(), entry.getValue());
+                K key = entry.getKey();
+                V value = entry.getValue();
+
+                // Ensure the key exists in the kingdoms map
+                if (kingdoms.containsKey(key)) {
+                    String kingdomPath = kingdoms.get(key);
+                    String fullPath = pathPrefix + kingdomPath;
+
+                    // Set the data in the config, and don't check for existence, just set it
+                    config.set(fullPath, value);
                 }
             }
-            config.save();
+            config.save(); // Save after all data is set
         }
     }
+
 
     private <K, V> void saveMatchingData(Configurable config, Map<K, V> claimedChunks, Map<K, V> kingdoms, String pathPrefix) {
         if (!claimedChunks.isEmpty() && config != null) {
