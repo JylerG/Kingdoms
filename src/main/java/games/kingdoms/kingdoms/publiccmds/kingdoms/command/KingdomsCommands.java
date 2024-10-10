@@ -311,8 +311,8 @@ public class KingdomsCommands implements CommandExecutor {
     }
 
     private void kickPlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
-        String commandSenderUUID = player.getUniqueId().toString();
-        String commandTargetUUID = target.getUniqueId().toString();
+        String playerUUID = player.getUniqueId().toString();
+        String targetUUID = target.getUniqueId().toString();
 
         // Prevent the player from kicking themselves
         if (target == player) {
@@ -321,15 +321,15 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the player has the right to kick someone and if the target is in a kingdom
-        if ((!admin.containsKey(commandSenderUUID) && !owner.containsKey(commandSenderUUID)) ||
-                !admin.containsKey(commandTargetUUID)) {
+        if ((!admin.containsKey(playerUUID) && !owner.containsKey(playerUUID)) ||
+                !admin.containsKey(targetUUID)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to kick players from " + ChatColor.WHITE + kingdom);
             return;
         }
 
         // Check if both the sender and the target are in the same kingdom
-        String senderKingdom = kingdoms.get(commandSenderUUID);
-        String targetKingdom = kingdoms.get(commandTargetUUID);
+        String senderKingdom = kingdoms.get(playerUUID);
+        String targetKingdom = kingdoms.get(targetUUID);
 
         if (!senderKingdom.equals(targetKingdom)) {
             player.sendMessage(target.getName() + ChatColor.RED + " is not a member of " + ChatColor.WHITE + kingdom);
@@ -337,18 +337,18 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Ensure the sender is either an admin or owner in their kingdom
-        if (!owner.get(commandSenderUUID).equals(senderKingdom) &&
-                !admin.get(commandSenderUUID).equals(senderKingdom)) {
+        if (!owner.get(playerUUID).equals(senderKingdom) &&
+                !admin.get(playerUUID).equals(senderKingdom)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to kick players from " + ChatColor.WHITE + senderKingdom);
             return;
         }
 
         // Kick the target player from the kingdom
-        kingdoms.remove(commandTargetUUID);
-        admin.remove(commandTargetUUID);
-        member.remove(commandTargetUUID);
-        canClaim.remove(commandTargetUUID);
-        canUnclaim.remove(commandTargetUUID);
+        kingdoms.remove(targetUUID);
+        admin.remove(targetUUID);
+        member.remove(targetUUID);
+        canClaim.remove(targetUUID);
+        canUnclaim.remove(targetUUID);
 
         player.sendMessage(ChatColor.GREEN + "You kicked " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + senderKingdom);
         target.sendMessage(ChatColor.RED + "You were kicked from " + ChatColor.WHITE + senderKingdom);
