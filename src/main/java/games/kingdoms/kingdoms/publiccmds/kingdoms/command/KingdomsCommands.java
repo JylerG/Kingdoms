@@ -21,14 +21,21 @@ import java.util.*;
 public class KingdomsCommands implements CommandExecutor {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
-    final HashMap<String, String> kingdoms = Kingdoms.getPlugin().getKingdoms();
-    final HashMap<String, Integer> maxMembers = Kingdoms.getPlugin().getMaxMembers();
-    final HashMap<String, Integer> maxClaims = Kingdoms.getPlugin().getMaxClaims();
-    final HashMap<String, String> claims = Kingdoms.getPlugin().getClaims();
-    final HashMap<String, Integer> claimPrice = Kingdoms.getPlugin().getClaimPrice();
-    final HashMap<String, String> admin = Kingdoms.getPlugin().getAdmin();
-    final HashMap<String, String> owner = Kingdoms.getPlugin().getOwner();
-    final HashMap<String, String> member = Kingdoms.getPlugin().getMember();
+    final HashMap<String, String> bannedNames= plugin.getBannedNames();
+    final HashMap<String, String> kingdoms = plugin.getKingdoms();
+    final HashMap<String, Integer> maxMembers = plugin.getMaxMembers();
+    final HashMap<String, Integer> maxClaims = plugin.getMaxClaims();
+    final HashMap<String, String> claims = plugin.getClaims();
+    final HashMap<String, String> claimedChunks = plugin.getClaimedChunks();
+    final HashMap<String, Integer> claimPrice = plugin.getClaimPrice();
+    final HashMap<String, String> admin = plugin.getAdmin();
+    final HashMap<String, String> owner = plugin.getOwner();
+    final HashMap<String, String> member = plugin.getMember();
+    final HashMap<String, String> canClaim = plugin.getCanClaim();
+    final HashMap<String, String> canUnclaim = plugin.getCanUnclaim();
+    final HashMap<String, String> inviteList = plugin.getInviteList();
+    final HashMap<String, Integer> memberPrice = plugin.getMemberPrice();
+    final HashMap<String, Location> kingdomSpawn = plugin.getKingdomSpawn();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -37,6 +44,7 @@ public class KingdomsCommands implements CommandExecutor {
             return true;
         }
         switch (args.length) {
+
             case 0:
                 //TODO: RANK, RAID, SET, INFO, WALLS, LIST, MAP
                 commandList(player);
@@ -46,7 +54,7 @@ public class KingdomsCommands implements CommandExecutor {
 
                 World world = Bukkit.getWorld("kingdoms");
                 Chunk chunk = player.getLocation().getChunk();
-                String kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+                String kingdom = kingdoms.get(player.getUniqueId().toString());
                 String chunkID = chunk.getX() + "," + chunk.getZ();
 
                 if (args[0].equalsIgnoreCase("spawn")) {
@@ -66,6 +74,8 @@ public class KingdomsCommands implements CommandExecutor {
                 }
 
                 if (args[0].equalsIgnoreCase("unclaim")) {
+                    plugin.restoreOfflineData();
+                    plugin.restorePluginData();
                     unclaimChunk(player, kingdom, chunkID);
                 }
 
@@ -79,7 +89,7 @@ public class KingdomsCommands implements CommandExecutor {
                 Player target = Bukkit.getPlayer(args[1]);
                 world = Bukkit.getWorld("kingdoms");
                 chunkID = chunk.getX() + "," + chunk.getZ();
-                kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+                kingdom = kingdoms.get(player.getUniqueId().toString());
                 Location spawn = new Location(world, player.getLocation().getX(), player.getLocation().getBlockY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
 
 
@@ -115,6 +125,7 @@ public class KingdomsCommands implements CommandExecutor {
                 }
 
                 if (args[0].equalsIgnoreCase("join")) {
+                    plugin.restoreOfflineData();
                     joinKingdom(player, kingdom, args);
                 }
 
@@ -189,7 +200,7 @@ public class KingdomsCommands implements CommandExecutor {
         // Check if no banned names match
         boolean noBannedNames = kc.getNode("bannedNames").getKeys(false)
                 .stream()
-                .noneMatch(plugin.getBannedNames()::containsValue);
+                .noneMatch(bannedNames::containsValue);
 
         if (noBannedNames) {
             player.sendMessage(ChatColor.LIGHT_PURPLE + "No Banned Names");
@@ -200,8 +211,8 @@ public class KingdomsCommands implements CommandExecutor {
         if (!player.hasPermission("kingdoms.unban")) {
             return;
         }
-        if (plugin.getBannedNames().containsKey(kingdom) && plugin.getBannedNames().containsValue(kingdom)) {
-            plugin.getBannedNames().put(kingdom, " ");
+        if (bannedNames.containsKey(kingdom) && bannedNames.containsValue(kingdom)) {
+            bannedNames.put(kingdom, " ");
             plugin.savePluginData();
             player.sendMessage(ChatColor.GREEN + "You unbanned " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " from being created");
         } else {
@@ -213,8 +224,8 @@ public class KingdomsCommands implements CommandExecutor {
         if (!player.hasPermission("kingdoms.ban")) {
             return;
         }
-        if ((!plugin.getBannedNames().containsKey(kingdom)) && !plugin.getBannedNames().containsValue(kingdom)) {
-            plugin.getBannedNames().put(kingdom, kingdom);
+        if ((!bannedNames.containsKey(kingdom)) && !bannedNames.containsValue(kingdom)) {
+            bannedNames.put(kingdom, kingdom);
             plugin.savePluginData();
             player.sendMessage(ChatColor.GREEN + "You banned " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " from being created");
         } else {
@@ -233,31 +244,35 @@ public class KingdomsCommands implements CommandExecutor {
                 player.sendMessage(ChatColor.GOLD + "Usage: /kingdom transfer NAME <player>");
                 return;
             }
-            if (!plugin.getKingdoms().containsValue(kingdom)) {
+            if (!bannedNames.containsValue(kingdom)) {
                 player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
                 return;
             }
             // Check if the player is in a kingdom
-            if (!plugin.getKingdoms().containsKey(playerUUID)) {
+            if (!kingdoms.containsKey(playerUUID)) {
                 player.sendMessage(target.getName() + ChatColor.RED + " is not in a kingdom");
                 return;
             }
 
+            if (!kingdoms.get(playerUUID).equals(args[1])) {
+                player.sendMessage(ChatColor.RED + "You are not a member of " + ChatColor.WHITE + args[1]);
+            }
+
             // Check if the player is the owner of the specified kingdom
-            if (!plugin.getOwner().get(playerUUID).equals(plugin.getKingdoms().get(playerUUID))) {
-                player.sendMessage(ChatColor.RED + "You are not the owner of " + ChatColor.GOLD + plugin.getKingdoms().get(playerUUID));
+            if (!owner.get(playerUUID).equals(kingdoms.get(playerUUID))) {
+                player.sendMessage(ChatColor.RED + "You are not the owner of " + ChatColor.GOLD + kingdoms.get(playerUUID));
                 return;
             }
 
             // Check if the target player is a member of the specified kingdom
-            if (!plugin.getKingdoms().get(targetUUID).equals(kingdom)) {
+            if (!kingdoms.get(targetUUID).equals(kingdom)) {
                 player.sendMessage(target.getName() + ChatColor.RED + " is not a member of " + ChatColor.WHITE + kingdom);
                 return;
             }
 
             // Transfer kingdom ownership
-            plugin.getOwner().remove(playerUUID);
-            plugin.getOwner().put(targetUUID, kingdom);
+            owner.remove(playerUUID);
+            owner.put(targetUUID, kingdom);
             player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
             target.sendMessage(player.getName() + ChatColor.GREEN + " transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to you");
             return;
@@ -269,26 +284,26 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        if (!plugin.getKingdoms().containsValue(kingdom)) {
+        if (!kingdoms.containsValue(kingdom)) {
             player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
             return;
         }
 
         // Check if the player is in a kingdom
-        if (!plugin.getKingdoms().containsKey(playerUUID)) {
+        if (!kingdoms.containsKey(playerUUID)) {
             player.sendMessage(target.getName() + ChatColor.RED + " is not in a kingdom");
             return;
         }
 
         // Check if the target player is in the specified kingdom
-        if (!plugin.getKingdoms().get(targetUUID).equals(kingdom)) {
+        if (!kingdoms.get(targetUUID).equals(kingdom)) {
             player.sendMessage(target.getName() + ChatColor.RED + " is not in " + ChatColor.WHITE + kingdom);
             return;
         }
 
         // Transfer kingdom ownership
-        plugin.getOwner().remove(plugin.getKingdoms().get(kingdom));
-        plugin.getOwner().put(targetUUID, kingdom);
+        owner.remove(kingdoms.get(kingdom));
+        owner.put(targetUUID, kingdom);
 
         // Inform players about the transfer
         player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
@@ -306,15 +321,15 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the player has the right to kick someone and if the target is in a kingdom
-        if ((!plugin.getAdmin().containsKey(commandSenderUUID) && !plugin.getOwner().containsKey(commandSenderUUID)) ||
-                !plugin.getKingdoms().containsKey(commandTargetUUID)) {
+        if ((!admin.containsKey(commandSenderUUID) && !owner.containsKey(commandSenderUUID)) ||
+                !admin.containsKey(commandTargetUUID)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to kick players from " + ChatColor.WHITE + kingdom);
             return;
         }
 
         // Check if both the sender and the target are in the same kingdom
-        String senderKingdom = plugin.getKingdoms().get(commandSenderUUID);
-        String targetKingdom = plugin.getKingdoms().get(commandTargetUUID);
+        String senderKingdom = kingdoms.get(commandSenderUUID);
+        String targetKingdom = kingdoms.get(commandTargetUUID);
 
         if (!senderKingdom.equals(targetKingdom)) {
             player.sendMessage(target.getName() + ChatColor.RED + " is not a member of " + ChatColor.WHITE + kingdom);
@@ -322,18 +337,18 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Ensure the sender is either an admin or owner in their kingdom
-        if (!plugin.getOwner().get(commandSenderUUID).equals(senderKingdom) &&
-                !plugin.getAdmin().get(commandSenderUUID).equals(senderKingdom)) {
+        if (!owner.get(commandSenderUUID).equals(senderKingdom) &&
+                !admin.get(commandSenderUUID).equals(senderKingdom)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to kick players from " + ChatColor.WHITE + senderKingdom);
             return;
         }
 
         // Kick the target player from the kingdom
-        plugin.getKingdoms().remove(commandTargetUUID);
-        plugin.getAdmin().remove(commandTargetUUID);
-        plugin.getMember().remove(commandTargetUUID);
-        plugin.getCanClaim().remove(commandTargetUUID);
-        plugin.getCanUnclaim().remove(commandTargetUUID);
+        kingdoms.remove(commandTargetUUID);
+        admin.remove(commandTargetUUID);
+        member.remove(commandTargetUUID);
+        canClaim.remove(commandTargetUUID);
+        canUnclaim.remove(commandTargetUUID);
 
         player.sendMessage(ChatColor.GREEN + "You kicked " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + senderKingdom);
         target.sendMessage(ChatColor.RED + "You were kicked from " + ChatColor.WHITE + senderKingdom);
@@ -341,60 +356,96 @@ public class KingdomsCommands implements CommandExecutor {
 
 
     private void demotePlayer(Player player, Player target, String[] args) {
+        OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[1]);
+        String kingdom = kingdoms.get(player.getUniqueId().toString());
 
-        String kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+        if (offlinePlayer == null) {
+            player.sendMessage(args[1] + ChatColor.RED + " has not played on " + ChatColor.YELLOW + "Kingdoms");
+            return;
+        }
+
         if (target == null) {
             player.sendMessage(args[1] + ChatColor.RED + " is not online");
             return;
         }
 
-        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+        if (!kingdoms.containsKey(player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
 
-        if (!plugin.getOwner().get(player.getUniqueId().toString()).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+        if (!kingdoms.containsKey(offlinePlayer.getUniqueId().toString())
+                || kingdoms.get(offlinePlayer.getUniqueId().toString()).isEmpty()) {
+            player.sendMessage(args[1] + ChatColor.RED + " is not in a kingdom");
+            return;
+        }
+
+        if (!kingdoms.get(offlinePlayer.getUniqueId().toString()).isEmpty()
+                && !kingdoms.get(offlinePlayer.getUniqueId().toString()).equals(kingdoms.get(player.getUniqueId().toString()))) {
+            player.sendMessage(args[1] + ChatColor.RED + " is not in " + ChatColor.WHITE + kingdom);
+            return;
+        }
+
+        if (!owner.get(player.getUniqueId().toString()).equals(kingdoms.get(player.getUniqueId().toString()))) {
             player.sendMessage(ChatColor.RED + "You must be the owner of " + ChatColor.WHITE + kingdom + ChatColor.RED + " to demote members");
             return;
         }
 
-        if (plugin.getKingdoms().get(target.getUniqueId().toString()).equalsIgnoreCase(kingdom) && !plugin.getAdmin().containsKey(target.getUniqueId().toString())) {
+        if (kingdoms.get(target.getUniqueId().toString()).equalsIgnoreCase(kingdom) && member.containsKey(target.getUniqueId().toString())) {
             player.sendMessage(target.getName() + ChatColor.RED + " is already a " + ChatColor.WHITE + "member");
             return;
         }
 
-        plugin.getAdmin().remove(target.getUniqueId().toString(), plugin.getKingdoms().get(player.getUniqueId().toString()));
-        plugin.getMember().put(target.getUniqueId().toString(), plugin.getKingdoms().get(player.getUniqueId().toString()));
+        admin.remove(target.getUniqueId().toString(), kingdoms.get(player.getUniqueId().toString()));
+        member.put(target.getUniqueId().toString(), kingdoms.get(player.getUniqueId().toString()));
 
         player.sendMessage(ChatColor.GREEN + "You demoted " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " to " + ChatColor.WHITE + "member");
         target.sendMessage(ChatColor.RED + "You were demoted to " + ChatColor.WHITE + "member" + ChatColor.RED + " in " + ChatColor.WHITE + kingdom);
     }
 
     private void promotePlayer(Player player, Player target, String[] args) {
-        String kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+        OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[1]);
+        String kingdom = kingdoms.get(player.getUniqueId().toString());
+
+        if (offlinePlayer == null) {
+            player.sendMessage(args[1] + ChatColor.RED + " has not played on " + ChatColor.YELLOW + "Kingdoms");
+            return;
+        }
 
         if (target == null) {
             player.sendMessage(args[1] + ChatColor.RED + " is not online");
             return;
         }
 
-        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+        if (!kingdoms.containsKey(player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
 
-        if (!plugin.getOwner().get(player.getUniqueId().toString()).equals(kingdom)) {
-            player.sendMessage(ChatColor.RED + "You must be the owner of " + ChatColor.WHITE + kingdom + ChatColor.RED + " to promote members");
+        if (!kingdoms.containsKey(offlinePlayer.getUniqueId().toString())
+                || kingdoms.get(offlinePlayer.getUniqueId().toString()).isEmpty()) {
+            player.sendMessage(args[1] + ChatColor.RED + " is not in a kingdom");
             return;
         }
 
-        if (plugin.getAdmin().containsKey(target.getUniqueId().toString()) && plugin.getAdmin().get(target.getUniqueId().toString()).equalsIgnoreCase(kingdom)) {
+        if (!kingdoms.get(offlinePlayer.getUniqueId().toString()).isEmpty()
+                && !kingdoms.get(offlinePlayer.getUniqueId().toString()).equals(kingdoms.get(player.getUniqueId().toString()))) {
+            player.sendMessage(args[1] + ChatColor.RED + " is not in " + ChatColor.WHITE + kingdom);
+            return;
+        }
+
+        if (!owner.get(player.getUniqueId().toString()).equals(kingdoms.get(player.getUniqueId().toString()))) {
+            player.sendMessage(ChatColor.RED + "You must be the owner of " + ChatColor.WHITE + kingdom + ChatColor.RED + " to demote members");
+            return;
+        }
+
+        if (kingdoms.get(target.getUniqueId().toString()).equalsIgnoreCase(kingdom) && admin.containsKey(target.getUniqueId().toString())) {
             player.sendMessage(target.getName() + ChatColor.RED + " is already an " + ChatColor.WHITE + "admin");
             return;
         }
 
-        plugin.getAdmin().put(target.getUniqueId().toString(), kingdom);
-        plugin.getMember().remove(target.getUniqueId().toString());
+        admin.put(target.getUniqueId().toString(), kingdom);
+        member.remove(target.getUniqueId().toString());
 
         player.sendMessage(ChatColor.GREEN + "You promoted " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " to " + ChatColor.WHITE + "admin");
         target.sendMessage(ChatColor.GREEN + "You were promoted to " + ChatColor.WHITE + "admin" + ChatColor.GREEN + " in " + ChatColor.WHITE + kingdom);
@@ -404,60 +455,58 @@ public class KingdomsCommands implements CommandExecutor {
         String playerUUID = player.getUniqueId().toString();
 
         // Check if the player is in a kingdom
-        if (!plugin.getKingdoms().containsKey(playerUUID)) {
+        if (!kingdoms.containsKey(playerUUID)) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
 
         // Check if the player is a member of the specified kingdom
-        String playerKingdom = plugin.getKingdoms().get(playerUUID);
+        String playerKingdom = kingdoms.get(playerUUID);
         if (!playerKingdom.equals(kingdom)) {
             player.sendMessage(ChatColor.RED + "You are not a member of " + ChatColor.WHITE + args[1]);
             return;
         }
 
         // Check if the player is the owner of the kingdom
-        if (plugin.getOwner().containsKey(playerUUID) && plugin.getOwner().get(playerUUID).equals(kingdom)) {
+        if (owner.containsKey(playerUUID) && owner.get(playerUUID).equals(kingdom)) {
             player.sendMessage(ChatColor.RED + "You must " + ChatColor.GOLD + "/k transfer " + kingdom + ChatColor.RED + " to another member before you can leave or " +
                     ChatColor.GOLD + "/k disband " + kingdom + ChatColor.RED + " if you wish to delete the kingdom completely");
             return;
         }
 
         // Clear the player's kingdom-related data
-        plugin.getKingdoms().remove(playerUUID);
-        plugin.getAdmin().remove(playerUUID);
-        plugin.getMember().remove(playerUUID);
-        plugin.getCanClaim().remove(playerUUID);
-        plugin.getCanUnclaim().remove(playerUUID);
-        plugin.getOwner().remove(playerUUID);
+        kingdoms.remove(playerUUID);
+        admin.remove(playerUUID);
+        member.remove(playerUUID);
+        canClaim.remove(playerUUID);
+        canUnclaim.remove(playerUUID);
 
         player.sendMessage(ChatColor.GREEN + "You left " + ChatColor.WHITE + kingdom);
     }
 
     private void joinKingdom(Player player, String kingdom, String[] args) {
-        plugin.restorePluginData();
         Configurable kc = KingdomsConfig.getInstance().getConfig();
 
-        if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
+        if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
             MessageManager.playerBad(player, "You are already in a kingdom");
             return;
         }
 
-        if (plugin.getOwner().containsKey(player.getUniqueId().toString()) && !plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
+        if (owner.containsKey(player.getUniqueId().toString()) && !kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
             player.sendMessage(ChatColor.RED + "You are a kingdom owner. If you wish to join a different kingdom, " +
                     "you must disband your current kingdom " + ChatColor.GOLD + "/k disband " + kingdom
                     + ChatColor.RED + " or transfer it " + ChatColor.GOLD + "/k transfer " + kingdom);
             return;
         }
-        if (!plugin.getKingdoms().containsValue(args[1])) {
+        if (!kingdoms.containsValue(args[1])) {
             player.sendMessage(args[1] + ChatColor.RED + " doesn't exist");
             return;
         }
         if (!player.hasPermission("kingdoms.admin.join")) {
 
-            boolean invitedKingdom = plugin.getInviteList().get(player.getUniqueId().toString()).equalsIgnoreCase(args[1]);
+            boolean invitedKingdom = inviteList.get(player.getUniqueId().toString()).equalsIgnoreCase(args[1]);
 
-            if (!plugin.getInviteList().containsKey(player.getUniqueId().toString())) {
+            if (!inviteList.containsKey(player.getUniqueId().toString())) {
                 MessageManager.playerBad(player, "You have not been invited to any kingdoms");
                 return;
             }
@@ -502,39 +551,46 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        plugin.getKingdoms().put(player.getUniqueId().toString(), args[1]);
-        plugin.getMember().put(player.getUniqueId().toString(), args[1]);
+        kingdoms.put(player.getUniqueId().toString(), args[1]);
+        member.put(player.getUniqueId().toString(), args[1]);
 
         player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
     }
 
     private void uninvitePlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
+        OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[1]);
 
-        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+        if (!kingdoms.containsKey(player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
-        }
-
-        if (!plugin.getInviteList().get(target.getUniqueId().toString()).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
-            player.sendMessage(target.getName() + ChatColor.RED + " hasn't been invited to " + ChatColor.WHITE + plugin.getKingdoms().get(player.getUniqueId().toString()));
             return;
         }
 
-        if (!plugin.getOwner().containsValue(plugin.getKingdoms().get(player.getUniqueId().toString())) || !plugin.getAdmin().containsValue(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
-            player.sendMessage(ChatColor.RED + "You are not an owner or admin of " + ChatColor.WHITE + plugin.getKingdoms().get(player.getUniqueId().toString()));
+        if (!kingdoms.containsKey(offlinePlayer.getUniqueId().toString())) {
+            player.sendMessage(args[1] + ChatColor.RED + " has not played " + ChatColor.YELLOW + "Kingdoms");
+        }
+
+        if (!inviteList.get(target.getUniqueId().toString()).equals(kingdoms.get(player.getUniqueId().toString()))) {
+            player.sendMessage(target.getName() + ChatColor.RED + " hasn't been invited to " + ChatColor.WHITE + kingdoms.get(player.getUniqueId().toString()));
             return;
         }
 
-        plugin.getInviteList().remove(target.getUniqueId().toString(), plugin.getKingdoms().get(player.getUniqueId().toString()));
+        if (!owner.containsValue(kingdoms.get(player.getUniqueId().toString()))
+                || !admin.containsValue(kingdoms.get(player.getUniqueId().toString()))) {
+            player.sendMessage(ChatColor.RED + "You are not an owner or admin of " + ChatColor.WHITE + kingdoms.get(player.getUniqueId().toString()));
+            return;
+        }
 
-        player.sendMessage(ChatColor.GREEN + "You uninvited " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + plugin.getKingdoms().get(player.getUniqueId().toString()));
-        target.sendMessage(ChatColor.RED + "You were uninvited from " + ChatColor.WHITE + plugin.getKingdoms().get(player.getUniqueId().toString()));
+        inviteList.remove(target.getUniqueId().toString(), kingdoms.get(player.getUniqueId().toString()));
+
+        player.sendMessage(ChatColor.GREEN + "You uninvited " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " from " + ChatColor.WHITE + kingdoms.get(player.getUniqueId().toString()));
+        target.sendMessage(ChatColor.RED + "You were uninvited from " + ChatColor.WHITE + kingdoms.get(player.getUniqueId().toString()));
 
     }
 
     private void disbandKingdom(Player player, String kingdom, String[] args, String chunkID) {
         // Check if the player has the necessary permission or if they are trying to disband their own kingdom
         if (!player.hasPermission("kingdoms.disband.admin")) {
-            String playerKingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+            String playerKingdom = kingdoms.get(player.getUniqueId().toString());
             if (playerKingdom == null || playerKingdom.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom");
                 return;
@@ -547,30 +603,30 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the specified kingdom exists
-        if (kingdom == null || !plugin.getKingdoms().containsValue(kingdom)) {
+        if (kingdom == null || !kingdoms.containsValue(kingdom)) {
             player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
             return;
         }
 
         // Disband the kingdom and clean up associated data
         boolean kingdomFound = false;
-        for (Map.Entry<String, String> entry : plugin.getKingdoms().entrySet()) {
+        for (Map.Entry<String, String> entry : kingdoms.entrySet()) {
             if (entry.getValue().equalsIgnoreCase(kingdom)) {
                 String playerObj = entry.getKey();
 
                 // Set all associated entries to an empty string
-                plugin.getOwner().put(playerObj, "");
-                plugin.getAdmin().put(playerObj, "");
-                plugin.getMember().put(playerObj, "");
-                plugin.getCanClaim().put(playerObj, "");
-                plugin.getCanUnclaim().put(playerObj, "");
-                plugin.getKingdoms().put(playerObj, "");
-                plugin.getInviteList().put(playerObj, "");
+                owner.put(playerObj, "");
+                admin.put(playerObj, "");
+                member.put(playerObj, "");
+                canClaim.put(playerObj, "");
+                canUnclaim.put(playerObj, "");
+                kingdoms.put(playerObj, "");
+                inviteList.put(playerObj, "");
 
                 // Update claimed chunks associated with the kingdom
-                for (Map.Entry<String, String> chunk : plugin.getClaimedChunks().entrySet()) {
+                for (Map.Entry<String, String> chunk : claimedChunks.entrySet()) {
                     if (chunk.getValue().equalsIgnoreCase(kingdom)) {
-                        plugin.getClaimedChunks().put(chunk.getKey(), ""); // Set the value to an empty string
+                        claimedChunks.put(chunk.getKey(), ""); // Set the value to an empty string
                     }
                 }
 
@@ -588,29 +644,29 @@ public class KingdomsCommands implements CommandExecutor {
     }
 
     private void createKingdom(Player player, String kingdom) {
-        if (!plugin.getKingdoms().get(player.getUniqueId().toString()).isEmpty()) {
+        if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
             player.sendMessage(ChatColor.RED + "You are already in a kingdom");
             return;
         }
-        if (plugin.getKingdoms().containsValue(kingdom)) {
+        if (kingdoms.containsValue(kingdom)) {
             player.sendMessage(kingdom + ChatColor.RED + " already exists");
             return;
         }
-        if (plugin.getBannedNames().containsValue(kingdom)) {
+        if (bannedNames.containsValue(kingdom)) {
             player.sendMessage(ChatColor.RED + "You cannot create a kingdom called " + ChatColor.WHITE + kingdom);
             return;
         }
 
-        plugin.getKingdoms().put(player.getUniqueId().toString(), kingdom);
-        plugin.getOwner().put(player.getUniqueId().toString(), kingdom);
-        plugin.getAdmin().put(player.getUniqueId().toString(), kingdom);
-        plugin.getMember().put(player.getUniqueId().toString(), kingdom);
-        plugin.getCanClaim().put(player.getUniqueId().toString(), kingdom);
-        plugin.getCanUnclaim().put(player.getUniqueId().toString(), kingdom);
-        plugin.getClaimPrice().put(kingdom, 10_000);
-        plugin.getMemberPrice().put(kingdom, 10_000);
-        plugin.getMaxClaims().put(kingdom, 10);
-        plugin.getMaxMembers().put(kingdom, 6);
+        kingdoms.put(player.getUniqueId().toString(), kingdom);
+        owner.put(player.getUniqueId().toString(), kingdom);
+        admin.put(player.getUniqueId().toString(), kingdom);
+        member.put(player.getUniqueId().toString(), kingdom);
+        canClaim.put(player.getUniqueId().toString(), kingdom);
+        canUnclaim.put(player.getUniqueId().toString(), kingdom);
+        claimPrice.put(kingdom, 10_000);
+        memberPrice.put(kingdom, 10_000);
+        maxClaims.put(kingdom, 10);
+        maxMembers.put(kingdom, 6);
         player.sendMessage(kingdom + ChatColor.GREEN + " created");
     }
 
@@ -624,19 +680,14 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the player is in a kingdom
-        if (!plugin.getKingdoms().containsKey(playerUUID) || plugin.getKingdoms().get(playerUUID).isEmpty()) {
+        if (!kingdoms.containsKey(playerUUID) || kingdoms.get(playerUUID).isEmpty()) {
             MessageManager.playerBad(player, "You are not in a kingdom");
             return;
         }
 
-        // Get the player's membership status
-        String playerMember = plugin.getMember().get(playerUUID);
-        String playerAdmin = plugin.getAdmin().get(playerUUID);
-        String playerOwner = plugin.getOwner().get(playerUUID);
-
         // Check if the player is a member of the kingdom
-        boolean isMember = playerMember != null && playerMember.equals(kingdom);
-        boolean isAdmin = playerAdmin != null && playerAdmin.equals(kingdom);
+        boolean isMember = member.get(playerUUID) != null && member.get(playerUUID).equals(kingdom);
+        boolean isAdmin = admin.get(playerUUID) != null && admin.get(playerUUID).equals(kingdom);
 
         if (isMember && !isAdmin) {
             player.sendMessage(ChatColor.RED + "You do not have permission to set " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s spawn");
@@ -644,7 +695,7 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Set the spawn for the kingdom
-        plugin.getKingdomSpawn().put(kingdom, spawn);
+        kingdomSpawn.put(kingdom, spawn);
         player.sendMessage(ChatColor.GREEN + "You set " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s spawn");
     }
 
@@ -659,13 +710,13 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the player is in a kingdom
-        if (!plugin.getKingdoms().containsKey(playerUUID) || plugin.getKingdoms().get(playerUUID).isEmpty()) {
+        if (!kingdoms.containsKey(playerUUID) || kingdoms.get(playerUUID).isEmpty()) {
             player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
 
         // Check if the kingdom's spawn is set
-        Location spawnLocation = plugin.getKingdomSpawn().get(kingdom);
+        Location spawnLocation = kingdomSpawn.get(kingdom);
         if (spawnLocation == null || !spawnLocation.getWorld().getName().equalsIgnoreCase("kingdoms")) {
             player.sendMessage(kingdom + ChatColor.RED + "'s spawn has not been set");
             return;
@@ -679,12 +730,13 @@ public class KingdomsCommands implements CommandExecutor {
 
     private void upgradeKingdom(Player player, String kingdom) {
 
-        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
+        if (!kingdoms.containsKey(player.getUniqueId().toString())) {
             MessageManager.playerBad(player, "You are not in a kingdom");
             return;
         }
         try {
-            if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+            String playerChunk = player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ();
+            if (claimedChunks.get(playerChunk).equals(kingdoms.get(player.getUniqueId().toString()))) {
 
                 Inventory upgrades = Bukkit.createInventory(player, 27, ChatColor.DARK_AQUA + kingdom + " Upgrades");
 
@@ -699,21 +751,21 @@ public class KingdomsCommands implements CommandExecutor {
 
                 ItemMeta claimMeta = claims.getItemMeta();
                 // Calculate the new price based on the current maximum claims
-                for (String chunkID : plugin.getClaimedChunks().keySet()) {
-                    if (plugin.getClaimedChunks().get(chunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                for (String chunkID : claimedChunks.keySet()) {
+                    if (claimedChunks.get(chunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
                         // This chunk is claimed by the player's kingdom
                         // You can increment the claim count and update the scoreboard here
                         int claimCount = 0;
-                        for (String otherChunkID : plugin.getClaimedChunks().keySet()) {
-                            if (plugin.getClaimedChunks().get(otherChunkID).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                        for (String otherChunkID : claimedChunks.keySet()) {
+                            if (claimedChunks.get(otherChunkID).equals(kingdoms.get(player.getUniqueId().toString()))) {
                                 claimCount++;
                             }
                         }
                         claimMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Claim Limit");
                         ArrayList<String> claimsLore = new ArrayList<>();
                         claimsLore.add(" ");
-                        claimsLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getClaimPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
-                        claimsLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxClaims().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
+                        claimsLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + claimPrice.get(kingdoms.get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                        claimsLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + maxClaims.get(kingdoms.get(player.getUniqueId().toString())));
                         claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
                         claimsLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
                         claimMeta.setLore(claimsLore);
@@ -728,18 +780,18 @@ public class KingdomsCommands implements CommandExecutor {
                 memberMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Increase Member Limit");
 
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ())
-                            .equalsIgnoreCase(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+                    if (claimedChunks.get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ())
+                            .equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString()))) {
                         int memberCount = 0;
 
-                        if (plugin.getKingdoms().get(p.getUniqueId().toString()).equalsIgnoreCase
-                                (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
+                        if (kingdoms.get(p.getUniqueId().toString()).equalsIgnoreCase
+                                (claimedChunks.get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()))) {
                             memberCount++;
                         }
                         ArrayList<String> memberLore = new ArrayList<>();
                         memberLore.add(" ");
-                        memberLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + plugin.getMemberPrice().get(plugin.getKingdoms().get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
-                        memberLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + plugin.getMaxMembers().get(plugin.getKingdoms().get(player.getUniqueId().toString())));
+                        memberLore.add(ChatColor.GREEN + "Cost: " + ChatColor.GOLD + memberPrice.get(kingdoms.get(player.getUniqueId().toString())) + ChatColor.GREEN + " coins");
+                        memberLore.add(ChatColor.LIGHT_PURPLE + "Current Max: " + ChatColor.WHITE + maxMembers.get(kingdoms.get(player.getUniqueId().toString())));
                         memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "NOTE: USE THIS COMMAND AGAIN");
                         memberLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "TO REFRESH THE VALUES");
                         memberMeta.setLore(memberLore);
@@ -781,7 +833,7 @@ public class KingdomsCommands implements CommandExecutor {
                 player.openInventory(upgrades);
             }
         } catch (NullPointerException e) {
-            if (plugin.getClaimedChunks().get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
+            if (claimedChunks.get(player.getLocation().getChunk().getX() + "," + player.getLocation().getChunk().getZ()).equals(kingdoms.get(player.getUniqueId().toString()))) {
                 player.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.WHITE + kingdom + ChatColor.RED + " claim to execute this command");
             } else {
                 MessageManager.playerBad(player, "You must be in a claim to execute this command");
@@ -792,7 +844,7 @@ public class KingdomsCommands implements CommandExecutor {
     //TODO: Figure out why claimChunk() and unclaimChunk() don't work
     private void claimChunk(Player player, String kingdom, String chunkID) {
         String playerUUID = player.getUniqueId().toString();
-        String playerKingdom = plugin.getKingdoms().get(playerUUID);
+        String playerKingdom = kingdoms.get(playerUUID);
 
         // Check if the player is in a kingdom
         if ((playerKingdom == null || playerKingdom.isEmpty())) {
@@ -800,14 +852,9 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        // Get the player's membership status
-        String playerMember = plugin.getMember().get(playerUUID);
-        String playerAdmin = plugin.getAdmin().get(playerUUID);
-        String playerOwner = plugin.getOwner().get(playerUUID);
-
         // Check if the player is a member of the kingdom
-        boolean isMember = playerMember != null && playerMember.equals(kingdom);
-        boolean isAdmin = playerAdmin != null && playerAdmin.equals(kingdom);
+        boolean isMember = member.get(playerUUID) != null && member.get(playerUUID).equals(kingdom);
+        boolean isAdmin = admin.get(playerUUID) != null && admin.get(playerUUID).equals(kingdom);
 
         // Check if the player has permission to claim chunks
         if (isMember && !isAdmin) {
@@ -816,8 +863,8 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the chunk is already claimed
-        if (plugin.getClaimedChunks().containsKey(chunkID) && !plugin.getClaimedChunks().get(chunkID).isEmpty()) {
-            String ownerKingdom = plugin.getClaimedChunks().get(chunkID);
+        if (claimedChunks.containsKey(chunkID) && !claimedChunks.get(chunkID).isEmpty()) {
+            String ownerKingdom = claimedChunks.get(chunkID);
             if (ownerKingdom.equals(kingdom)) {
                 player.sendMessage(ChatColor.RED + "Chunk is already claimed by your kingdom");
             } else if (!ownerKingdom.isEmpty()) {
@@ -826,17 +873,15 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        plugin.restorePluginData();
-        plugin.restoreOfflineData();
         // Check the number of chunks claimed by the player's kingdom
-        long claimCount = plugin.getClaimedChunks().values().stream()
+        long claimCount = claimedChunks.values().stream()
                 .filter(k -> k.equals(kingdom))
                 .count();
 
-        int maxClaims = plugin.getMaxClaims().getOrDefault(kingdom, 0);
+        int maxClaims = this.maxClaims.getOrDefault(kingdom, 0);
         if (claimCount < maxClaims) {
-            plugin.getClaims().put(kingdom, chunkID);
-            plugin.getClaimedChunks().put(chunkID, kingdom);
+            claims.put(kingdom, chunkID);
+            claimedChunks.put(chunkID, kingdom);
             player.sendMessage(ChatColor.GREEN + "Chunk claimed");
         } else {
             player.sendMessage(kingdom + ChatColor.RED + " has claimed " +
@@ -847,10 +892,7 @@ public class KingdomsCommands implements CommandExecutor {
 
     private void unclaimChunk(Player player, String kingdom, String chunkID) {
         String playerUUID = player.getUniqueId().toString();
-        String playerKingdom = plugin.getKingdoms().get(playerUUID);
-
-        plugin.restoreOfflineData();
-        plugin.restorePluginData();
+        String playerKingdom = kingdoms.get(playerUUID);
 
         // Check if the player is in a kingdom
         if ((playerKingdom == null || playerKingdom.isEmpty())) {
@@ -858,71 +900,55 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        // Get the player's membership status
-        String playerMember = plugin.getMember().get(playerUUID);
-        String playerAdmin = plugin.getAdmin().get(playerUUID);
-        String playerOwner = plugin.getOwner().get(playerUUID);
-
         // Check if the player is a member of the kingdom
-        boolean isMember = playerMember != null && playerMember.equals(kingdom);
-        boolean isAdmin = playerAdmin != null && playerAdmin.equals(kingdom);
+        boolean isMember = member.get(playerUUID) != null && member.get(playerUUID).equals(kingdom);
+        boolean isAdmin = admin.get(playerUUID) != null && admin.get(playerUUID).equals(kingdom);
 
         // Check if the player has permission to unclaim chunks
         if (isMember && !isAdmin) {
             player.sendMessage(ChatColor.RED + "You do not have permission to unclaim chunks for " + ChatColor.WHITE + playerKingdom);
             return;
         }
-
         // Check if the chunk is claimed by the player's kingdom
-        if (!plugin.getClaimedChunks().containsKey(chunkID)) {
+        if (!claimedChunks.containsKey(chunkID)) {
             player.sendMessage(ChatColor.RED + "This chunk is not claimed");
             return;
         }
 
-        if (!plugin.getClaimedChunks().get(chunkID).equals(kingdom)) {
+        if (!claimedChunks.get(chunkID).equals(kingdom)) {
             player.sendMessage("This chunk is not claimed by " + kingdom);
         }
 
-        plugin.getClaims().remove(kingdom, chunkID);
-        plugin.getClaimedChunks().remove(chunkID);
+        claims.remove(kingdom, chunkID);
+        claimedChunks.remove(chunkID);
         player.sendMessage(ChatColor.GREEN + "Chunk unclaimed");
     }
 
     private void invitePlayerToKingdom(Player player, Player target, String kingdom, String[] args) {
-        if (target == null) {
-            player.sendMessage(ChatColor.RED + "The target must be online for you to invite them.");
+        OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[1]);
+
+        if (!kingdoms.containsKey(player.getUniqueId().toString())) {
+            player.sendMessage(ChatColor.RED + "You are not in a kingdom");
             return;
         }
 
-        if (!plugin.getKingdoms().containsKey(player.getUniqueId().toString())) {
-            MessageManager.playerBad(player, "You are not in a kingdom");
+        if (!kingdoms.containsKey(offlinePlayer.getUniqueId().toString())) {
+            player.sendMessage(args[1] + ChatColor.RED + " has not played " + ChatColor.YELLOW + "Kingdoms");
+        }
+
+        if (inviteList.get(target.getUniqueId().toString()).equals(kingdoms.get(player.getUniqueId().toString()))) {
+            player.sendMessage(target.getName() + ChatColor.RED + " has already been invited to " + ChatColor.WHITE + kingdoms.get(player.getUniqueId().toString()));
             return;
         }
 
-        if (target == player) {
-            MessageManager.playerBad(player, "You cannot invite yourself to a kingdom");
-            return;
-        }
-
-        if (plugin.getKingdoms().containsValue(target.getUniqueId().toString())) {
-            player.sendMessage(target.getName() + ChatColor.RED + " is already in a kingdom");
-            return;
-        }
-
-        String playerUUID = player.getUniqueId().toString();
-
-        if (!plugin.getOwner().containsKey(playerUUID) && !plugin.getAdmin().containsKey(playerUUID)) {
-            player.sendMessage(ChatColor.RED + "You are not an owner or admin of " + ChatColor.WHITE + kingdom);
-            return;
-        }
-
-        if (plugin.getInviteList().containsKey(target.getUniqueId().toString()) && plugin.getInviteList().get(target.getUniqueId().toString()).equals(kingdom)) {
-            player.sendMessage(target.getName() + ChatColor.RED + " has already been invited to " + ChatColor.WHITE + kingdom);
+        if (!owner.containsValue(kingdoms.get(player.getUniqueId().toString()))
+                || !admin.containsValue(kingdoms.get(player.getUniqueId().toString()))) {
+            player.sendMessage(ChatColor.RED + "You are not an owner or admin of " + ChatColor.WHITE + kingdoms.get(player.getUniqueId().toString()));
             return;
         }
 
         // Add the invitation to the inviteList
-        plugin.getInviteList().put(target.getUniqueId().toString(), kingdom);
+        inviteList.put(target.getUniqueId().toString(), kingdom);
 
         player.sendMessage(ChatColor.GREEN + "You invited " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + " to " + ChatColor.WHITE + kingdom);
         target.sendMessage(ChatColor.GREEN + "You were invited to " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " by " + ChatColor.WHITE + player.getName());

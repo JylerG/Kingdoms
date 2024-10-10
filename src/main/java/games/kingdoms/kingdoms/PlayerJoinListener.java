@@ -3,36 +3,27 @@ package games.kingdoms.kingdoms;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import static org.bukkit.ChatColor.*;
 
-public class PlayerJoinListener implements Listener {
+public class PlayerJoinListener {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-    }
 
     public void updateTabListWithScoreboard(Player player) {
         String prefix = getPrefixForPlayer(player);
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        Team team = scoreboard.getTeam(player.getName());
+        Team team = scoreboard.getTeam(player.getUniqueId().toString());
 
         if (team == null) {
             team = scoreboard.registerNewTeam(player.getDisplayName());
         }
 
         team.setPrefix(prefix);
-        team.addEntry(player.getName());
+        team.addEntry(player.getDisplayName());
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
 
         for (Player p : Bukkit.getOnlinePlayers()) {

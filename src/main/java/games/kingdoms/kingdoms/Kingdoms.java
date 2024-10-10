@@ -794,7 +794,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
         }
         String prefix = pjl.getPrefixForPlayer(player); // Method to get the player's prefix
-        objective.getScore(player.getName()).setScore(1); // Example score
+        objective.getScore(player.getDisplayName()).setScore(1); // Example score
 
         // Set the player's display name in the tab list
         player.setPlayerListName(prefix + ChatColor.WHITE + player.getDisplayName());
@@ -944,7 +944,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             savePluginData(player);
 
-            PlayerJoinListener pjl = new PlayerJoinListener();
+//            TODO: figure out if this is usable
+//             PlayerJoinListener pjl = new PlayerJoinListener();
             // Update the player's tab list name
             updateTabListWithScoreboard(player);
 
@@ -1684,6 +1685,5 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new RandomTeleportListener(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ChatListener(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
     }
 }
