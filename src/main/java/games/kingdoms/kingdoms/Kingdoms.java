@@ -75,6 +75,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.SimplePluginManager;
+import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
@@ -156,63 +157,100 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!isPluginLoaded("ProtocolLib")) {
-                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                    p.sendMessage(ChatColor.GOLD + "ProtocolLib" + ChatColor.RED + " is not installed on this server");
+        try {
+            //Save default config
+            getConfig().options().copyDefaults();
+            saveDefaultConfig();
+
+            setupChat();
+            plugin = this;
+            pjl = new PlayerJoinListener();
+            punishmentConfig = new PunishmentConfig(this);
+            kingdomsConfig = new KingdomsConfig(this);
+            moneyConfig = new MoneyConfig(this);
+            staffConfig = new StaffConfig(this);
+
+            if (!punishmentConfig.getConfig().exists()) {
+                punishmentConfig.setup();
+            }
+            if (!kingdomsConfig.getConfig().exists()) {
+                kingdomsConfig.setup();
+            }
+            if (!staffConfig.getConfig().exists()) {
+                staffConfig.setup();
+            }
+            if (!moneyConfig.getConfig().exists()) {
+                moneyConfig.setup();
+            }
+
+            //Initialize ArrayLists and HashMaps
+            initMapList();
+
+            //Restore Plugin Data
+            restoreOfflineData();
+            restoreServerData();
+
+            //Commands
+            commands();
+
+            //Events
+            events();
+
+            //Plugin successfully loaded
+            MessageManager.consoleGood("Kingdoms successfully Enabled");
+        } catch (UnknownDependencyException e) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!isPluginLoaded("ProtocolLib")) {
+                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                        p.sendMessage(ChatColor.GOLD + "ProtocolLib" + ChatColor.RED + " is not installed on this server");
+                    }
+                }
+                if (!isPluginLoaded("Labyrinth")) {
+                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                        p.sendMessage(ChatColor.GOLD + "Labyrinth" + ChatColor.RED + " is not installed on this server");
+                    }
+                }
+                if (!isPluginLoaded("Vault")) {
+                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                        p.sendMessage(ChatColor.GOLD + "Vault" + ChatColor.RED + " is not installed on this server");
+                    }
+                }
+                if (!isPluginLoaded("Citizens")) {
+                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                        p.sendMessage(ChatColor.GOLD + "Citizens" + ChatColor.RED + " is not installed on this server");
+                    }
                 }
             }
-            if (!isPluginLoaded("Labyrinth")) {
-                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                    p.sendMessage(ChatColor.GOLD + "Labyrinth" + ChatColor.RED + " is not installed on this server");
-                }
+        }
+    }
+
+    @Override
+    public void onDisable() {
+
+        //Save Plugin Data
+        savePluginData();
+
+        //Plugin successfully disabled
+        MessageManager.consoleBad("Kingdoms Successfully Disabled");
+    }
+
+    private void restoreServerData() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player != null) {
+                restorePluginData();
             }
-            if (!isPluginLoaded("Vault")) {
-                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                    p.sendMessage(ChatColor.GOLD + "Vault" + ChatColor.RED + " is not installed on this server");
-                }
-            }
-            if (!isPluginLoaded("Citizens")) {
-                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                    p.sendMessage(ChatColor.GOLD + "Citizens" + ChatColor.RED + " is not installed on this server");
-                }
-            }
-            //labyrinth, vault, citizens
         }
+    }
 
-        //Save default config
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
-
-        setupChat();
-        plugin = this;
-        pjl = new PlayerJoinListener();
-        punishmentConfig = new PunishmentConfig(this);
-        kingdomsConfig = new KingdomsConfig(this);
-        moneyConfig = new MoneyConfig(this);
-        staffConfig = new StaffConfig(this);
-
-        if (!punishmentConfig.getConfig().exists()) {
-            punishmentConfig.setup();
+    private boolean setupChat() {
+        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        if (rsp != null) {
+            chat = rsp.getProvider();
         }
-        if (!kingdomsConfig.getConfig().exists()) {
-            kingdomsConfig.setup();
-        }
-        if (!staffConfig.getConfig().exists()) {
-            staffConfig.setup();
-        }
-        if (!moneyConfig.getConfig().exists()) {
-            moneyConfig.setup();
-        }
+        return chat != null;
+    }
 
-        //Initialize ArrayLists and HashMaps
-        initMapList();
-
-        //Restore Plugin Data
-        restoreOfflineData();
-        restoreServerData();
-
-        //Commands
+    private void commands() {
         chat();
         reportPlayer();
         punishments();
@@ -244,38 +282,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         easter();
         whisper();
         warzone();
-
-        //Events
-        events();
-
-        //Plugin successfully loaded
-        MessageManager.consoleGood("Kingdoms successfully Enabled");
-    }
-
-    @Override
-    public void onDisable() {
-
-        //Save Plugin Data
-        savePluginData();
-
-        //Plugin successfully disabled
-        MessageManager.consoleBad("Kingdoms Successfully Disabled");
-    }
-
-    private void restoreServerData() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player != null) {
-                restorePluginData();
-            }
-        }
-    }
-
-    private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        if (rsp != null) {
-            chat = rsp.getProvider();
-        }
-        return chat != null;
     }
 
     private void password() {
@@ -1334,7 +1340,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable mc = moneyConfig.getConfig();
             Configurable pu = punishmentConfig.getConfig();
 
+            if (!kc.getNode(offline.getUniqueId().toString()).exists() || !sc.getNode(offline.getUniqueId().toString()).exists()
+            || !mc.getNode(offline.getUniqueId().toString()).exists() || !pu.getNode(offline.getUniqueId().toString()).exists()) {
+                return;
+            }
+
+            // Helper method to check for valid path and handle exceptions
             if (kc != null) {
+                // Validate and check paths before using getNode()
                 if (kc.getNode("bannedNames").exists()) {
                     kc.getNode("bannedNames").getKeys(false).forEach(key -> {
                         String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
@@ -1431,6 +1444,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
             }
 
+            // Repeat similar validation logic for the other configuration files (pu, mc, sc)
             if (pu != null) {
                 if (pu.getNode("report").getNode(offline.getUniqueId().toString()).exists()) {
                     reportAbuse.put(offline.getUniqueId().toString(), pu.getNode("report." + offline.getUniqueId().toString()).toPrimitive().getInt());
@@ -1492,6 +1506,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     passwords.put(offline.getUniqueId().toString(), sc.getNode("passwords." + offline.getUniqueId().toString()).toPrimitive().getString());
                 }
             }
+
         }
     }
 
