@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Let the user know if any required plugins are not present on the server">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Fix restoreOfflineData() to not register if there is no offline data to restore">
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
@@ -120,30 +119,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00049" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1723929501805</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1723929501805</updated>
-    </task>
-    <task id="LOCAL-00050" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1723935736547</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1723935736600</updated>
-    </task>
-    <task id="LOCAL-00051" summary="Simplify playerIsNotInKingdom check">
-      <option name="closed" value="true" />
-      <created>1723943761236</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1723943761237</updated>
     </task>
     <task id="LOCAL-00052" summary="Update Code">
       <option name="closed" value="true" />
@@ -513,7 +488,31 @@
       <option name="project" value="LOCAL" />
       <updated>1742682553845</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="Fix restoreOfflineData() to not register if there is no offline data to restore">
+      <option name="closed" value="true" />
+      <created>1742684129152</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1742684129152</updated>
+    </task>
+    <task id="LOCAL-00099" summary="Fix restoreOfflineData() to not register if there is no offline data to restore">
+      <option name="closed" value="true" />
+      <created>1742684312701</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1742684312701</updated>
+    </task>
+    <task id="LOCAL-00100" summary="Fix restoreOfflineData() to not register if there is no offline data to restore">
+      <option name="closed" value="true" />
+      <created>1742684325519</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1742684325519</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -525,7 +524,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Make it so players can't try to claim/unclaim chunks if they are not in a kingdom" />
     <MESSAGE value="Add ChatListener to imports" />
     <MESSAGE value="Create .gitignore" />
     <MESSAGE value="Make admin/jradmin more visible when talking in staff chat" />
@@ -550,6 +548,7 @@
     <MESSAGE value="Update scoreboard to apply the color of the user's rank to their tablist appearance" />
     <MESSAGE value="Create plugin jar" />
     <MESSAGE value="Let the user know if any required plugins are not present on the server" />
-    <option name="LAST_COMMIT_MESSAGE" value="Let the user know if any required plugins are not present on the server" />
+    <MESSAGE value="Fix restoreOfflineData() to not register if there is no offline data to restore" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix restoreOfflineData() to not register if there is no offline data to restore" />
   </component>
 </project>

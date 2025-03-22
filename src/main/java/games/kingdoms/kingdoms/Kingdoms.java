@@ -922,7 +922,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             // Update the player's tab list name
             updateTabListWithScoreboard(player);
         } else {
-            restorePluginData(player);
             if (!kingdoms.containsKey(player.getUniqueId().toString())) {
                 kingdoms.put(player.getUniqueId().toString(), "");
             }
@@ -996,6 +995,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     inPlayersKingdomBoard(player, player.getLocation().getChunk());
                 }
             }
+            restorePluginData(player);
         }
     }
 
