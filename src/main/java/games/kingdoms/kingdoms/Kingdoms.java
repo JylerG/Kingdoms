@@ -1340,8 +1340,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable mc = moneyConfig.getConfig();
             Configurable pu = punishmentConfig.getConfig();
 
-            if (!kc.getNode(offline.getUniqueId().toString()).exists() || !sc.getNode(offline.getUniqueId().toString()).exists()
-            || !mc.getNode(offline.getUniqueId().toString()).exists() || !pu.getNode(offline.getUniqueId().toString()).exists()) {
+            if (!mc.getNode(offline.getUniqueId().toString()).exists()) {
                 return;
             }
 
