@@ -16,11 +16,15 @@ import java.util.Map;
 public class ChatListener implements Listener {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
+    final HashMap<Integer, String> playerRankInKingdom = plugin.getPlayerRankInKingdom();
+    final HashMap<String, Integer> kingdomRank = plugin.getKingdomRank();
+    final HashMap<String, String> chatFocus = plugin.getChatFocus();
+    final HashMap<String, String> kingdoms = plugin.getKingdoms();
+    final Map<String, String> playerRank = plugin.getPlayerRank();
+    final HashMap<String, String> staff = plugin.getStaff();
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
-        HashMap<String, String> kingdoms = plugin.getKingdoms();
-        Map<String, String> playerRank = plugin.getPlayerRank();
         String eventMessage = event.getMessage();
         Player player = event.getPlayer();
         if (!player.hasPermission("kingdoms.move")) {
@@ -28,7 +32,7 @@ public class ChatListener implements Listener {
             event.setCancelled(true);
             return;
         }
-        if (plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("GLOBAL")) {
+        if (chatFocus.get(player.getUniqueId().toString()).equalsIgnoreCase("GLOBAL")) {
             if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
                 String kingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
                 if (playerRank.get(player.getUniqueId().toString()).equals(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT.toString())) {
@@ -106,9 +110,8 @@ public class ChatListener implements Listener {
                 }
             }
             event.setMessage(eventMessage);
-        } else if (plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("STAFF")) {
+        } else if (chatFocus.get(player.getUniqueId().toString()).equalsIgnoreCase("STAFF")) {
 
-            playerRank = plugin.getStaff();
             for (Player p : Bukkit.getOnlinePlayers()) {
 
                 if (playerRank.get(player.getUniqueId().toString()).equals("JRMOD")) {
@@ -129,35 +132,27 @@ public class ChatListener implements Listener {
                 }
                 event.setMessage(eventMessage);
 
-                if (plugin.getStaff().containsKey(p.getUniqueId().toString())) {
-                    if (plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("MOD")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                if (staff.containsKey(p.getUniqueId().toString())) {
+                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
                         p.sendMessage(event.getFormat());
                     }
                 }
                 event.setCancelled(true);
             }
-        } else if (plugin.getChatFocus().get(player.getUniqueId().toString()).equalsIgnoreCase("KINGDOM")) {
-            if (plugin.getOwner().containsKey(player.getUniqueId().toString())) {
-                String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "King " + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
-                event.setFormat(format);
-            } else if (plugin.getAdmin().containsKey(player.getUniqueId().toString())) {
-                String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "Knight " + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
-                event.setFormat(format);
-            } else if (plugin.getMember().containsKey(player.getUniqueId().toString()) && !plugin.getOwner().containsKey(player.getUniqueId().toString())) {
-                String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "Citizen " + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
-                event.setFormat(format);
-            }
+        } else if (chatFocus.get(player.getUniqueId().toString()).equalsIgnoreCase("KINGDOM")) {
+            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + playerRankInKingdom.get(kingdomRank.get(player.getUniqueId().toString())) + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
+            event.setFormat(format);
             event.setMessage(eventMessage);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
-                String onlinePlayerKingdom = plugin.getKingdoms().get(p.getUniqueId().toString());
-                String playerKingdom = plugin.getKingdoms().get(player.getUniqueId().toString());
+                String onlinePlayerKingdom = kingdoms.get(p.getUniqueId().toString());
+                String playerKingdom = kingdoms.get(player.getUniqueId().toString());
 
-                if (plugin.getKingdoms().containsKey(p.getUniqueId().toString())) {
+                if (kingdoms.containsKey(p.getUniqueId().toString())) {
                     if (onlinePlayerKingdom.equals(playerKingdom)) {
                         p.sendMessage(event.getFormat());
                     }
