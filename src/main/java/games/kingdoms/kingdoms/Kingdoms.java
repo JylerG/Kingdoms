@@ -134,6 +134,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, Integer> discrimination = new HashMap<>();
     private HashMap<String, Integer> threats = new HashMap<>();
     private HashMap<String, String> playerToPunish = new HashMap<>();
+//todo: Any additional punishment types
 //    private HashMap<String, Integer> ipAdverts = new HashMap<>();
 //    private HashMap<String, Integer> ipAdverts = new HashMap<>();
 //    private HashMap<String, Integer> ipAdverts = new HashMap<>();
@@ -148,9 +149,36 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private static Chat chat = null;
     PlayerJoinListener pjl = new PlayerJoinListener();
 
+    public boolean isPluginLoaded(String plugin) {
+        return Bukkit.getPluginManager().getPlugin(plugin) != null;
+    }
+
     @Override
     public void onEnable() {
 
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (!isPluginLoaded("ProtocolLib")) {
+                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                    p.sendMessage(ChatColor.GOLD + "ProtocolLib" + ChatColor.RED + " is not installed on this server");
+                }
+            }
+            if (!isPluginLoaded("Labyrinth")) {
+                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                    p.sendMessage(ChatColor.GOLD + "Labyrinth" + ChatColor.RED + " is not installed on this server");
+                }
+            }
+            if (!isPluginLoaded("Vault")) {
+                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                    p.sendMessage(ChatColor.GOLD + "Vault" + ChatColor.RED + " is not installed on this server");
+                }
+            }
+            if (!isPluginLoaded("Citizens")) {
+                if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
+                    p.sendMessage(ChatColor.GOLD + "Citizens" + ChatColor.RED + " is not installed on this server");
+                }
+            }
+            //labyrinth, vault, citizens
+        }
 
         //Save default config
         getConfig().options().copyDefaults();
