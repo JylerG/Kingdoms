@@ -34,17 +34,7 @@ public class KingdomsChat implements CommandExecutor {
                     if (plugin.getKingdoms().get(p.getUniqueId().toString()).equals(plugin.getKingdoms().get(player.getUniqueId().toString()))) {
 
                         String message = String.join(" ", args); // Concatenate args into a single string
-
-                        if (plugin.getOwner().containsKey(player.getUniqueId().toString())) {
-                            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "King " + ChatColor.GOLD + player.getName() + ": " + message;
-                            p.sendMessage(format);
-                        } else if (plugin.getAdmin().containsKey(player.getUniqueId().toString())) {
-                            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "Knight " + ChatColor.GOLD + player.getName() + ": " + message;
-                            p.sendMessage(format);
-                        } else if (plugin.getMember().containsKey(player.getUniqueId().toString()) && !plugin.getOwner().containsKey(player.getUniqueId().toString())) {
-                            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + "Citizen " + ChatColor.GOLD + player.getName() + ": " + message;
-                            p.sendMessage(format);
-                        }
+                        String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + plugin.getPlayerRankInKingdom().get(plugin.getKingdomRank().get(player.getUniqueId().toString())) + ChatColor.GOLD + player.getDisplayName() + ": " + message;                        p.sendMessage(format);
                     }
                 }
             }

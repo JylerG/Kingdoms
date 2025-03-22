@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Refactor code for clarity">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Make scoreboards use colors instead of displaying rank names">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomUpgradeListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomUpgradeListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,26 +39,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Maven.Kingdoms package.executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last.edited.regexp&quot;: &quot;#Mi3&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/pfram/IdeaProjects/Kingdoms&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Maven.Kingdoms package.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last.edited.regexp": "#Mi3",
+    "last_opened_file_path": "E:/New Computer Files/IdeaProjects/Kingdoms",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="games.kingdoms.kingdoms.publiccmds.help" />
@@ -115,54 +119,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1723923977948</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1723923977948</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Check for if player is in a kingdom in setSpawn()">
-      <option name="closed" value="true" />
-      <created>1723926005027</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1723926005027</updated>
-    </task>
-    <task id="LOCAL-00040" summary="Add report command">
-      <option name="closed" value="true" />
-      <created>1723926035584</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1723926035584</updated>
-    </task>
-    <task id="LOCAL-00041" summary="Add report command">
-      <option name="closed" value="true" />
-      <created>1723926072949</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1723926072949</updated>
-    </task>
-    <task id="LOCAL-00042" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1723926085423</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1723926085423</updated>
-    </task>
-    <task id="LOCAL-00043" summary="Inform player that their report was sent">
-      <option name="closed" value="true" />
-      <created>1723926866502</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1723926866502</updated>
     </task>
     <task id="LOCAL-00044" summary="Create updateScoreBoardOnReload() and add it to onEnable">
       <option name="closed" value="true" />
@@ -508,7 +464,55 @@
       <option name="project" value="LOCAL" />
       <updated>1728592523024</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="Update kickPlayerFromKingdom() for clarity">
+      <option name="closed" value="true" />
+      <created>1728597081184</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1728597081184</updated>
+    </task>
+    <task id="LOCAL-00088" summary="Update references to hashmaps for clarity">
+      <option name="closed" value="true" />
+      <created>1742661698059</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1742661698060</updated>
+    </task>
+    <task id="LOCAL-00089" summary="Update references to hashmaps for clarity">
+      <option name="closed" value="true" />
+      <created>1742662177290</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1742662177290</updated>
+    </task>
+    <task id="LOCAL-00090" summary="Update references to hashmaps for clarity">
+      <option name="closed" value="true" />
+      <created>1742662225418</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1742662225418</updated>
+    </task>
+    <task id="LOCAL-00091" summary="Update references to hashmaps for clarity">
+      <option name="closed" value="true" />
+      <created>1742662239571</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1742662239571</updated>
+    </task>
+    <task id="LOCAL-00092" summary="Make scoreboards use colors instead of displaying rank names">
+      <option name="closed" value="true" />
+      <created>1742663529068</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1742663529068</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -520,9 +524,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Update File Exclusions" />
-    <MESSAGE value="Remove KingdomsConfigTest.java" />
-    <MESSAGE value="Move config files to admin folder" />
     <MESSAGE value="Create a seperate class for chat listening" />
     <MESSAGE value="Remove chat listener" />
     <MESSAGE value="Made compatible with console" />
@@ -545,6 +546,9 @@
     <MESSAGE value="Update EconomyCommand.java" />
     <MESSAGE value="Update Code" />
     <MESSAGE value="Refactor code for clarity" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor code for clarity" />
+    <MESSAGE value="Update kickPlayerFromKingdom() for clarity" />
+    <MESSAGE value="Update references to hashmaps for clarity" />
+    <MESSAGE value="Make scoreboards use colors instead of displaying rank names" />
+    <option name="LAST_COMMIT_MESSAGE" value="Make scoreboards use colors instead of displaying rank names" />
   </component>
 </project>

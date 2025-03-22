@@ -20,19 +20,27 @@ import java.util.*;
 
 public class KingdomsCommands implements CommandExecutor {
 
+    //todo: delete these
+    final HashMap<String, String> owner = new HashMap<>();
+    final HashMap<String, String> admin = new HashMap<>();
+    final HashMap<String, String> member = new HashMap<>();
+    final HashMap<String, String> canUnclaim = new HashMap<>();
+    final HashMap<String, String> canClaim = new HashMap<>();
+    //todo: end delete
+
     final Kingdoms plugin = Kingdoms.getPlugin();
+    final Configurable kc = KingdomsConfig.getInstance().getConfig();
+    //HashMaps
     final HashMap<String, String> bannedNames= plugin.getBannedNames();
     final HashMap<String, String> kingdoms = plugin.getKingdoms();
+    final HashMap<String, Integer> customRank = plugin.getCustomRank();
     final HashMap<String, Integer> maxMembers = plugin.getMaxMembers();
     final HashMap<String, Integer> maxClaims = plugin.getMaxClaims();
     final HashMap<String, String> claims = plugin.getClaims();
+    final HashMap<String, Integer> kingdomRank = plugin.getKingdomRank();
+    final HashMap<Integer, String> playerRankInKingdom = plugin.getPlayerRankInKingdom();
     final HashMap<String, String> claimedChunks = plugin.getClaimedChunks();
     final HashMap<String, Integer> claimPrice = plugin.getClaimPrice();
-    final HashMap<String, String> admin = plugin.getAdmin();
-    final HashMap<String, String> owner = plugin.getOwner();
-    final HashMap<String, String> member = plugin.getMember();
-    final HashMap<String, String> canClaim = plugin.getCanClaim();
-    final HashMap<String, String> canUnclaim = plugin.getCanUnclaim();
     final HashMap<String, String> inviteList = plugin.getInviteList();
     final HashMap<String, Integer> memberPrice = plugin.getMemberPrice();
     final HashMap<String, Location> kingdomSpawn = plugin.getKingdomSpawn();
@@ -94,7 +102,7 @@ public class KingdomsCommands implements CommandExecutor {
 
 
                 if (args[0].equalsIgnoreCase("create")) {
-                    createKingdom(player, args[1]);
+                    createKingdom(player, args[1], args);
                 }
 
                 if (args[0].equalsIgnoreCase("set")) {
@@ -186,6 +194,52 @@ public class KingdomsCommands implements CommandExecutor {
 
     private void kingdomInfo(Player player, String kingdom, String chunkID) {
         //TODO: make this display info about the requested kingdom
+        Inventory info = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + kingdoms.get(player.getUniqueId().toString()));
+
+        String title = ChatColor.YELLOW.toString() + ChatColor.BOLD;
+        ItemStack yellowBorder = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
+        ItemStack blackBorder = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemStack raid = new ItemStack(Material.IRON_SWORD);
+        ItemStack spawn = new ItemStack(Material.WHITE_BED);
+        ItemStack ranks = new ItemStack(Material.GOLD_BLOCK);
+        ItemStack Info = new ItemStack(Material.OAK_SIGN);
+        ItemStack skull = new ItemStack(Material.WITHER_SKELETON_SKULL);
+        ItemStack wall = new ItemStack(Material.COBBLESTONE_WALL);
+        ItemStack disband = new ItemStack(Material.TNT);
+
+        ItemMeta yellowBorderMeta = yellowBorder.getItemMeta();
+        yellowBorderMeta.setDisplayName(" ");
+        yellowBorder.setItemMeta(yellowBorderMeta);
+
+        ItemMeta blackBorderMeta = blackBorder.getItemMeta();
+        blackBorderMeta.setDisplayName(" ");
+        blackBorder.setItemMeta(blackBorderMeta);
+
+        ItemMeta raidMeta = raid.getItemMeta();
+        raidMeta.setDisplayName(title + "Raiding");
+        List<String> raidLore = new ArrayList<>();
+        raidLore.add("Manage raiding for your Kingdom");
+        raidLore.add("You can stop a raid that is currently in progress or start a new one if");
+        raidLore.add("you are not already engaged");
+        raidLore.add(" ");
+        raidLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "Coming Soon");
+        raidMeta.setLore(raidLore);
+        raid.setItemMeta(raidMeta);
+
+        ItemMeta spawnMeta = spawn.getItemMeta();
+        spawnMeta.setDisplayName(title + "Kingdom Spawn");
+        List<String> spawnLore = new ArrayList<>();
+        spawnLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Left Click " + ChatColor.WHITE + "to go spawn");
+        spawnLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Right Click " + ChatColor.WHITE + "to set spawn");
+        spawnMeta.setLore(spawnLore);
+        spawn.setItemMeta(spawnMeta);
+
+        ItemMeta rankMeta = ranks.getItemMeta();
+        rankMeta.setDisplayName(title + "Ranks");
+        List<String> rankLore = new ArrayList<>();
+        rankLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Click " + ChatColor.WHITE + "to manage ranks");
+        rankMeta.setLore(rankLore);
+        ranks.setItemMeta(rankMeta);
     }
 
     private void bannedKingdomsList(Player player) {
@@ -259,7 +313,7 @@ public class KingdomsCommands implements CommandExecutor {
             }
 
             // Check if the player is the owner of the specified kingdom
-            if (!owner.get(playerUUID).equals(kingdoms.get(playerUUID))) {
+            if (!customRank.get(playerUUID).equals(1)) {
                 player.sendMessage(ChatColor.RED + "You are not the owner of " + ChatColor.GOLD + kingdoms.get(playerUUID));
                 return;
             }
@@ -271,8 +325,8 @@ public class KingdomsCommands implements CommandExecutor {
             }
 
             // Transfer kingdom ownership
-            owner.remove(playerUUID);
-            owner.put(targetUUID, kingdom);
+            customRank.put(playerUUID, 2);
+            customRank.put(targetUUID, 1);
             player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
             target.sendMessage(player.getName() + ChatColor.GREEN + " transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to you");
             return;
@@ -301,9 +355,11 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
+        Configurable config = KingdomsConfig.getInstance().getConfig();
         // Transfer kingdom ownership
-        owner.remove(kingdoms.get(kingdom));
-        owner.put(targetUUID, kingdom);
+            //todo: get what kingdom the old owner is in
+            //      demote old owner to rank 2 and promote new one to rank 1
+
 
         // Inform players about the transfer
         player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
@@ -588,6 +644,7 @@ public class KingdomsCommands implements CommandExecutor {
     }
 
     private void disbandKingdom(Player player, String kingdom, String[] args, String chunkID) {
+        Configurable config = KingdomsConfig.getInstance().getConfig();
         // Check if the player has the necessary permission or if they are trying to disband their own kingdom
         if (!player.hasPermission("kingdoms.disband.admin")) {
             String playerKingdom = kingdoms.get(player.getUniqueId().toString());
@@ -615,11 +672,16 @@ public class KingdomsCommands implements CommandExecutor {
                 String playerObj = entry.getKey();
 
                 // Set all associated entries to an empty string
-                owner.put(playerObj, "");
-                admin.put(playerObj, "");
-                member.put(playerObj, "");
-                canClaim.put(playerObj, "");
-                canUnclaim.put(playerObj, "");
+
+                if (kc.getNode(kingdom).exists()) {
+                    kc.getNode(kingdom).getKeys(false).forEach(key -> {
+                        Integer value = kc.getNode(kingdoms.get(player.getUniqueId().toString()) + "." + key).toPrimitive().getInt();
+                        customRank.remove(key, value);
+                        MessageManager.consoleInfo("Kingdom.key" + config.get(kingdom + "." + key));
+                        MessageManager.consoleInfo("Kingdom.playerObj" + config.get(kingdom + "." + playerObj));
+                        config.set(kingdom + "." + key, "");
+                    });
+                }
                 kingdoms.put(playerObj, "");
                 inviteList.put(playerObj, "");
 
@@ -643,7 +705,8 @@ public class KingdomsCommands implements CommandExecutor {
         }
     }
 
-    private void createKingdom(Player player, String kingdom) {
+    private void createKingdom(Player player, String kingdom, String[] args) {
+        Configurable config = KingdomsConfig.getInstance().getConfig();
         if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
             player.sendMessage(ChatColor.RED + "You are already in a kingdom");
             return;
@@ -656,17 +719,25 @@ public class KingdomsCommands implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "You cannot create a kingdom called " + ChatColor.WHITE + kingdom);
             return;
         }
-
+        int maxLength = plugin.getConfig().getInt("maxlength", 16); // Default to 10 if not set
+        if (!(args[1].length() <= maxLength)) {
+            player.sendMessage(ChatColor.RED + "Kingdom name can be at most " + maxLength + "characters long");
+            return;
+        }
         kingdoms.put(player.getUniqueId().toString(), kingdom);
-        owner.put(player.getUniqueId().toString(), kingdom);
-        admin.put(player.getUniqueId().toString(), kingdom);
-        member.put(player.getUniqueId().toString(), kingdom);
-        canClaim.put(player.getUniqueId().toString(), kingdom);
-        canUnclaim.put(player.getUniqueId().toString(), kingdom);
         claimPrice.put(kingdom, 10_000);
         memberPrice.put(kingdom, 10_000);
         maxClaims.put(kingdom, 10);
         maxMembers.put(kingdom, 6);
+        playerRankInKingdom.put(1, "King");
+        config.set(player.getUniqueId().toString() + "." + 1, "King");
+        config.set(kingdom + "." + 1, "King");
+        config.set(kingdom + "." + 2, "Lord");
+        config.set(kingdom + "." + 4, "Knight");
+        config.set(kingdom + "." + 7, "Citizen");
+        config.set(kingdom + "." + 8, "Peasant");
+        config.save();
+
         player.sendMessage(kingdom + ChatColor.GREEN + " created");
     }
 
