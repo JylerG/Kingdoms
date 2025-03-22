@@ -763,8 +763,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void updateTabListWithScoreboard(Player player) {
-        // Get the player's prefix (color for tab list)
-        String prefix = getPrefixForPlayer(player); // Ensure this method returns the correct color
+        // Get the player's color for the tab list
+        ChatColor color = pjl.getColorForPlayer(player); // Ensure this method returns a ChatColor value
 
         // Retrieve or create the player's scoreboard
         Scoreboard scoreboard = player.getScoreboard();
@@ -779,17 +779,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
 
         // Set prefix (color for tab list)
-        team.setPrefix(prefix);
-        team.setColor(ChatColor.WHITE); // Ensure name remains visible
-        team.addEntry(player.getName()); // Add player to the team
+        team.setColor(color); // Sets name color
+        team.addEntry(player.getName()); // Adds player to the team
 
         // Apply the updated scoreboard to the player
         player.setScoreboard(scoreboard);
 
         // Set the tab list name
-        player.setPlayerListName(prefix + ChatColor.WHITE + player.getDisplayName());
+        player.setPlayerListName(color + player.getDisplayName());
     }
-
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
@@ -799,7 +797,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         int staffCount = 0;
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            String playerRank = playerRank.get(onlinePlayer.getUniqueId().toString());
+            String playerRank = this.playerRank.get(onlinePlayer.getUniqueId().toString());
 
             if (playerRank != null && (playerRank.equals("§4§lADMIN") ||
                     playerRank.equals("§4§lJRADMIN") ||
