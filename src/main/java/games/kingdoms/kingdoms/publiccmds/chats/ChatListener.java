@@ -22,7 +22,7 @@ public class ChatListener implements Listener {
     final HashMap<String, String> kingdoms = plugin.getKingdoms();
     final Map<String, String> playerRank = plugin.getPlayerRank();
     final HashMap<String, String> staff = plugin.getStaff();
-
+    final String test = "";
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         String eventMessage = event.getMessage();
