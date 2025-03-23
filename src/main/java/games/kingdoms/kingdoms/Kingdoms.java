@@ -43,7 +43,8 @@ import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
 import games.kingdoms.kingdoms.publiccmds.help.HelpCommand;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
-import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomInviteList;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomInfoListener;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.tabcompletion.KingdomInviteTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomUpgradeListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
@@ -486,7 +487,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void kingdom() {
         getCommand("kingdom").setExecutor(new KingdomsCommands());
-        getCommand("kingdom").setTabCompleter(new KingdomInviteList());
+        getCommand("kingdom").setTabCompleter(new KingdomInviteTabCompleter());
     }
 
     private void viewPerms() {
@@ -1836,6 +1837,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     private void events() {
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
+        Bukkit.getServer().getPluginManager().registerEvents(new KingdomInfoListener(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
         Bukkit.getServer().getPluginManager().registerEvents(new Password(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KingdomsCommandListener(this), this);
