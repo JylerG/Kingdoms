@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Fix restoreOfflineData() to not register if there is no offline data to restore">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/modmode/ModMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/modmode/ModMode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
@@ -119,14 +121,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00052" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1723957430761</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1723957430763</updated>
     </task>
     <task id="LOCAL-00053" summary="Update Code">
       <option name="closed" value="true" />
@@ -512,7 +506,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742684325519</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run">
+      <option name="closed" value="true" />
+      <created>1742684834772</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1742684834772</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -524,7 +526,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Add ChatListener to imports" />
     <MESSAGE value="Create .gitignore" />
     <MESSAGE value="Make admin/jradmin more visible when talking in staff chat" />
     <MESSAGE value="Make staff chat use a player's name instead of display name" />
@@ -549,6 +550,7 @@
     <MESSAGE value="Create plugin jar" />
     <MESSAGE value="Let the user know if any required plugins are not present on the server" />
     <MESSAGE value="Fix restoreOfflineData() to not register if there is no offline data to restore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix restoreOfflineData() to not register if there is no offline data to restore" />
+    <MESSAGE value="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run" />
   </component>
 </project>
