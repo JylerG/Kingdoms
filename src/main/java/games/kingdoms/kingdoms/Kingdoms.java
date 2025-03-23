@@ -846,7 +846,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
     }
 
-
     private void updateTabListWithScoreboard(Player player) {
         // Get the player's color for the tab list
         ChatColor color = pjl.getColorForPlayer(player); // Ensure this method returns a ChatColor value

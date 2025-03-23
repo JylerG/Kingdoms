@@ -492,6 +492,7 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Kick the target player from the kingdom
+        kc.set(targetUUID, 0 + "." + null);
         kingdoms.remove(targetUUID);
         admin.remove(targetUUID);
         member.remove(targetUUID);
@@ -623,11 +624,13 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Clear the player's kingdom-related data
+        kc.set(player.getUniqueId().toString(), 0);
+        //todo: remove all kingdom related permissions from the user
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove kingdoms.setspawn");
         kingdoms.remove(playerUUID);
-        admin.remove(playerUUID);
-        member.remove(playerUUID);
         canClaim.remove(playerUUID);
         canUnclaim.remove(playerUUID);
+
 
         player.sendMessage(ChatColor.GREEN + "You left " + ChatColor.WHITE + kingdom);
     }
@@ -707,8 +710,10 @@ public class KingdomsCommands implements CommandExecutor {
         kingdoms.put(player.getUniqueId().toString(), args[1]);
 
         // Assign the highest available rank to the player
-        String highestRank = Collections.max(playerRankInKingdom.values());
-        playerRankInKingdom.put(Integer.parseInt(highestRank), player.getUniqueId().toString());
+        kc.getNode(args[1]).getKeys(false).forEach(key -> {
+            String highestRank = kc.getNode(args[1] + "." + key).toPrimitive().getString();
+            playerRankInKingdom.put(Integer.valueOf(key), highestRank);
+        });
 
         player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
     }
@@ -783,6 +788,7 @@ public class KingdomsCommands implements CommandExecutor {
                         config.set(kingdom + "." + key, "");
                     });
                 }
+                kc.set(player.getUniqueId().toString(), 0 + "." + null);
                 kingdoms.put(playerObj, "");
                 inviteList.put(playerObj, "");
 
