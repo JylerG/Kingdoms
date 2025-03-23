@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Fix command syntax for dispatching the command">
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomInfoListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomInfoListener.java" afterDir="false" />
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update Code">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,14 +114,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00068" summary="Update ModMode.java">
-      <option name="closed" value="true" />
-      <created>1725158687515</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1725158687516</updated>
     </task>
     <task id="LOCAL-00069" summary="Update EconomyCommand.java">
       <option name="closed" value="true" />
@@ -508,7 +499,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742768329199</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1742769956951</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1742769956952</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -533,7 +532,6 @@
     <MESSAGE value="Fix restoreOfflineData() to not register if there is no offline data to restore" />
     <MESSAGE value="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run" />
     <MESSAGE value="fix inPlayersKingdomBoard() to display players' rank when they are in a claim owned by their kingdom" />
-    <MESSAGE value="Update Code" />
     <MESSAGE value="Create/modify classes" />
     <MESSAGE value="Make notInPlayersKingdomBoard appear if the owning kingdom is an empty string onJoin" />
     <MESSAGE value="Refactor code" />
@@ -545,6 +543,7 @@
     <MESSAGE value="Beautify raidMeta in kingdomInfo()" />
     <MESSAGE value="fix issues in code" />
     <MESSAGE value="Fix command syntax for dispatching the command" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix command syntax for dispatching the command" />
+    <MESSAGE value="Update Code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Code" />
   </component>
 </project>

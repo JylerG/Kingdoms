@@ -633,78 +633,86 @@ public class KingdomsCommands implements CommandExecutor {
     }
 
     private void joinKingdom(Player player, String kingdom, String[] args) {
-
         Configurable kc = KingdomsConfig.getInstance().getConfig();
-        String highestRank = Collections.max(playerRankInKingdom.values());
 
-        if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
+        // Check if the player is already in a kingdom
+        if (kingdoms.containsKey(player.getUniqueId().toString()) && !kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
             MessageManager.playerBad(player, "You are already in a kingdom");
             return;
         }
 
+        // Check if the player is an owner and prevent them from joining another kingdom unless they disband or transfer it
         if (owner.containsKey(player.getUniqueId().toString()) && !kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
             player.sendMessage(ChatColor.RED + "You are a kingdom owner. If you wish to join a different kingdom, " +
-                    "you must disband your current kingdom " + ChatColor.GOLD + "/k disband " + kingdom
-                    + ChatColor.RED + " or transfer it " + ChatColor.GOLD + "/k transfer " + kingdom);
+                    "you must disband your current kingdom " + ChatColor.GOLD + "/k disband " + kingdom +
+                    ChatColor.RED + " or transfer it " + ChatColor.GOLD + "/k transfer " + kingdom);
             return;
         }
+
+        // Check if the kingdom exists
         if (!kingdoms.containsValue(args[1])) {
             player.sendMessage(args[1] + ChatColor.RED + " doesn't exist");
             return;
         }
+
+        // Handle permissions for joining kingdoms
         if (!player.hasPermission("kingdoms.admin.join")) {
-
-            boolean invitedKingdom = inviteList.get(player.getUniqueId().toString()).equalsIgnoreCase(args[1]);
-
+            // Check if the player has been invited to the kingdom
             if (!inviteList.containsKey(player.getUniqueId().toString())) {
                 MessageManager.playerBad(player, "You have not been invited to any kingdoms");
                 return;
             }
+
+            // Check if the player was invited to the kingdom they want to join
+            boolean invitedKingdom = inviteList.get(player.getUniqueId().toString()).equalsIgnoreCase(args[1]);
             if (!invitedKingdom) {
                 player.sendMessage(ChatColor.RED + "You have not been invited to " + ChatColor.WHITE + args[1]);
                 return;
             }
-            int memberCount = 0;
-            World kingdoms = Bukkit.getWorld("kingdoms");
-            //todo: make this check if the kingdom args[1] exists for offline and online player and increment memberCount if it does
-            for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-                String offlineKingdom = kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString();
-                if (offlineKingdom.equalsIgnoreCase(args[1])) {
-                    memberCount++;
-                }
-            }
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                String playerKingdom = kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString();
-                if (playerKingdom.equalsIgnoreCase(args[1])) {
-                    memberCount++;
-                }
-            }
 
+            // Count members in the kingdom
+            int memberCount = 0;
+            String kingdomName = args[1];
+            // Counting members in both offline and online players
             List<OfflinePlayer> allPlayers = new ArrayList<>();
             allPlayers.addAll(Arrays.asList(Bukkit.getOfflinePlayers()));
-            allPlayers.addAll(Bukkit.getOnlinePlayers()); // Online players are also added
+            allPlayers.addAll(Bukkit.getOnlinePlayers()); // Include online players too
 
             for (OfflinePlayer p : allPlayers) {
-                if (maxMembers.get(this.kingdoms.get(p.getUniqueId().toString())) > memberCount) {
-                    this.kingdoms.put(player.getUniqueId().toString(), args[1]);
-                } else {
-                    player.sendMessage(args[1] + ChatColor.RED + " is at max capacity");
+                String playerKingdom = kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString();
+                if (playerKingdom != null && playerKingdom.equalsIgnoreCase(kingdomName)) {
+                    memberCount++;
                 }
             }
 
+            // Check if the kingdom has reached its max capacity
+            if (maxMembers.containsKey(kingdomName) && memberCount < maxMembers.get(kingdomName)) {
+                kingdoms.put(player.getUniqueId().toString(), kingdomName);
+                player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + kingdomName);
+            } else {
+                player.sendMessage(kingdomName + ChatColor.RED + " is at max capacity.");
+            }
             return;
         }
 
+        // Assign the player to the kingdom if no permissions issues
         kingdom = kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).toPrimitive().getString();
+
         if (kingdom != null && kingdom.equalsIgnoreCase(args[1])) {
             player.sendMessage(ChatColor.RED + "You are already a member of " + ChatColor.WHITE + args[1]);
             return;
         }
 
+        // Add the player to the kingdom
         kingdoms.put(player.getUniqueId().toString(), args[1]);
-        playerRankInKingdom.put(Integer.valueOf(highestRank), player.getUniqueId().toString());
+
+        // Assign the highest available rank to the player
+        String highestRank = Collections.max(playerRankInKingdom.values());
+        playerRankInKingdom.put(Integer.parseInt(highestRank), player.getUniqueId().toString());
+
         player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
     }
+
 
     private void uninvitePlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
         OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[1]);
