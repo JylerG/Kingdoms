@@ -239,9 +239,9 @@ public class KingdomsCommands implements CommandExecutor {
         ItemMeta raidMeta = raid.getItemMeta();
         raidMeta.setDisplayName(title + "Raiding");
         List<String> raidLore = new ArrayList<>();
-        raidLore.add("Manage raiding for your Kingdom");
-        raidLore.add("You can stop a raid that is currently in progress or start a new one if");
-        raidLore.add("you are not already engaged");
+        raidLore.add(ChatColor.LIGHT_PURPLE + "Manage raiding for your Kingdom");
+        raidLore.add(ChatColor.YELLOW + "You can stop a raid that is currently in progress");
+        raidLore.add(ChatColor.YELLOW + "or " + ChatColor.GOLD + "start a new one " + ChatColor.YELLOW + "if you are not already engaged");
         raidLore.add(" ");
         raidLore.add(ChatColor.RED.toString() + ChatColor.BOLD + "Coming Soon");
         raidMeta.setLore(raidLore);
