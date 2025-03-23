@@ -157,6 +157,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+
         try {
             //Save default config
             getConfig().options().copyDefaults();
@@ -539,8 +540,23 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         String playerObj = player.getUniqueId().toString();
         String Kingdom = kingdoms.get(player.getUniqueId().toString());
         if (claimedChunks.get(playerChunk).equals(Kingdom)) {
-            Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + customRank.get(player.getUniqueId().toString()));
-            rank.setScore(12);
+            // Find the rank integer stored under the player's UUID
+            int playerRank = -1;
+            for (String key : kingdomsConfig.getConfig().getNode(player.getUniqueId().toString()).getKeys(false)) {
+                try {
+                    playerRank = Integer.parseInt(key);
+
+                    String playerKingdom = kingdoms.get(player.getUniqueId().toString());
+                    // Retrieve the rank name using the rank integer from the player's kingdom
+                    String rankName = kingdomsConfig.getConfig().getNode(playerKingdom + "." + playerRank).toPrimitive().getString();
+                    Score rank = obj.getScore("Rank " + ChatColor.LIGHT_PURPLE + rankName);
+                    rank.setScore(12);
+                    break; // Stop at the first found rank
+                } catch (NumberFormatException ignored) {
+                    // Ignore non-numeric keys
+                }
+            }
+
         }
         //Coins
         Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
@@ -569,25 +585,44 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         // Check if the chunk belongs to a kingdom
         if (kingdomOfChunk != null) {
 
+            // Create a set to track players that have already been counted
+            Set<UUID> countedPlayers = new HashSet<>();
+
             // Loop through all online players
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                // Skip the player if they've already been counted
+                if (countedPlayers.contains(onlinePlayer.getUniqueId())) {
+                    continue;
+                }
+
                 // Get the player's kingdom
                 String playerKingdom = kingdoms.get(onlinePlayer.getUniqueId().toString());
 
                 // Check if the player belongs to the same kingdom as the one that owns the chunk
                 if (kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
                     memberCount++;
+                    // Mark this player as counted
+                    countedPlayers.add(onlinePlayer.getUniqueId());
                 }
             }
 
-            // Loop through all offline players (if needed)
-            for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-                // Get the player's kingdom from the UUID
-                String playerKingdom = kingdoms.get(offlinePlayer.getUniqueId().toString());
 
-                // Check if the offline player belongs to the same kingdom
+            // Loop through all offline players (if needed)
+            for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+                // Loop through all online players
+                // Skip the player if they've already been counted
+                if (countedPlayers.contains(offline.getUniqueId())) {
+                    continue;
+                }
+
+                // Get the player's kingdom
+                String playerKingdom = kingdoms.get(offline.getUniqueId().toString());
+
+                // Check if the player belongs to the same kingdom as the one that owns the chunk
                 if (kingdomOfChunk.equalsIgnoreCase(playerKingdom)) {
                     memberCount++;
+                    // Mark this player as counted
+                    countedPlayers.add(offline.getUniqueId());
                 }
             }
 
@@ -722,15 +757,17 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         online.setScore(6);
         int staff = 0;
         for (Player pl : Bukkit.getOnlinePlayers()) {
-            if (this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
-                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("MOD")
-                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                    || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
-                staff++;
-                Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staff);
-                onlineStaff.setScore(5);
+            if (this.staff.containsKey(pl.getUniqueId().toString())) {
+                if (this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
+                        || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                        || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                        || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                        || this.staff.get(pl.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                    staff++;
+                }
             }
+            Score onlineStaff = obj.getScore("Staff " + ChatColor.YELLOW + staff);
+            onlineStaff.setScore(5);
         }
         Score PvP_setting = obj.getScore(ChatColor.DARK_RED + "PvP " + ChatColor.GRAY + "[" + ChatColor.RED + "OFF" + ChatColor.GRAY + "]");
         PvP_setting.setScore(4);
@@ -1169,6 +1206,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable mc = moneyConfig.getConfig();
             Configurable pu = punishmentConfig.getConfig();
 
+            if (!mc.getNode(player.getUniqueId().toString()).exists()) {
+                playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+                money.put(player.getUniqueId().toString(), 0L);
+                chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
+                kingdoms.put(player.getUniqueId().toString(), "");
+                passwords.put(player.getUniqueId().toString(), "");
+            }
+
             if (kc != null) {
                 if (kc.getNode("bannedNames").exists()) {
                     kc.getNode("bannedNames").getKeys(false).forEach(key -> {
@@ -1326,7 +1371,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     chatFocus.put(player.getUniqueId().toString(), sc.getNode("focus." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
                 if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
-                        passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
+                    passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
             }
         }
@@ -1340,7 +1385,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Configurable mc = moneyConfig.getConfig();
             Configurable pu = punishmentConfig.getConfig();
 
-            if (!mc.getNode(offline.getUniqueId().toString()).exists()) {
+            if (!mc.getNode(offline.getUniqueId().toString()).exists() || !kc.getNode(offline.getUniqueId().toString()).exists()
+                    || !sc.getNode(offline.getUniqueId().toString()).exists() || !pu.getNode(offline.getUniqueId().toString()).exists()) {
                 return;
             }
 
@@ -1516,6 +1562,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         Configurable mc = moneyConfig.getConfig();
         Configurable pu = punishmentConfig.getConfig();
 
+        if (!mc.getNode(player.getUniqueId().toString()).exists() || !kc.getNode(player.getUniqueId().toString()).exists()
+                || !sc.getNode(player.getUniqueId().toString()).exists() || !pu.getNode(player.getUniqueId().toString()).exists()) {
+            playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+            money.put(player.getUniqueId().toString(), 0L);
+            chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
+            kingdoms.put(player.getUniqueId().toString(), "");
+            passwords.put(player.getUniqueId().toString(), "");
+        }
+
         if (kc != null) {
             if (kc.getNode("bannedNames").exists()) {
                 kc.getNode("bannedNames").getKeys(false).forEach(key -> {
@@ -1647,6 +1702,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void savePluginData(Player player) {
+        //todo: make it so that a player's rank in the kingdom will be saved properly and that all kingdoms will be saved along with their applicable ranks
         saveData(punishmentConfig.getConfig(), reportAbuse, "report.");
         saveData(punishmentConfig.getConfig(), disrespect, "disrespect.");
         saveData(punishmentConfig.getConfig(), language, "language.");
