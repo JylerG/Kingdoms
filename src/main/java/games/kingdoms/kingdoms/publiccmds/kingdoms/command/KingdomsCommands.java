@@ -215,6 +215,27 @@ public class KingdomsCommands implements CommandExecutor {
         blackBorderMeta.setDisplayName(" ");
         blackBorder.setItemMeta(blackBorderMeta);
 
+        ItemMeta skullMeta = skull.getItemMeta();
+        skullMeta.setDisplayName(title + " ");
+        skull.setItemMeta(skullMeta);
+
+        ItemMeta infoMeta = Info.getItemMeta();
+        infoMeta.setDisplayName(title + " ");
+        Info.setItemMeta(infoMeta);
+
+        ItemMeta wallMeta = wall.getItemMeta();
+        wallMeta.setDisplayName(title + " ");
+        wall.setItemMeta(wallMeta);
+
+        ItemMeta disbandMeta = disband.getItemMeta();
+        disbandMeta.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + ChatColor.MAGIC + "MMM "
+                + ChatColor.RED + ChatColor.BOLD + "DISBAND KINGDOM " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + ChatColor.MAGIC + "MMM");
+        List<String> disbandLore = new ArrayList<>();
+        disbandLore.add(" ");
+        disbandLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Click " + ChatColor.WHITE + "to " + ChatColor.RED + ChatColor.BOLD + "DISBAND KINGDOM");
+        disbandMeta.setLore(disbandLore);
+        disband.setItemMeta(disbandMeta);
+
         ItemMeta raidMeta = raid.getItemMeta();
         raidMeta.setDisplayName(title + "Raiding");
         List<String> raidLore = new ArrayList<>();
@@ -240,6 +261,63 @@ public class KingdomsCommands implements CommandExecutor {
         rankLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Click " + ChatColor.WHITE + "to manage ranks");
         rankMeta.setLore(rankLore);
         ranks.setItemMeta(rankMeta);
+
+        info.setItem(0, yellowBorder);
+        info.setItem(1, yellowBorder);
+        info.setItem(2, blackBorder);
+        info.setItem(3, blackBorder);
+        info.setItem(4, Info);
+        info.setItem(5, blackBorder);
+        info.setItem(6, blackBorder);
+        info.setItem(7, yellowBorder);
+        info.setItem(8, yellowBorder);
+        info.setItem(9, yellowBorder);
+        info.setItem(10, blackBorder);
+        info.setItem(11, blackBorder);
+        info.setItem(12, blackBorder);
+        info.setItem(13, blackBorder);
+        info.setItem(14, blackBorder);
+        info.setItem(15, blackBorder);
+        info.setItem(16, blackBorder);
+        info.setItem(17, yellowBorder);
+        info.setItem(18, blackBorder);
+        info.setItem(19, blackBorder);
+        info.setItem(20, skull);
+        info.setItem(21, blackBorder);
+        info.setItem(22, ranks);
+        info.setItem(23, blackBorder);
+        info.setItem(24, spawn);
+        info.setItem(25, blackBorder);
+        info.setItem(26, blackBorder);
+        info.setItem(27, blackBorder);
+        info.setItem(28, blackBorder);
+        info.setItem(29, blackBorder);
+        info.setItem(30, wall);
+        info.setItem(31, blackBorder);
+        info.setItem(32, raid);
+        info.setItem(33, blackBorder);
+        info.setItem(34, blackBorder);
+        info.setItem(35, blackBorder);
+        info.setItem(36, yellowBorder);
+        info.setItem(37, blackBorder);
+        info.setItem(38, blackBorder);
+        info.setItem(39, blackBorder);
+        info.setItem(40, blackBorder);
+        info.setItem(41, blackBorder);
+        info.setItem(42, blackBorder);
+        info.setItem(43, blackBorder);
+        info.setItem(44, yellowBorder);
+        info.setItem(45, yellowBorder);
+        info.setItem(46, yellowBorder);
+        info.setItem(47, blackBorder);
+        info.setItem(48, blackBorder);
+        info.setItem(49, disband);
+        info.setItem(50, blackBorder);
+        info.setItem(51, blackBorder);
+        info.setItem(52, yellowBorder);
+        info.setItem(53, yellowBorder);
+
+        player.openInventory(info);
     }
 
     private void bannedKingdomsList(Player player) {
