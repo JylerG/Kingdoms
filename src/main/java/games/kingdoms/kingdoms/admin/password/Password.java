@@ -15,12 +15,16 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Password implements CommandExecutor, Listener {
 
     final Kingdoms plugin = Kingdoms.getPlugin(Kingdoms.class);
+    final Map<String, String> playersRank = plugin.getPlayerRank();
+    boolean passwordEntered;
 
     static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\\$%\\^&\\*\\-\\_]).{5,}$");
@@ -32,7 +36,6 @@ public class Password implements CommandExecutor, Listener {
         String playerUUID = player.getUniqueId().toString();
 
         String playerRank = plugin.getPlayerRank().get(playerUUID);
-        MessageManager.consoleInfo("PlayerRank: " + playerRank);
         plugin.restorePluginData(player);
 
         boolean isJrMod = playerRank != null && playerRank.equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
@@ -70,23 +73,42 @@ public class Password implements CommandExecutor, Listener {
         Player player = e.getPlayer();
         String playerUUID = player.getUniqueId().toString();
 
-        boolean isJrMod = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
-        boolean isMod = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
-        boolean isSrMod = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
-        boolean isJrAdmin = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
-        boolean isAdmin = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
+        // Retrieve player's rank safely
+        String playerRank = plugin.getPlayerRank().get(playerUUID);
 
-        if ((!isJrMod && !isMod && !isSrMod && !isJrAdmin && !isAdmin) && player.hasPermission("kingdoms.move")) return;
+        if (playerRank == null) {
+            // Assign default rank to player if none exists
+            playerRank = ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT;
+            plugin.getPlayerRank().put(playerUUID, playerRank);
+        }
 
-        if ((isJrMod || isMod || isSrMod || isJrAdmin || isAdmin) && player.hasPermission("kingdoms.move")) {
-            e.setCancelled(false);
+        // Check player rank safely
+        boolean isJrMod = playerRank.equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
+        boolean isMod = playerRank.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
+        boolean isSrMod = playerRank.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
+        boolean isJrAdmin = playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
+        boolean isAdmin = playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
+
+        boolean isStaff = isJrMod || isMod || isSrMod || isJrAdmin || isAdmin;
+
+        // Return if player is not staff
+        if (!isStaff) {
             return;
         }
 
-        String password = plugin.getStaffPasswords().get(playerUUID);
-        if (password == null || password.isEmpty()) {
-            if ((isJrMod || isMod || isSrMod || isJrAdmin || isAdmin)) {
-                if (!player.hasPermission("kingdoms.move")) {
+        passwordEntered = true;
+
+        // If player is staff and has permission, remove it
+        if (isStaff && !passwordEntered) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove kingdoms.move");
+        }
+
+        // Password handling for staff members
+        if (!player.hasPermission("kingdoms.move")) {
+            String password = plugin.getStaffPasswords().get(playerUUID);
+
+            if (password == null || password.isEmpty()) {
+                if (isStaff) {
                     player.sendMessage(ChatColor.GREEN + "Please enter your new password\n" +
                             "Use " + ChatColor.WHITE + "/password <your new password>\n" +
                             ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
@@ -98,10 +120,10 @@ public class Password implements CommandExecutor, Listener {
                             ChatColor.DARK_AQUA + "Please enter a valid password");
                     e.setCancelled(true);
                 }
+            } else {
+                player.sendMessage(ChatColor.GREEN + "Please enter your password. " + ChatColor.WHITE + "/password <your password>");
+                e.setCancelled(true);
             }
-        } else {
-            player.sendMessage(ChatColor.GREEN + "Please enter your password. " + ChatColor.WHITE + "/password <your password>");
-            e.setCancelled(true);
         }
     }
 
@@ -181,13 +203,14 @@ public class Password implements CommandExecutor, Listener {
         // Check if the entered password matches the stored one
         if (!storedPassword.equals(password)) {
             MessageManager.playerBad(player, "Incorrect password");
+            passwordEntered = false;
             return true;
         }
 
         // If the password is correct, grant permission to move
         MessageManager.playerGood(player, "You entered the correct password");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " add kingdoms.move");
-
+        passwordEntered = true;
         return true;
     }
 }
