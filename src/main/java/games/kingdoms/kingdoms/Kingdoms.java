@@ -107,7 +107,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, Integer> customRank = new HashMap<>();
     private HashMap<String, Integer> kingdomRank = new HashMap<>();
     private HashMap<Integer, String> playerRankInKingdom = new HashMap<>();
-    private HashMap<String, String> kingdomExists = new HashMap<>();
     final ArrayList<Player> invisiblePlayers = new ArrayList<>();
     private ArrayList<Player> modModePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
@@ -323,7 +322,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         money = new HashMap<>();
         passwords = new HashMap<>();
         modModePlayers = new ArrayList<>();
-        kingdomExists = new HashMap<>();
         onlineStaff = new HashMap<>();
         memberPrice = new HashMap<>();
         claimPrice = new HashMap<>();
@@ -1146,10 +1144,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return threats;
     }
 
-    public HashMap<String, String> getKingdomExists() {
-        return kingdomExists;
-    }
-
     public HashMap<String, Integer> getClaimPrice() {
         return claimPrice;
     }
@@ -1222,71 +1216,24 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                         this.bannedNames.put(key, bannedNames);
                     });
                 }
-                if (kc.getNode("exists").exists()) {
-                    kc.getNode("exists").getKeys(false).forEach(key -> {
-                        String value = kc.getNode("exists." + key).toPrimitive().getString();
-                        this.kingdomExists.put(key, value);
+                if (kc.getNode(player.getUniqueId().toString()).exists()) {
+                    kc.getNode(player.getUniqueId().toString()).getKeys(false).forEach(key -> {
+                        String value = kc.getNode(player.getUniqueId().toString() + "." + key).toPrimitive().getString();
+                        this.playerRankInKingdom.put(Integer.valueOf(key), value);
                     });
                 }
-                //todo: starts here
-                // Check if the player's kingdom exists in the configuration
-                String playerUUID = player.getUniqueId().toString();
-                String playerKingdom = kingdoms.get(playerUUID);
-
-                if (kc.getNode(playerKingdom).exists()) {
-                    // Iterate through the keys within the player's kingdom
-                    kc.getNode(playerKingdom).getKeys(false).forEach(key -> {
-                        try {
-                            // Attempt to parse the key as an integer (represents the rank)
-                            int rank = Integer.parseInt(key);
-
-                            // Check if the key (rank) is associated with a kingdom
-                            if (kingdoms.containsKey(playerUUID)) {
-                                // Retrieve the rank name as a String
-                                String rankName = kc.getNode(playerKingdom + "." + key).toPrimitive().getString();
-
-                                // Log and store the rank information
-                                System.out.println("Rank: " + rank + ", Rank Name: " + rankName);
-                                playerRankInKingdom.put(rank, rankName);
-                            }
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid rank key: " + key + " (not an integer)");
-                        }
-                    });
-                }
-
-                if (kc.getNode(playerKingdom).exists()) {
-                    // Iterate through the keys within the player's kingdom
-                    kc.getNode(playerKingdom).getKeys(false).forEach(key -> {
-                        // Check if the key (rank name) is associated with a kingdom
-                        if (kingdoms.containsKey(playerUUID)) {
-                            try {
-                                // Retrieve the rank value as an integer
-                                Integer rankValue = kc.getNode(playerKingdom + "." + player.getUniqueId().toString() + "." + key).toPrimitive().getInt();
-
-                                // Log and store the rank information
-                                System.out.println("Rank Name: " + key + ", Rank Value: " + rankValue);
-                                customRank.put(key, rankValue);
-                            } catch (Exception e) {
-                                System.out.println("Invalid rank value for key: " + key);
-                            }
-                        }
-                    });
-                }
-
                 if (kc.getNode("invites").getNode(player.getUniqueId().toString()).exists()) {
-                    inviteList.put(player.getUniqueId().toString(), kc.getNode("invites." + player.getUniqueId().toString()).toPrimitive().getString());
+                    kc.getNode("invites").getKeys(false).forEach(key -> {
+                        String kingdom = kc.getNode("invites." + key).toPrimitive().getString();
+                        inviteList.put(player.getUniqueId().toString(), kingdom);
+                    });
+
                 }
                 if (kc.getNode("kingdoms").getNode(player.getUniqueId().toString()).exists()) {
                     kingdoms.put(player.getUniqueId().toString(), kc.getNode("kingdoms." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
                 if (kc.getNode("maxClaims").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                     maxClaims.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxClaims." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
-                }
-                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                    if (kc.getNode("exists").getNode(kingdom.getValue()).exists()) {
-                        kingdomExists.put(kingdom.getValue(), kingdom.getValue());
-                    }
                 }
                 if (kc.getNode("spawns").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                     kingdomSpawn.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(player.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
@@ -1400,12 +1347,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                         this.bannedNames.put(key, bannedNames);
                     });
                 }
-                if (kc.getNode("exists").exists()) {
-                    kc.getNode("exists").getKeys(false).forEach(key -> {
-                        String value = kc.getNode("exists." + key).toPrimitive().getString();
-                        this.kingdomExists.put(key, value);
-                    });
-                }
                 // Check if the player's kingdom exists in the configuration
                 String playerUUID = offline.getUniqueId().toString();
                 String playerKingdom = kingdoms.get(playerUUID);
@@ -1426,8 +1367,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                                 System.out.println("Rank: " + rank + ", Rank Name: " + rankName);
                                 playerRankInKingdom.put(rank, rankName);
                             }
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid rank key: " + key + " (not an integer)");
+                        } catch (NumberFormatException ignored) {
                         }
                     });
                 }
@@ -1444,8 +1384,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                                 // Log and store the rank information
                                 System.out.println("Rank Name: " + key + ", Rank Value: " + rankValue);
                                 customRank.put(key, rankValue);
-                            } catch (Exception e) {
-                                System.out.println("Invalid rank value for key: " + key);
+                            } catch (Exception ignored) {
                             }
                         }
                     });
@@ -1459,11 +1398,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
                 if (kc.getNode("maxClaims").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
                     maxClaims.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("maxClaims." + kingdoms.get(offline.getUniqueId().toString())).toPrimitive().getInt());
-                }
-                for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                    if (kc.getNode("exists").getNode(kingdom.getValue()).exists()) {
-                        kingdomExists.put(kingdom.getValue(), kingdom.getValue());
-                    }
                 }
                 if (kc.getNode("spawns").getNode(kingdoms.get(offline.getUniqueId().toString())).exists()) {
                     kingdomSpawn.put(kingdoms.get(offline.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(offline.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
@@ -1579,12 +1513,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     this.bannedNames.put(key, bannedNames);
                 });
             }
-            if (kc.getNode("exists").exists()) {
-                kc.getNode("exists").getKeys(false).forEach(key -> {
-                    String value = kc.getNode("exists." + key).toPrimitive().getString();
-                    this.kingdomExists.put(key, value);
-                });
-            }
             if (kc.getNode("invites").getNode(player.getUniqueId().toString()).exists()) {
                 inviteList.put(player.getUniqueId().toString(), kc.getNode("invites." + player.getUniqueId().toString()).toPrimitive().getString());
             }
@@ -1607,11 +1535,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
             if (kc.getNode("maxClaims").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                 maxClaims.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("maxClaims." + kingdoms.get(player.getUniqueId().toString())).toPrimitive().getInt());
-            }
-            for (Map.Entry<String, String> kingdom : kingdoms.entrySet()) {
-                if (kc.getNode("exists").getNode(kingdom.getValue()).exists()) {
-                    kingdomExists.put(kingdom.getValue(), kingdom.getValue());
-                }
             }
             if (kc.getNode("spawns").getNode(kingdoms.get(player.getUniqueId().toString())).exists()) {
                 kingdomSpawn.put(kingdoms.get(player.getUniqueId().toString()), kc.getNode("spawns." + kingdoms.get(player.getUniqueId().toString())).toGeneric(BukkitGeneric.class).getLocation());
@@ -1715,7 +1638,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveData(punishmentConfig.getConfig(), threats, "threats.");
         saveData(staffConfig.getConfig(), staffCount, "online.");
         saveData(kingdomsConfig.getConfig(), bannedNames, "bannedNames.");
-        saveData(kingdomsConfig.getConfig(), kingdomExists, "exists.");
         saveData(kingdomsConfig.getConfig(), kingdoms, "kingdoms.");
         saveData(kingdomsConfig.getConfig(), maxClaims, "maxClaims.");
         saveData(kingdomsConfig.getConfig(), maxMembers, "maxMembers.");
@@ -1745,7 +1667,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(punishmentConfig.getConfig(), threats, "threats.");
             saveData(staffConfig.getConfig(), staffCount, "online.");
             saveData(kingdomsConfig.getConfig(), bannedNames, "bannedNames.");
-            saveData(kingdomsConfig.getConfig(), kingdomExists, "exists.");
             saveData(kingdomsConfig.getConfig(), kingdoms, "kingdoms.");
             saveData(kingdomsConfig.getConfig(), maxClaims, "maxClaims.");
             saveData(kingdomsConfig.getConfig(), maxMembers, "maxMembers.");
@@ -1774,7 +1695,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(punishmentConfig.getConfig(), threats, "threats.");
             saveData(staffConfig.getConfig(), staffCount, "online.");
             saveData(kingdomsConfig.getConfig(), bannedNames, "bannedNames.");
-            saveData(kingdomsConfig.getConfig(), kingdomExists, "exists.");
             saveData(kingdomsConfig.getConfig(), kingdoms, "kingdoms.");
             saveData(kingdomsConfig.getConfig(), maxClaims, "maxClaims.");
             saveData(kingdomsConfig.getConfig(), maxMembers, "maxMembers.");

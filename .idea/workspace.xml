@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Create/modify classes" />
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Refactor code">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -112,22 +116,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00058" summary="Create Enchantments">
-      <option name="closed" value="true" />
-      <created>1724199819613</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1724199819614</updated>
-    </task>
-    <task id="LOCAL-00059" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1724199863778</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1724199863778</updated>
     </task>
     <task id="LOCAL-00060" summary="Update Code">
       <option name="closed" value="true" />
@@ -505,7 +493,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742757658217</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="Make notInPlayersKingdomBoard appear if the owning kingdom is an empty string onJoin">
+      <option name="closed" value="true" />
+      <created>1742758204131</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1742758204132</updated>
+    </task>
+    <task id="LOCAL-00108" summary="Refactor code">
+      <option name="closed" value="true" />
+      <created>1742758230623</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1742758230623</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -517,8 +521,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Make staff chat use a player's name instead of display name" />
-    <MESSAGE value="Remove kingdoms plugin constructor" />
     <MESSAGE value="Check for if player is in a kingdom in setSpawn()" />
     <MESSAGE value="Add report command" />
     <MESSAGE value="Inform player that their report was sent" />
@@ -542,6 +544,8 @@
     <MESSAGE value="fix inPlayersKingdomBoard() to display players' rank when they are in a claim owned by their kingdom" />
     <MESSAGE value="Update Code" />
     <MESSAGE value="Create/modify classes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create/modify classes" />
+    <MESSAGE value="Make notInPlayersKingdomBoard appear if the owning kingdom is an empty string onJoin" />
+    <MESSAGE value="Refactor code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor code" />
   </component>
 </project>
