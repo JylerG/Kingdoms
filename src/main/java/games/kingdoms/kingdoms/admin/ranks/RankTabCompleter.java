@@ -27,31 +27,33 @@ public class RankTabCompleter implements TabCompleter {
 
         if (args.length == 1) {
             if (sender instanceof Player player) {
-                if (player.hasPermission("kingdoms.setrank.fake")) {
-                    List<String> reset = new ArrayList<>();
-                    if ((plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                            && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD))
-                            || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                            && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN))
-                            || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                            && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN))) {
-                        reset.add("reset");
-                        reset.add("fake");
-                        reset.add("set");
-                        return reset;
-                    }
-                } else {
-                    if (player.hasPermission("kingdoms.setrank.default")
-                            || player.hasPermission("kingdoms.setrank.vip")
-                            || player.hasPermission("kingdoms.setrank.hero")
-                            || player.hasPermission("kingdoms.setrank.jrmod")
-                            || player.hasPermission("kingdoms.setrank.mod")
-                            || player.hasPermission("kingdoms.setrank.srmod")
-                            || player.hasPermission("kingdoms.setrank.jradmin")
-                            || player.hasPermission("kingdoms.setrank.admin")) {
-                        List<String> set = new ArrayList<>();
-                        set.add("set");
-                        return set;
+                if (args[0].equalsIgnoreCase("rank")) {
+                    if (player.hasPermission("kingdoms.setrank.fake")) {
+                        List<String> reset = new ArrayList<>();
+                        if ((plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                                && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD))
+                                || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                                && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN))
+                                || (plugin.getStaff().get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                                && !plugin.getPlayerRank().get(player.getUniqueId().toString()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN))) {
+                            reset.add("reset");
+                            reset.add("fake");
+                            reset.add("set");
+                            return reset;
+                        }
+                    } else {
+                        if (player.hasPermission("kingdoms.setrank.default")
+                                || player.hasPermission("kingdoms.setrank.vip")
+                                || player.hasPermission("kingdoms.setrank.hero")
+                                || player.hasPermission("kingdoms.setrank.jrmod")
+                                || player.hasPermission("kingdoms.setrank.mod")
+                                || player.hasPermission("kingdoms.setrank.srmod")
+                                || player.hasPermission("kingdoms.setrank.jradmin")
+                                || player.hasPermission("kingdoms.setrank.admin")) {
+                            List<String> set = new ArrayList<>();
+                            set.add("set");
+                            return set;
+                        }
                     }
                 }
             }

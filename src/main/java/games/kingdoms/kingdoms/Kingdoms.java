@@ -820,14 +820,27 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             sendTitle(player, title, subtitle, 10, 40, 10);
 
             // Update the player's scoreboard
-            String playerKingdom = plugin.getKingdoms().getOrDefault(player.getUniqueId().toString(), "");
+            String playerKingdom = kingdoms.getOrDefault(player.getUniqueId().toString(), "");
+
             if (!playerKingdom.isEmpty()) {
+                String kingdom = kingdoms.get(player.getUniqueId().toString());
+
+                // Check if the chunk is claimed and whether it's owned by the player's kingdom
                 if (isChunkClaimed(toChunk)) {
-                    inPlayersKingdomBoard(player, toChunk);
+                    String chunkOwnerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
+
+                    // Only call inPlayersKingdomBoard if the chunk is owned by the player's kingdom
+                    if (chunkOwnerKingdom != null && chunkOwnerKingdom.equalsIgnoreCase(kingdom)) {
+                        inPlayersKingdomBoard(player, toChunk);
+                    } else {
+                        notInPlayersKingdomBoard(player);
+                    }
                 } else {
+                    // If the chunk is not claimed, handle the case where the player is not in any kingdom
                     notInPlayersKingdomBoard(player);
                 }
             } else {
+                // If the player doesn't belong to any kingdom, show the appropriate scoreboard
                 notInKingdomBoard(player);
             }
         }

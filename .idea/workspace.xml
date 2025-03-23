@@ -4,15 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Remove kingdomExists hashmap">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Beautify raidMeta in kingdomInfo()">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,46 +124,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00061" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1724794259247</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1724794259249</updated>
-    </task>
-    <task id="LOCAL-00062" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1724804684039</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1724804684040</updated>
-    </task>
-    <task id="LOCAL-00063" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1724806315873</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1724806315873</updated>
-    </task>
-    <task id="LOCAL-00064" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1724806682703</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1724806682704</updated>
-    </task>
-    <task id="LOCAL-00065" summary="Update KingdomInviteList.java">
-      <option name="closed" value="true" />
-      <created>1725154109087</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1725154109087</updated>
     </task>
     <task id="LOCAL-00066" summary="Update KingdomInviteList.java">
       <option name="closed" value="true" />
@@ -515,7 +477,47 @@
       <option name="project" value="LOCAL" />
       <updated>1742758797556</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL-00110" summary="Fix onMove() to tell a user if they pass through a chunk owned by a kingdom they are not a member of">
+      <option name="closed" value="true" />
+      <created>1742764487251</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1742764487251</updated>
+    </task>
+    <task id="LOCAL-00111" summary="Add passwordEntered boolean">
+      <option name="closed" value="true" />
+      <created>1742764528243</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1742764528243</updated>
+    </task>
+    <task id="LOCAL-00112" summary="Remove unnecessary code">
+      <option name="closed" value="true" />
+      <created>1742764548563</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1742764548563</updated>
+    </task>
+    <task id="LOCAL-00113" summary="Update kingdomInfo() to display the gui for the kingdom info page">
+      <option name="closed" value="true" />
+      <created>1742766889989</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1742766889992</updated>
+    </task>
+    <task id="LOCAL-00114" summary="Beautify raidMeta in kingdomInfo()">
+      <option name="closed" value="true" />
+      <created>1742767285646</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1742767285646</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -527,11 +529,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Add report command" />
-    <MESSAGE value="Inform player that their report was sent" />
-    <MESSAGE value="Create updateScoreBoardOnReload() and add it to onEnable" />
-    <MESSAGE value="Simplify playerIsNotInKingdom check" />
-    <MESSAGE value="Create Enchantments" />
     <MESSAGE value="Update KingdomInviteList.java" />
     <MESSAGE value="Update money hashmap to use a long and format it in various files" />
     <MESSAGE value="Update ModMode.java" />
@@ -552,6 +549,11 @@
     <MESSAGE value="Make notInPlayersKingdomBoard appear if the owning kingdom is an empty string onJoin" />
     <MESSAGE value="Refactor code" />
     <MESSAGE value="Remove kingdomExists hashmap" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove kingdomExists hashmap" />
+    <MESSAGE value="Fix onMove() to tell a user if they pass through a chunk owned by a kingdom they are not a member of" />
+    <MESSAGE value="Add passwordEntered boolean" />
+    <MESSAGE value="Remove unnecessary code" />
+    <MESSAGE value="Update kingdomInfo() to display the gui for the kingdom info page" />
+    <MESSAGE value="Beautify raidMeta in kingdomInfo()" />
+    <option name="LAST_COMMIT_MESSAGE" value="Beautify raidMeta in kingdomInfo()" />
   </component>
 </project>
