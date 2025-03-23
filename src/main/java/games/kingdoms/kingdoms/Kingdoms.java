@@ -1027,7 +1027,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 // Now check if the chunk belongs to the player's kingdom
                 String claimedKingdomId = claimedChunks.get(chunkKey);
 
-                if (claimedKingdomId == null || !claimedKingdomId.equalsIgnoreCase(kingdomId)) {
+                if (claimedKingdomId == null || claimedKingdomId.isEmpty() || !claimedKingdomId.equalsIgnoreCase(kingdomId)) {
                     notInPlayersKingdomBoard(player);
                 } else {
                     inPlayersKingdomBoard(player, player.getLocation().getChunk());
