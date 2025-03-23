@@ -31,13 +31,18 @@ public class Password implements CommandExecutor, Listener {
         Player player = e.getPlayer();
         String playerUUID = player.getUniqueId().toString();
 
+        String playerRank = plugin.getPlayerRank().get(playerUUID);
+        MessageManager.consoleInfo("PlayerRank: " + playerRank);
         plugin.restorePluginData(player);
 
-        boolean isJrMod = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
-        boolean isMod = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
-        boolean isSrMod = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
-        boolean isJrAdmin = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
-        boolean isAdmin = plugin.getPlayerRank().get(playerUUID).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
+        boolean isJrMod = playerRank != null && playerRank.equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
+        boolean isMod = playerRank != null && playerRank.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
+        boolean isSrMod = playerRank != null && playerRank.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
+        boolean isJrAdmin = playerRank != null && playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
+        boolean isAdmin = playerRank != null && playerRank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
+
+
+
 
         if ((!isJrMod && !isMod && !isSrMod && !isJrAdmin && !isAdmin) && player.hasPermission("kingdoms.move")) return;
 
