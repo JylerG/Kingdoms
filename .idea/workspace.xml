@@ -4,17 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Beautify raidMeta in kingdomInfo()">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="fix issues in code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/ranks/RankTabCompleter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomInfoListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomInfoListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -124,14 +119,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00066" summary="Update KingdomInviteList.java">
-      <option name="closed" value="true" />
-      <created>1725154201713</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1725154201713</updated>
     </task>
     <task id="LOCAL-00067" summary="Update money hashmap to use a long and format it in various files">
       <option name="closed" value="true" />
@@ -517,7 +504,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742767285646</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="fix issues in code">
+      <option name="closed" value="true" />
+      <created>1742767486120</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1742767486120</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -529,7 +524,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Update KingdomInviteList.java" />
     <MESSAGE value="Update money hashmap to use a long and format it in various files" />
     <MESSAGE value="Update ModMode.java" />
     <MESSAGE value="Update EconomyCommand.java" />
@@ -554,6 +548,7 @@
     <MESSAGE value="Remove unnecessary code" />
     <MESSAGE value="Update kingdomInfo() to display the gui for the kingdom info page" />
     <MESSAGE value="Beautify raidMeta in kingdomInfo()" />
-    <option name="LAST_COMMIT_MESSAGE" value="Beautify raidMeta in kingdomInfo()" />
+    <MESSAGE value="fix issues in code" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix issues in code" />
   </component>
 </project>
