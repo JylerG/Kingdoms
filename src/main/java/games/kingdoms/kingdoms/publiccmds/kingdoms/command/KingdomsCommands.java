@@ -391,7 +391,7 @@ public class KingdomsCommands implements CommandExecutor {
             }
 
             // Check if the player is the owner of the specified kingdom
-            if (!customRank.get(playerUUID).equals(1)) {
+            if (!playerRankInKingdom.get(1).equals(playerUUID)) {
                 player.sendMessage(ChatColor.RED + "You are not the owner of " + ChatColor.GOLD + kingdoms.get(playerUUID));
                 return;
             }
@@ -403,8 +403,12 @@ public class KingdomsCommands implements CommandExecutor {
             }
 
             // Transfer kingdom ownership
-            customRank.put(playerUUID, 2);
-            customRank.put(targetUUID, 1);
+            playerRankInKingdom.put(2, playerUUID);
+            playerRankInKingdom.put(1, targetUUID);
+            //todo: remove any relevant permissions from the player and give them to the target user
+            // MAKE SURE TO USE PEX WHEN DOING THIS
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove " + kingdom + ".setspawn");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + target.getName() + " add " + kingdom + ".setspawn");
             player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
             target.sendMessage(player.getName() + ChatColor.GREEN + " transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to you");
             return;
@@ -433,16 +437,26 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        Configurable config = KingdomsConfig.getInstance().getConfig();
-        // Transfer kingdom ownership
-            //todo: get what kingdom the old owner is in
-            //      demote old owner to rank 2 and promote new one to rank 1
+        // Find the current owner (rank 1)
+        String currentOwnerUUID = playerRankInKingdom.get(1); // Rank 1 is the current owner
+        if (currentOwnerUUID == null) {
+            player.sendMessage(ChatColor.RED + "No owner found for the kingdom.");
+            return;
+        }
 
+        // Demote the current owner to the lowest rank (highest numeric rank)
+        // Assuming that ranks are represented by integers, you'll need to find the highest rank
+        String highestRank = Collections.max(playerRankInKingdom.values());
+        playerRankInKingdom.put(Integer.valueOf(highestRank), currentOwnerUUID);  // Set the current owner to the lowest rank
+
+        // Promote the target player to the owner (rank 1)
+        playerRankInKingdom.put(1, targetUUID);  // Set the target player as the new owner
 
         // Inform players about the transfer
         player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
         target.sendMessage(player.getName() + ChatColor.GREEN + " transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to you");
     }
+
 
     private void kickPlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
         String playerUUID = player.getUniqueId().toString();
@@ -619,7 +633,9 @@ public class KingdomsCommands implements CommandExecutor {
     }
 
     private void joinKingdom(Player player, String kingdom, String[] args) {
+
         Configurable kc = KingdomsConfig.getInstance().getConfig();
+        String highestRank = Collections.max(playerRankInKingdom.values());
 
         if (!kingdoms.get(player.getUniqueId().toString()).isEmpty()) {
             MessageManager.playerBad(player, "You are already in a kingdom");
@@ -686,8 +702,7 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         kingdoms.put(player.getUniqueId().toString(), args[1]);
-        member.put(player.getUniqueId().toString(), args[1]);
-
+        playerRankInKingdom.put(Integer.valueOf(highestRank), player.getUniqueId().toString());
         player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + args[1]);
     }
 
@@ -808,6 +823,8 @@ public class KingdomsCommands implements CommandExecutor {
         maxClaims.put(kingdom, 10);
         maxMembers.put(kingdom, 6);
         playerRankInKingdom.put(1, "King");
+        //todo: add any relevant permissions for kingdom owner here
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " add kingdoms.setspawn");
         config.set(player.getUniqueId().toString() + "." + 1, "King");
         config.set(kingdom + "." + 1, "King");
         config.set(kingdom + "." + 2, "Lord");
@@ -835,8 +852,8 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the player is a member of the kingdom
-        boolean isMember = member.get(playerUUID) != null && member.get(playerUUID).equals(kingdom);
-        boolean isAdmin = admin.get(playerUUID) != null && admin.get(playerUUID).equals(kingdom);
+        boolean isMember = kingdoms.containsKey(player.getUniqueId().toString());
+        boolean isAdmin = player.hasPermission(kingdom + ".setspawn");
 
         if (isMember && !isAdmin) {
             player.sendMessage(ChatColor.RED + "You do not have permission to set " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s spawn");

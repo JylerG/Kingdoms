@@ -1290,8 +1290,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                                     // Retrieve the rank name as a String
                                     String rankName = kc.getNode(playerKingdom + "." + key).toPrimitive().getString();
 
-                                    // Log and store the rank information
-                                    System.out.println("Rank: " + rank + ", Rank Name: " + rankName);
+                                    // Store the rank information
                                     playerRankInKingdom.put(rank, rankName);
                                 }
                             } catch (NumberFormatException ignored) {
