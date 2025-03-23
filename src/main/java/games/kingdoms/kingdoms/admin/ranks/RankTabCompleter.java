@@ -65,22 +65,6 @@ public class RankTabCompleter implements TabCompleter {
                     return rank;
                 }
             }
-
-            if (sender.hasPermission("kingdoms.setrank.default")
-                    || sender.hasPermission("kingdoms.setrank.vip")
-                    || sender.hasPermission("kingdoms.setrank.hero")
-                    || sender.hasPermission("kingdoms.setrank.youtube")
-                    || sender.hasPermission("kingdoms.setrank.jrmod")
-                    || sender.hasPermission("kingdoms.setrank.mod")
-                    || sender.hasPermission("kingdoms.setrank.srmod")
-                    || sender.hasPermission("kingdoms.setrank.jradmin")
-                    || sender.hasPermission("kingdoms.setrank.admin")) {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    List<String> online = new ArrayList<>();
-                    online.add(p.getName());
-                    return online;
-                }
-            }
         }
 
         if (args.length == 3) {
