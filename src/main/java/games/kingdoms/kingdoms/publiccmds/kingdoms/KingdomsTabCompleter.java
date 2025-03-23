@@ -23,10 +23,9 @@ public class KingdomsTabCompleter implements TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             return null;
         }
-        Player player = (Player) sender;
         if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
             List<String> invites = new ArrayList<>();
 
@@ -40,7 +39,6 @@ public class KingdomsTabCompleter implements TabCompleter {
 
             return invites;
         }
-
         return null;
     }
 }

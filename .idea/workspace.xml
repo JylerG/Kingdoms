@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/modmode/ModMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/modmode/ModMode.java" afterDir="false" />
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update Code">
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/KingdomsTabCompleter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -121,22 +118,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00053" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1723957746396</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1723957746397</updated>
-    </task>
-    <task id="LOCAL-00054" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1723959085992</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1723959085996</updated>
     </task>
     <task id="LOCAL-00055" summary="Update Code">
       <option name="closed" value="true" />
@@ -514,7 +495,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742684834772</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="fix inPlayersKingdomBoard() to display players' rank when they are in a claim owned by their kingdom">
+      <option name="closed" value="true" />
+      <created>1742699337285</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1742699337288</updated>
+    </task>
+    <task id="LOCAL-00103" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1742699365979</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1742699365979</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -526,7 +523,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Create .gitignore" />
     <MESSAGE value="Make admin/jradmin more visible when talking in staff chat" />
     <MESSAGE value="Make staff chat use a player's name instead of display name" />
     <MESSAGE value="Remove kingdoms plugin constructor" />
@@ -544,13 +540,14 @@
     <MESSAGE value="Update kickPlayerFromKingdom() for clarity" />
     <MESSAGE value="Update references to hashmaps for clarity" />
     <MESSAGE value="Make scoreboards use colors instead of displaying rank names" />
-    <MESSAGE value="Update Code" />
     <MESSAGE value="add max length for kingdom names" />
     <MESSAGE value="Update scoreboard to apply the color of the user's rank to their tablist appearance" />
     <MESSAGE value="Create plugin jar" />
     <MESSAGE value="Let the user know if any required plugins are not present on the server" />
     <MESSAGE value="Fix restoreOfflineData() to not register if there is no offline data to restore" />
     <MESSAGE value="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run" />
+    <MESSAGE value="fix inPlayersKingdomBoard() to display players' rank when they are in a claim owned by their kingdom" />
+    <MESSAGE value="Update Code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Code" />
   </component>
 </project>
