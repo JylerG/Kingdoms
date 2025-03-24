@@ -550,7 +550,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     // Ignore non-numeric keys
                 }
             }
-
         }
         //Coins
         Score coins = obj.getScore("Coins " + ChatColor.GOLD + formattedMoney);
@@ -1586,7 +1585,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 //                staffConfig.getConfig().set("rank." + rank.getKey(), rank.getValue());
 //            }
             saveData(staffConfig.getConfig(), staff, "staff.");
-            saveData(staffConfig.getConfig(), playerRankInKingdom, kingdoms.get(player.getUniqueId().toString()));
+            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, player.getUniqueId().toString() + ".");
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
         }
@@ -1616,7 +1615,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 //                staffConfig.getConfig().set("rank." + rank.getKey(), rank.getValue());
 //            }
             saveData(staffConfig.getConfig(), staff, "staff.");
-            saveData(staffConfig.getConfig(), playerRankInKingdom, kingdoms.get(offline.getUniqueId().toString()));
+            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, kingdoms.get(offline.getUniqueId().toString()));
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
         }

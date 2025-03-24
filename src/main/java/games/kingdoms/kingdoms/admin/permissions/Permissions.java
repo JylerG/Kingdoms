@@ -26,7 +26,7 @@ public class Permissions implements CommandExecutor {
                     player.sendMessage(ChatColor.GOLD + "ECONOMY");
                     player.sendMessage(ChatColor.GOLD + "GAMEMODE");
                     player.sendMessage(ChatColor.GOLD + "NICKNAME");
-                    player.sendMessage(ChatColor.RED + "/view <category> " +
+                    player.sendMessage(ChatColor.GREEN + "/view <category> " +
                             ChatColor.LIGHT_PURPLE + "to view a category");
                 } else if (args.length == 1) {
                     if (args[0].equalsIgnoreCase("rank")) {
