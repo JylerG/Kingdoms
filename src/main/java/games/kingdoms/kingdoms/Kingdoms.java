@@ -1532,17 +1532,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
         saveData(moneyConfig.getConfig(), money, "balance.");
         saveData(staffConfig.getConfig(), playerRank, "rank.");
-//            for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-//                staffConfig.getConfig().set("rank." + rank.getKey(), rank.getValue());
-//            }
         saveData(staffConfig.getConfig(), staff, "staff.");
         saveData(staffConfig.getConfig(), chatFocus, "focus.");
         saveData(staffConfig.getConfig(), passwords, "passwords.");
         // Ensure the player has a valid kingdom before saving their rank
         String kingdomName = kingdoms.get(player.getUniqueId().toString());
 
-        if (kingdomName != null && !kingdomName.isEmpty() && !kingdomName.equalsIgnoreCase("null")) {
-            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, player.getUniqueId().toString() + ".");
+        if (kingdomName != null && !kingdomName.isEmpty()) {
+            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
         } else {
             MessageManager.consoleBad("Skipping save for " + player.getUniqueId() + " due to null or empty kingdom.");
         }
@@ -1579,8 +1576,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             // Ensure the player has a valid kingdom before saving their rank
             String kingdomName = kingdoms.get(player.getUniqueId().toString());
 
-            if (kingdomName != null && !kingdomName.isEmpty() && !kingdomName.equalsIgnoreCase("null")) {
-                saveData(kingdomsConfig.getConfig(), playerRankInKingdom, player.getUniqueId().toString() + ".");
+            if (kingdomName != null && !kingdomName.isEmpty()) {
+                saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
             } else {
                 MessageManager.consoleBad("Skipping save for " + player.getUniqueId() + " due to null or empty kingdom.");
             }
@@ -1616,7 +1613,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             // Ensure the player has a valid kingdom before saving their rank
             String kingdomName = kingdoms.get(offline.getUniqueId().toString());
 
-            if (kingdomName != null && !kingdomName.isEmpty() && !kingdomName.equalsIgnoreCase("null")) {
+            if (kingdomName != null && !kingdomName.isEmpty()) {
                 saveData(kingdomsConfig.getConfig(), playerRankInKingdom, offline.getUniqueId().toString() + ".");
             } else {
                 MessageManager.consoleBad("Skipping save for " + offline.getUniqueId() + " due to null or empty kingdom.");
