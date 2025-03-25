@@ -40,7 +40,6 @@ import games.kingdoms.kingdoms.publiccmds.chats.ChatCMD;
 import games.kingdoms.kingdoms.publiccmds.chats.ChatListener;
 import games.kingdoms.kingdoms.publiccmds.chats.ChatTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.easter.EasterCommand;
-import games.kingdoms.kingdoms.publiccmds.help.HelpCommand;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChat;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
@@ -66,7 +65,6 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -423,24 +421,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         schematicsManager = new SchematicsManager();
     }
 
-    private static class CommandWrapper extends org.bukkit.command.Command {
-
-        private final CommandExecutor executor;
-
-        protected CommandWrapper(String name, CommandExecutor executor) {
-            super(name);
-            this.executor = executor;
-        }
-
-        @Override
-        public boolean execute(@NotNull CommandSender sender, @NotNull String label, String[] args) {
-            if (executor != null) {
-                return executor.onCommand(sender, this, label, args);
-            }
-            return false;
-        }
-    }
-
     private void registerCommand(String commandName, CommandExecutor executor) {
         try {
             // Get the command map
@@ -490,7 +470,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private void help() {
 //        unregisterCommand("?");
 //        unregisterCommand("help");
-        registerCommand("help", new HelpCommand());
+//        registerCommand("help", new HelpCommand());
     }
 
     private void rank() {
@@ -1150,11 +1130,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                         this.bannedNames.put(key, bannedNames);
                     });
                 }
-                if (kc.getNode(player.getUniqueId().toString()).exists()) {
-                    kc.getNode(player.getUniqueId().toString()).getKeys(false).forEach(key -> {
-                        String value = kc.getNode(player.getUniqueId().toString() + "." + key).toPrimitive().getString();
-                        this.playerRankInKingdom.put(Integer.valueOf(key), value);
-                    });
+                if (kc.getNode(player.getUniqueId().toString()) != null) {
+                    if (kc.getNode(player.getUniqueId().toString()).exists()) {
+                        kc.getNode(player.getUniqueId().toString()).getKeys(false).forEach(key -> {
+                            String value = kc.getNode(player.getUniqueId().toString() + "." + key).toPrimitive().getString();
+                            this.playerRankInKingdom.put(Integer.valueOf(key), value);
+                        });
+                    }
                 }
                 if (kc.getNode("invites").getNode(player.getUniqueId().toString()).exists()) {
                     kc.getNode("invites").getKeys(false).forEach(key -> {

@@ -51,29 +51,6 @@ public class KingdomUpgradeListener implements Listener {
                     }
                     break;
             }
-        } else if (event.getView().getTitle().equalsIgnoreCase(ChatColor.DARK_GRAY.toString() + kingdoms.get(player.getUniqueId().toString()))) {
-            event.setCancelled(true);
-            switch (event.getCurrentItem().getType()) {
-                //TODO: Make a skull with a wood/question mark on it to go back to the main page
-                case IRON_SWORD:
-                    //TODO: Implement this when ready to add raids into the game
-                    break;
-                case WHITE_BED:
-                    //TODO: kingdom set (right click)/goto (left click) spawn
-                    break;
-                case GOLD_BLOCK:
-                    //TODO: go to rank page
-                    break;
-                case WITHER_SKELETON_SKULL:
-                    //TODO: figure out what this is
-                    break;
-                case COBBLESTONE_WALL:
-                    //TODO: figure out what this is
-                    break;
-                case TNT:
-                    //TODO: figure out what this is
-                    break;
-            }
         }
     }
 }
