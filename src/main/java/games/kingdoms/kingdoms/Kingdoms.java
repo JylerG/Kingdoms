@@ -1124,6 +1124,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public void restorePluginData() {
 
+        //todo: set up restore methods for playerRanks, kingdomRanks, playerRank, spyOnKingdom
+
         for (Player player : Bukkit.getOnlinePlayers()) {
 
             Configurable kc = kingdomsConfig.getConfig();
@@ -1250,6 +1252,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void restoreOfflineData() {
+
+        //todo: set up restore methods for playerRanks, kingdomRanks, playerRank, spyOnKingdom
+
         for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
 
             Configurable kc = kingdomsConfig.getConfig();
@@ -1383,6 +1388,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     public void restorePluginData(Player player) {
+
+        //todo: set up restore methods for playerRanks, kingdomRanks, playerRank, spyOnKingdom
 
         Configurable kc = kingdomsConfig.getConfig();
         Configurable sc = staffConfig.getConfig();
@@ -1553,6 +1560,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
         saveData(staffConfig.getConfig(), chatFocus, "focus.");
         saveData(staffConfig.getConfig(), passwords, "passwords.");
+        saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
         // Ensure the player has a valid kingdom before saving their rank
         String kingdomName = kingdoms.get(player.getUniqueId().toString());
 
@@ -1590,6 +1598,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
+            saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
             // Ensure the player has a valid kingdom before saving their rank
             String kingdomName = kingdoms.get(player.getUniqueId().toString());
 
@@ -1626,6 +1635,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
+            saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
             // Ensure the player has a valid kingdom before saving their rank
             String kingdomName = kingdoms.get(offline.getUniqueId().toString());
 

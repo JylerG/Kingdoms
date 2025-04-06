@@ -47,6 +47,7 @@ public class KingdomsCommands implements CommandExecutor {
     final HashMap<String, Integer> memberPrice = plugin.getMemberPrice();
     final HashMap<String, Location> kingdomSpawn = plugin.getKingdomSpawn();
     final HashMap<String, String> staff = plugin.getStaff();
+    final HashMap<String, String> spyOnKingdom = plugin.getSpyOnKingdom();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -473,7 +474,7 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        kingdoms.put(player.getUniqueId().toString(), kingdom);
+        spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
     }
 
     private void unWatchKingdom(Player player, String kingdom) {
@@ -485,7 +486,7 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        kingdoms.remove(player.getUniqueId().toString(), kingdom);
+        spyOnKingdom.remove(player.getUniqueId().toString(), kingdom);
     }
 
     private void kickPlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {

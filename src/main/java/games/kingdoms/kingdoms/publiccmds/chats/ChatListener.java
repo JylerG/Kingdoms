@@ -22,6 +22,7 @@ public class ChatListener implements Listener {
     final HashMap<String, String> kingdoms = plugin.getKingdoms();
     final Map<String, String> playerRank = plugin.getPlayerRank();
     final HashMap<String, String> staff = plugin.getStaff();
+    final HashMap<String, String> spyOnKingdom = plugin.getSpyOnKingdom();
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
@@ -168,7 +169,9 @@ public class ChatListener implements Listener {
                 String playerKingdom = kingdoms.get(player.getUniqueId().toString());
 
                 if (kingdoms.containsKey(p.getUniqueId().toString())) {
-                    if (onlinePlayerKingdom.equals(playerKingdom)) {
+                    if (onlinePlayerKingdom.equals(playerKingdom)
+                            || (spyOnKingdom.containsKey(p.getUniqueId().toString())
+                            && spyOnKingdom.get(p.getUniqueId().toString()).equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString())))) {
                         p.sendMessage(event.getFormat());
                     }
                 }
