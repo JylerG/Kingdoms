@@ -1,10 +1,11 @@
 package games.kingdoms.kingdoms;
 
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandWrapper extends org.bukkit.command.Command {
+public class CommandWrapper extends Command {
 
     private final CommandExecutor executor;
 

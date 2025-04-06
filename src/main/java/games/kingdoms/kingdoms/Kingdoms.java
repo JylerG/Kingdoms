@@ -103,6 +103,8 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, Integer> customRank = new HashMap<>();
     private HashMap<String, Integer> kingdomRank = new HashMap<>();
     private HashMap<Integer, String> playerRankInKingdom = new HashMap<>();
+    private HashMap<String, Integer> playerRanks = new HashMap<>();
+    private HashMap<String, String> spyOnKingdom = new HashMap<>();
     final ArrayList<Player> invisiblePlayers = new ArrayList<>();
     private ArrayList<Player> modModePlayers = new ArrayList<>();
     private HashMap<String, String> claims = new HashMap<>();
@@ -110,6 +112,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     private HashMap<String, Integer> memberPrice = new HashMap<>();
     private HashMap<String, String> bannedNames = new HashMap<>();
     private HashMap<String, String> playerRank = new HashMap<>();
+    private HashMap<String, HashMap<Integer, String>> kingdomRanks = new HashMap<>();
     private HashMap<String, String> passwords = new HashMap<>();
     private HashMap<String, String> chatFocus = new HashMap<>();
     private HashMap<String, String> inviteList = new HashMap<>();
@@ -161,23 +164,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             setupChat();
             plugin = this;
             pjl = new PlayerJoinListener();
-            punishmentConfig = new PunishmentConfig(this);
-            kingdomsConfig = new KingdomsConfig(this);
-            moneyConfig = new MoneyConfig(this);
-            staffConfig = new StaffConfig(this);
 
-            if (!punishmentConfig.getConfig().exists()) {
-                punishmentConfig.setup();
-            }
-            if (!kingdomsConfig.getConfig().exists()) {
-                kingdomsConfig.setup();
-            }
-            if (!staffConfig.getConfig().exists()) {
-                staffConfig.setup();
-            }
-            if (!moneyConfig.getConfig().exists()) {
-                moneyConfig.setup();
-            }
+            configInit();
+
+            //Set up initial configs
+            setupConfigs();
 
             //Initialize ArrayLists and HashMaps
             initMapList();
@@ -197,24 +188,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         } catch (UnknownDependencyException e) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!isPluginLoaded("ProtocolLib")) {
-                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                        p.sendMessage(ChatColor.GOLD + "ProtocolLib" + ChatColor.RED + " is not installed on this server");
-                    }
+                    MessageManager.consoleBad("ProtocolLib is not installed on this server");
                 }
                 if (!isPluginLoaded("Labyrinth")) {
-                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                        p.sendMessage(ChatColor.GOLD + "Labyrinth" + ChatColor.RED + " is not installed on this server");
-                    }
+                    MessageManager.consoleBad("Labyrinth is not installed on this server");
                 }
                 if (!isPluginLoaded("Vault")) {
-                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                        p.sendMessage(ChatColor.GOLD + "Vault" + ChatColor.RED + " is not installed on this server");
-                    }
-                }
-                if (!isPluginLoaded("Citizens")) {
-                    if (staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN") || p.isOp()) {
-                        p.sendMessage(ChatColor.GOLD + "Citizens" + ChatColor.RED + " is not installed on this server");
-                    }
+                    MessageManager.consoleBad("Vault is not installed on this server");
                 }
             }
         }
@@ -244,6 +224,27 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             chat = rsp.getProvider();
         }
         return chat != null;
+    }
+
+    private void configInit() {
+        punishmentConfig = new PunishmentConfig(this);
+        kingdomsConfig = new KingdomsConfig(this);
+        moneyConfig = new MoneyConfig(this);
+        staffConfig = new StaffConfig(this);
+    }
+    private void setupConfigs() {
+        if (!punishmentConfig.getConfig().exists()) {
+            punishmentConfig.setup();
+        }
+        if (!kingdomsConfig.getConfig().exists()) {
+            kingdomsConfig.setup();
+        }
+        if (!staffConfig.getConfig().exists()) {
+            staffConfig.setup();
+        }
+        if (!moneyConfig.getConfig().exists()) {
+            moneyConfig.setup();
+        }
     }
 
     private void commands() {
@@ -312,8 +313,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         playerToPunish = new HashMap<>();
 
         playerRankInKingdom = new HashMap<>();
+        playerRanks = new HashMap<>();
         kingdomRank = new HashMap<>();
         chatFocus = new HashMap<>();
+        kingdomRanks = new HashMap<>();
+        spyOnKingdom = new HashMap<>();
         money = new HashMap<>();
         passwords = new HashMap<>();
         modModePlayers = new ArrayList<>();
@@ -1002,6 +1006,18 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return kingdoms;
     }
 
+    public HashMap<String, HashMap<Integer, String>> getKingdomRanks() {
+        return kingdomRanks;
+    }
+
+    public HashMap<String, Integer> getPlayerRanks() {
+        return playerRanks;
+    }
+
+    public HashMap<String, String> getSpyOnKingdom() {
+        return spyOnKingdom;
+    }
+
     public HashMap<String, Integer> getKingdomRank() {
         return kingdomRank;
     }
@@ -1532,7 +1548,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
         saveData(moneyConfig.getConfig(), money, "balance.");
         saveData(staffConfig.getConfig(), playerRank, "rank.");
+        saveData(kingdomsConfig.getConfig(), kingdomRanks, "RanksInKingdoms");
         saveData(staffConfig.getConfig(), staff, "staff.");
+        saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
         saveData(staffConfig.getConfig(), chatFocus, "focus.");
         saveData(staffConfig.getConfig(), passwords, "passwords.");
         // Ensure the player has a valid kingdom before saving their rank
@@ -1541,7 +1559,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         if (kingdomName != null && !kingdomName.isEmpty()) {
             saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
         } else {
-            MessageManager.consoleBad("Skipping save for " + player.getUniqueId() + " due to null or empty kingdom.");
+            MessageManager.consoleBad("Skipping save for " + player.getName() + " due to null or empty kingdom.");
         }
     }
 
@@ -1567,10 +1585,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
             saveData(moneyConfig.getConfig(), money, "balance.");
             saveData(staffConfig.getConfig(), playerRank, "rank.");
-//            for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-//                staffConfig.getConfig().set("rank." + rank.getKey(), rank.getValue());
-//            }
+            saveData(kingdomsConfig.getConfig(), kingdomRanks, "RanksInKingdoms");
             saveData(staffConfig.getConfig(), staff, "staff.");
+            saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
             // Ensure the player has a valid kingdom before saving their rank
@@ -1579,7 +1596,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             if (kingdomName != null && !kingdomName.isEmpty()) {
                 saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
             } else {
-                MessageManager.consoleBad("Skipping save for " + player.getUniqueId() + " due to null or empty kingdom.");
+                MessageManager.consoleBad("Skipping save for " + player.getName() + " due to null or empty kingdom.");
             }
         }
 
@@ -1604,19 +1621,18 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
             saveData(moneyConfig.getConfig(), money, "balance.");
             saveData(staffConfig.getConfig(), playerRank, "rank.");
-//            for (Map.Entry<String, String> rank : playerRank.entrySet()) {
-//                staffConfig.getConfig().set("rank." + rank.getKey(), rank.getValue());
-//            }
+            saveData(kingdomsConfig.getConfig(), kingdomRanks, "RanksInKingdoms");
             saveData(staffConfig.getConfig(), staff, "staff.");
+            saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
             // Ensure the player has a valid kingdom before saving their rank
             String kingdomName = kingdoms.get(offline.getUniqueId().toString());
 
             if (kingdomName != null && !kingdomName.isEmpty()) {
-                saveData(kingdomsConfig.getConfig(), playerRankInKingdom, offline.getUniqueId().toString() + ".");
+                saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + offline.getUniqueId().toString() + ".");
             } else {
-                MessageManager.consoleBad("Skipping save for " + offline.getUniqueId() + " due to null or empty kingdom.");
+                MessageManager.consoleBad("Skipping save for " + offline.getName() + " due to null or empty kingdom.");
             }
         }
     }

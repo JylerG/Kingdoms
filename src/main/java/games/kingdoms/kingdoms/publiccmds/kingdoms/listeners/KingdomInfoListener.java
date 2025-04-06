@@ -78,70 +78,70 @@ public class KingdomInfoListener implements Listener {
                         Configurable kc = KingdomsConfig.getInstance().getConfig();
 
                         // Create a map to store player UUID and their respective rank
-                        Map<String, Integer> playerRanks = new HashMap<>();
+                        HashMap<String, Integer> playerRanks = plugin.getPlayerRanks();
 
                         // Fetch online players in the kingdom
-                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                            if (kingdom.equals(kingdoms.get(onlinePlayer.getUniqueId().toString()))) {
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            if (kingdom.equals(kingdoms.get(p.getUniqueId().toString()))) {
                                 // Retrieve the rank from the configuration
-                                int playerRank = getPlayerRank(onlinePlayer.getUniqueId());
+                                int playerRank = getPlayerRank(p.getUniqueId().toString());
 
                                 // Store the player's UUID and rank in the map
-                                playerRanks.put(onlinePlayer.getUniqueId().toString(), playerRank);
+                                playerRanks.put(p.getUniqueId().toString(), playerRank);
                             }
                         }
 
-                        // Fetch offline players in the kingdom
-                        kc.getNode(kingdom).getKeys(false).forEach(key -> {
-                            UUID playerUUID = UUID.fromString(key);  // Convert key to UUID
-                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
+                        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+                            // Fetch offline players in the kingdom
+                            kc.getNode(kingdom).getKeys(false).forEach(key -> {
+                                UUID playerUUID = UUID.fromString(key);  // Convert key to UUID
 
-                            // Retrieve the rank from the configuration
-                            int playerRank = getPlayerRank(offlinePlayer.getUniqueId());
+                                // Retrieve the rank from the configuration
+                                int playerRank = getPlayerRank(offline.getUniqueId().toString());
 
-                            // Store the player's UUID and rank in the map
-                            playerRanks.put(offlinePlayer.getUniqueId().toString(), playerRank);
-                        });
+                                // Store the player's UUID and rank in the map
+                                playerRanks.put(offline.getUniqueId().toString(), playerRank);
+                            });
 
-                        // Sort the player ranks based on the integer rank value
-                        List<Map.Entry<String, Integer>> sortedRanks = new ArrayList<>(playerRanks.entrySet());
-                        sortedRanks.sort(Comparator.comparingInt(Map.Entry::getValue));
+                            // Sort the player ranks based on the integer rank value
+                            List<Map.Entry<String, Integer>> sortedRanks = new ArrayList<>(playerRanks.entrySet());
+                            sortedRanks.sort(Comparator.comparingInt(Map.Entry::getValue));
 
-                        // Create the inventory and place the player heads based on rank
-                        int slot = 0;
-                        for (Map.Entry<String, Integer> entry : sortedRanks) {
-                            String playerUUID = entry.getKey();
-                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
+                            // Create the inventory and place the player heads based on rank
+                            int slot = 0;
+                            for (Map.Entry<String, Integer> entry : sortedRanks) {
+                                String playerUUID = entry.getKey();
+                                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
 
-                            // Create the player head item
-                            ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
-                            SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
+                                // Create the player head item
+                                ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
+                                SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
 
-                            if (skullMeta != null) {
-                                // For online players, set OwningPlayer using PlayerProfile
-                                if (Bukkit.getPlayer(playerUUID) != null) {
-                                    Player onlinePlayer = Bukkit.getPlayer(playerUUID);
-                                    PlayerProfile profile = onlinePlayer.getPlayerProfile(); // Get PlayerProfile
+                                if (skullMeta != null) {
+                                    // For online players, set OwningPlayer using PlayerProfile
+                                    if (Bukkit.getPlayer(playerUUID) != null) {
+                                        Player onlinePlayer = Bukkit.getPlayer(playerUUID);
+                                        PlayerProfile profile = onlinePlayer.getPlayerProfile(); // Get PlayerProfile
 
-                                    // Set the player's head using the profile
-                                    skullMeta.setOwningPlayer(onlinePlayer);  // This uses the PlayerProfile internally
-                                } else {
-                                    // For offline players, use the OfflinePlayer object
-                                    skullMeta.setOwningPlayer(offlinePlayer);  // Offline player handling
+                                        // Set the player's head using the profile
+                                        skullMeta.setOwningPlayer(onlinePlayer);  // This uses the PlayerProfile internally
+                                    } else {
+                                        // For offline players, use the OfflinePlayer object
+                                        skullMeta.setOwningPlayer(offlinePlayer);  // Offline player handling
+                                    }
+                                    playerHead.setItemMeta(skullMeta); // Apply the meta to the skull item
                                 }
-                                playerHead.setItemMeta(skullMeta); // Apply the meta to the skull item
+
+                                // Place the skull in the next available slot
+                                if (slot < rank.getSize()) {
+                                    rank.setItem(slot, playerHead);
+                                    slot++; // Increment the slot for the next player
+                                }
                             }
 
-                            // Place the skull in the next available slot
-                            if (slot < rank.getSize()) {
-                                rank.setItem(slot, playerHead);
-                                slot++; // Increment the slot for the next player
-                            }
+                            // Send the inventory to the player
+                            player.openInventory(rank);
                         }
-
-                        // Send the inventory to the player
-                        player.openInventory(rank);
-
                     }
                     break;
                 case WITHER_SKELETON_SKULL:
@@ -160,14 +160,14 @@ public class KingdomInfoListener implements Listener {
     }
 
     // Method to get the player's rank (you'll need to implement the logic for fetching the rank)
-    private int getPlayerRank(UUID playerUUID) {
+    private int getPlayerRank(String UUID) {
         // Replace this with your logic to fetch the player's rank
         // Find the rank integer stored under the player's UUID
         int playerRank = -1;
-        for (String key : KingdomsConfig.getInstance().getConfig().getNode(String.valueOf(playerUUID)).getKeys(false)) {
+        for (String key : KingdomsConfig.getInstance().getConfig().getNode(UUID).getKeys(false)) {
             try {
                 playerRank = Integer.parseInt(key);
-                MessageManager.consoleInfo("Key in getPlayerRank(UUID playerUUID): " + key + " (" + playerRank + ")");
+                MessageManager.consoleInfo("Key in getPlayerRank(String UUID): " + key + " (" + playerRank + ")");
                 break; // Stop at the first found rank
             } catch (NumberFormatException ignored) {
                 // Ignore non-numeric keys

@@ -32,6 +32,8 @@ public class KingdomsCommands implements CommandExecutor {
     final Configurable kc = KingdomsConfig.getInstance().getConfig();
     //HashMaps
     final HashMap<String, String> bannedNames = plugin.getBannedNames();
+    final HashMap<String, HashMap<Integer, String>> kingdomRanks = plugin.getKingdomRanks();
+    final HashMap<String, Integer> playerRanks = plugin.getPlayerRanks();
     final HashMap<String, String> kingdoms = plugin.getKingdoms();
     final HashMap<String, Integer> customRank = plugin.getCustomRank();
     final HashMap<String, Integer> maxMembers = plugin.getMaxMembers();
@@ -44,6 +46,7 @@ public class KingdomsCommands implements CommandExecutor {
     final HashMap<String, String> inviteList = plugin.getInviteList();
     final HashMap<String, Integer> memberPrice = plugin.getMemberPrice();
     final HashMap<String, Location> kingdomSpawn = plugin.getKingdomSpawn();
+    final HashMap<String, String> staff = plugin.getStaff();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -161,8 +164,13 @@ public class KingdomsCommands implements CommandExecutor {
                     transferKingdom(player, target, kingdom, args);
                 }
                 plugin.savePluginData();
+                if (args[0].equalsIgnoreCase("spy") || args[0].equalsIgnoreCase("watch")) {
+                    watchKingdom(player, kingdom);
+                }
+                if (args[0].equalsIgnoreCase("unspy") || args[0].equalsIgnoreCase("unwatch")) {
+                    unWatchKingdom(player, kingdom);
+                }
                 break;
-
         }
         return true;
     }
@@ -456,6 +464,30 @@ public class KingdomsCommands implements CommandExecutor {
         target.sendMessage(player.getName() + ChatColor.GREEN + " transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to you");
     }
 
+    private void watchKingdom(Player player, String kingdom) {
+        if (!staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+            return;
+        }
+
+        kingdoms.put(player.getUniqueId().toString(), kingdom);
+    }
+
+    private void unWatchKingdom(Player player, String kingdom) {
+        if (!staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+            return;
+        }
+
+        kingdoms.remove(player.getUniqueId().toString(), kingdom);
+    }
+
     private void kickPlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
         String playerUUID = player.getUniqueId().toString();
         String targetUUID = target.getUniqueId().toString();
@@ -689,7 +721,13 @@ public class KingdomsCommands implements CommandExecutor {
         // Count current members in the kingdom
         int memberCount = 0;
         String kingdomName = args[1];
-        for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
+        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+            String playerKingdom = kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString();
+            if (kingdomName.equalsIgnoreCase(playerKingdom)) {
+                memberCount++;
+            }
+        }
+        for (Player p : Bukkit.getOnlinePlayers()) {
             String playerKingdom = kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString();
             if (kingdomName.equalsIgnoreCase(playerKingdom)) {
                 memberCount++;
@@ -711,7 +749,7 @@ public class KingdomsCommands implements CommandExecutor {
                     int rank = Integer.parseInt(key); // Convert rank key to integer
                     if (rank > highestRank) {
                         highestRank = rank;
-                        highestRankName = kc.getNode(kingdomName + "." + key).toPrimitive().getString(); // Get rank name
+                        highestRankName = kc.getNode("kingdoms. " + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
                     }
                 } catch (NumberFormatException ignored) {
                     // Skip non-numeric keys
@@ -724,8 +762,9 @@ public class KingdomsCommands implements CommandExecutor {
                 return;
             }
 
-            // Assign the player to the kingdom with the highest rank
+            // Assign the player to the kingdom with the largest numerical rank
             playerRankInKingdom.put(highestRank, highestRankName);
+            playerRanks.put(player.getUniqueId().toString(), highestRank);
             kingdoms.put(playerUUID, kingdomName);
 
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group add " + kingdom + 8);
@@ -733,7 +772,6 @@ public class KingdomsCommands implements CommandExecutor {
 
             player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + kingdomName);
         }
-
     }
 
     private void uninvitePlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
@@ -883,12 +921,15 @@ public class KingdomsCommands implements CommandExecutor {
         //Group "8" permissions todo: can be ignored as group 8 won't have any permissions when the kingdom is initially created
 
         config.set(player.getUniqueId().toString() + "." + 1, "King");
-        config.set(kingdom + "." + 1, "King");
-        config.set(kingdom + "." + 2, "Lord");
-        config.set(kingdom + "." + 4, "Knight");
-        config.set(kingdom + "." + 7, "Citizen");
-        config.set(kingdom + "." + 8, "Peasant");
-        config.save();
+        //todo: This part is solely for creating roles and putting them in hierarchical order
+        HashMap<Integer, String> ranks = new HashMap<>();
+        ranks.put(1, "King");
+        ranks.put(2, "Lord");
+        ranks.put(4, "Knight");
+        ranks.put(7, "Citizen");
+        ranks.put(8, "Peasant");
+        kingdomRanks.put(args[1], ranks);
+        playerRanks.put(player.getUniqueId().toString(), 1);
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group add " + kingdom + 1);
 
