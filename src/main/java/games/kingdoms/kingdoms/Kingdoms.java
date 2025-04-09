@@ -504,6 +504,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     //Player is in a chunk of the kingdom they are in
+    //todo: figure out why this throws errors if a user is a member of the kingdom that owns the chunk
     public void inPlayersKingdomBoard(Player player, Chunk chunk) {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
