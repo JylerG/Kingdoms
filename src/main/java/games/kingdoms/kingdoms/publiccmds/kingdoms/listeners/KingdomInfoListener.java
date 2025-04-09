@@ -94,8 +94,6 @@ public class KingdomInfoListener implements Listener {
                         for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
                             // Fetch offline players in the kingdom
                             kc.getNode(kingdom).getKeys(false).forEach(key -> {
-                                UUID playerUUID = UUID.fromString(key);  // Convert key to UUID
-
                                 // Retrieve the rank from the configuration
                                 int playerRank = getPlayerRank(offline.getUniqueId().toString());
 
