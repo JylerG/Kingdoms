@@ -1147,8 +1147,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             if (kc != null) {
                 if (kc.getNode("players").exists()) {
+                    //key = player's uuid as string
                     kc.getNode("players").getKeys(false).forEach(key -> {
-                        int rank = Integer.parseInt(kc.getNode("players").getNode(player.getUniqueId().toString()).toPrimitive().getString());
+                        int rank = kc.getNode("players." + key).toPrimitive().getInt();
                         playerRanks.put(key, rank);
                         playerRankInKingdom.put(rank, key);
                     });
@@ -1472,9 +1473,12 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         if (kc != null) {
             if (kc.getNode("players").exists()) {
                 kc.getNode("players").getKeys(false).forEach(key -> {
-                    int rank = Integer.parseInt(kc.getNode("players").getNode(player.getUniqueId().toString()).toPrimitive().getString());
-                    playerRanks.put(key, rank);
-                    playerRankInKingdom.put(rank, key);
+                    try {
+                        int rankNum = kc.getNode("players." + key).toPrimitive().getInt();
+                        playerRanks.put(key, rankNum);
+                        playerRankInKingdom.put(rankNum, key);
+                    } catch (NumberFormatException ignored) {
+                    }
                 });
             }
             if (kc.getNode("bannedNames").exists()) {
@@ -1625,18 +1629,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
         saveData(moneyConfig.getConfig(), money, "balance.");
         saveData(staffConfig.getConfig(), playerRank, "rank.");
-        saveData(kingdomsConfig.getConfig(), kingdomRanks, "ranksInKingdoms.");
+        saveDataWithNestedMap(kingdomsConfig.getConfig(), kingdomRanks, "ranksInKingdoms.");
         saveData(staffConfig.getConfig(), staff, "staff.");
         saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
         saveData(staffConfig.getConfig(), chatFocus, "focus.");
         saveData(staffConfig.getConfig(), passwords, "passwords.");
         saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
-        // Ensure the player has a valid kingdom before saving their rank
-        String kingdomName = kingdoms.get(player.getUniqueId().toString());
-
-        if (kingdomName != null && !kingdomName.isEmpty()) {
-            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
-        }
+        saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
     }
 
     public void savePluginData() {
@@ -1661,18 +1660,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
             saveData(moneyConfig.getConfig(), money, "balance.");
             saveData(staffConfig.getConfig(), playerRank, "rank.");
-            saveData(kingdomsConfig.getConfig(), kingdomRanks, "ranksInKingdoms.");
+            saveDataWithNestedMap(kingdomsConfig.getConfig(), kingdomRanks, "ranksInKingdoms.");
             saveData(staffConfig.getConfig(), staff, "staff.");
             saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
             saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
-            // Ensure the player has a valid kingdom before saving their rank
-            String kingdomName = kingdoms.get(player.getUniqueId().toString());
-
-            if (kingdomName != null && !kingdomName.isEmpty()) {
-                saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
-            }
+            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
         }
 
         for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
@@ -1696,18 +1690,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(kingdomsConfig.getConfig(), claimPrice, "claimPrice.");
             saveData(moneyConfig.getConfig(), money, "balance.");
             saveData(staffConfig.getConfig(), playerRank, "rank.");
-            saveData(kingdomsConfig.getConfig(), kingdomRanks, "ranksInKingdoms.");
+            saveDataWithNestedMap(kingdomsConfig.getConfig(), kingdomRanks, "ranksInKingdoms.");
             saveData(staffConfig.getConfig(), staff, "staff.");
             saveData(kingdomsConfig.getConfig(), playerRanks, "players.");
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
             saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
-            // Ensure the player has a valid kingdom before saving their rank
-            String kingdomName = kingdoms.get(offline.getUniqueId().toString());
-
-            if (kingdomName != null && !kingdomName.isEmpty()) {
-                saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + offline.getUniqueId().toString() + ".");
-            }
+            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + offline.getUniqueId().toString() + ".");
         }
     }
 
@@ -1716,6 +1705,28 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             for (Map.Entry<K, V> entry : data.entrySet()) {
                 if (entry.getKey() != null && !entry.getKey().toString().trim().isEmpty()) { // Check for empty or null keys
                     config.set(pathPrefix + entry.getKey(), entry.getValue()); // Ensure value is a string
+                }
+            }
+            config.save();
+        }
+    }
+
+    private void saveDataWithNestedMap(Configurable config, Map<String, HashMap<Integer, String>> data, String pathPrefix) {
+        if (data != null && !data.isEmpty() && config != null) {
+            for (Map.Entry<String, HashMap<Integer, String>> entry : data.entrySet()) {
+                String key = entry.getKey();
+                HashMap<Integer, String> innerMap = entry.getValue();
+
+                if (key != null && !key.trim().isEmpty()) { // Check for empty or null keys
+                    // Iterate over the inner map
+                    for (Map.Entry<Integer, String> innerEntry : innerMap.entrySet()) {
+                        Integer innerKey = innerEntry.getKey();
+                        String innerValue = innerEntry.getValue();
+
+                        if (innerKey != null && innerValue != null && !innerValue.trim().isEmpty()) { // Check for empty or null values
+                            config.set(pathPrefix + key + "." + innerKey, innerValue); // Save nested data
+                        }
+                    }
                 }
             }
             config.save();
