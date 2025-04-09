@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -26,8 +25,30 @@ public class Password implements CommandExecutor, Listener {
     final Map<String, String> playersRank = plugin.getPlayerRank();
     boolean passwordEntered;
 
-    static final Pattern PASSWORD_PATTERN =
-            Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\\$%\\^&\\*\\-\\_]).{5,}$");
+    private static final Pattern DIGIT = Pattern.compile(".*[0-9].*");
+    private static final Pattern LOWERCASE = Pattern.compile(".*[a-z].*");
+    private static final Pattern UPPERCASE = Pattern.compile(".*[A-Z].*");
+    private static final Pattern SYMBOL = Pattern.compile(".*[!@#\\$%\\^&\\*\\-\\_].*");
+    private static final int MIN_LENGTH = 5;
+
+    public void promptPasswordRequirements(Player player, String attemptedPassword) {
+        String msg = ChatColor.GREEN + "Please enter your new password\n" +
+                "Use " + ChatColor.WHITE + "/password <your new password>\n" +
+                ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
+                formatRequirement(attemptedPassword.length() >= MIN_LENGTH, "At least 5 Characters") +
+                formatRequirement(DIGIT.matcher(attemptedPassword).matches(), "Contains Numbers") +
+                formatRequirement(UPPERCASE.matcher(attemptedPassword).matches(), "Contains Uppercase Letters") +
+                formatRequirement(LOWERCASE.matcher(attemptedPassword).matches(), "Contains Lowercase Letters") +
+                formatRequirement(SYMBOL.matcher(attemptedPassword).matches(), "Contains Symbols") +
+                ChatColor.DARK_AQUA + "Please enter a valid password";
+
+        player.sendMessage(msg);
+    }
+
+    private String formatRequirement(boolean met, String requirement) {
+        return (met ? ChatColor.GREEN + "✔ " : ChatColor.RED + "✘ ") + ChatColor.YELLOW + requirement + "\n";
+    }
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
@@ -135,8 +156,6 @@ public class Password implements CommandExecutor, Listener {
         }
 
         UUID playerUUID = player.getUniqueId();
-
-        // Fetch the rank once and reuse it
         String rank = plugin.getPlayerRank().get(playerUUID.toString());
 
         if (rank == null) {
@@ -144,33 +163,31 @@ public class Password implements CommandExecutor, Listener {
             return true;
         }
 
-        // Check player's rank
         boolean isJrMod = rank.equalsIgnoreCase(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + Rank.JRMOD);
         boolean isMod = rank.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD + Rank.MOD);
         boolean isSrMod = rank.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD + Rank.SRMOD);
         boolean isJrAdmin = rank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.JRADMIN);
         boolean isAdmin = rank.equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD + Rank.ADMIN);
 
-        // Allow movement if the player has the permission "kingdoms.move"
+        // Allow movement if player already has permission
         if ((!isJrMod && !isMod && !isSrMod && !isJrAdmin && !isAdmin) && player.hasPermission("kingdoms.move")) {
             return true;
         }
 
-        // Handle password reset for other players
+        // Handle password reset
         if (args.length == 2 && args[0].equalsIgnoreCase("reset")) {
             Player target = Bukkit.getPlayer(args[1]);
             if (target == null) {
-                player.sendMessage(args[1] + ChatColor.RED + " is not online");
+                player.sendMessage(ChatColor.RED + args[1] + " is not online");
                 return true;
             }
 
-            // Reset the target's password
             plugin.getStaffPasswords().put(target.getUniqueId().toString(), "");
             player.sendMessage(ChatColor.GREEN + "Password for " + target.getName() + " has been reset");
             return true;
         }
 
-        // Ensure at least one argument is provided (the password)
+        // Require a password input
         if (args.length == 0) {
             MessageManager.playerBad(player, "Please provide a password");
             return true;
@@ -179,38 +196,39 @@ public class Password implements CommandExecutor, Listener {
         String password = args[0];
         String storedPassword = plugin.getStaffPasswords().get(playerUUID.toString());
 
-        // If no password is set for the player, prompt them to set a new one
+        // If no password is stored yet
         if (storedPassword == null || storedPassword.isEmpty()) {
-            if (!PASSWORD_PATTERN.matcher(password).matches() || password.length() < 5) {
-                player.sendMessage(ChatColor.GREEN + "Please enter your new password\n" +
-                        "Use " + ChatColor.WHITE + "/password <your new password>\n" +
-                        ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
-                        ChatColor.YELLOW + "◼ At least 5 Characters\n" +
-                        ChatColor.YELLOW + "◼ Contains Numbers\n" +
-                        ChatColor.YELLOW + "◼ Contains Uppercase Letters\n" +
-                        ChatColor.YELLOW + "◼ Contains Lowercase Letters\n" +
-                        ChatColor.YELLOW + "◼ Contains Symbols\n" +
-                        ChatColor.DARK_AQUA + "Please enter a valid password.");
+            if (!isValidPassword(password)) {
+                promptPasswordRequirements(player, password); // Show which parts are missing
                 return true;
             }
 
-            // Store the new password
+            // All checks passed
             plugin.getStaffPasswords().put(playerUUID.toString(), password);
             MessageManager.playerGood(player, "You set your password successfully");
             return true;
         }
 
-        // Check if the entered password matches the stored one
+        // Compare password with stored one
         if (!storedPassword.equals(password)) {
             MessageManager.playerBad(player, "Incorrect password");
             passwordEntered = false;
             return true;
         }
 
-        // If the password is correct, grant permission to move
+        // Grant movement permission
         MessageManager.playerGood(player, "You entered the correct password");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " add kingdoms.move");
         passwordEntered = true;
         return true;
     }
+
+    private boolean isValidPassword(String password) {
+        return password.length() >= 5 &&
+                password.matches(".*[0-9].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[!@#\\$%\\^&\\*\\-_].*");
+    }
+
 }
