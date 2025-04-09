@@ -934,37 +934,11 @@ public class KingdomsCommands implements CommandExecutor {
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group add " + kingdom + 1);
 
-        if (!kc.getNode(player.getUniqueId().toString()).exists() || kc.getNode(player.getUniqueId().toString()).toPrimitive().getInt() == 0) {
-            // Find the highest rank available in the kingdom
-            int highestRank = -1;
-            String highestRankName = null;
-            String kingdomName = args[1];
+        // Assign the player to the kingdom with the highest rank
+        playerRankInKingdom.put(1, "King");
+        kingdoms.put(player.getUniqueId().toString(), args[1]);
 
-            for (String key : kc.getNode(kingdomName).getKeys(false)) {
-                try {
-                    int rank = Integer.parseInt(key); // Convert rank key to integer
-                    if (rank > highestRank) {
-                        highestRank = rank;
-                        highestRankName = kc.getNode(kingdomName + "." + key).toPrimitive().getString(); // Get rank name
-                    }
-                } catch (NumberFormatException ignored) {
-                    // Skip non-numeric keys
-                }
-            }
-
-            // Ensure a valid highest rank was found
-            if (highestRankName == null) {
-                player.sendMessage(ChatColor.RED + "No valid rank found for " + kingdomName);
-                return;
-            }
-
-            // Assign the player to the kingdom with the highest rank
-            playerRankInKingdom.put(highestRank, highestRankName);
-            kingdoms.put(player.getUniqueId().toString(), kingdomName);
-
-            player.sendMessage(ChatColor.GREEN + "You created " + ChatColor.WHITE + kingdomName);
-        }
-
+        player.sendMessage(ChatColor.GREEN + "You created " + ChatColor.WHITE + args[1]);
     }
 
 
