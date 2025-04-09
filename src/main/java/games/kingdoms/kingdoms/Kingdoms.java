@@ -1124,7 +1124,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public void restorePluginData() {
 
-        //todo: set up restore methods for playerRanks, kingdomRanks, playerRank, spyOnKingdom
+        //todo: set up restore methods for //done? playerRanks, //done? kingdomRanks, playerRank, spyOnKingdom
 
         for (Player player : Bukkit.getOnlinePlayers()) {
 
@@ -1142,6 +1142,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
 
             if (kc != null) {
+                if (kc.getNode("players").exists()) {
+                    kc.getNode("players").getKeys(false).forEach(key -> {
+                        int rank = Integer.parseInt(kc.getNode("players").getNode(player.getUniqueId().toString()).toPrimitive().getString());
+                        playerRanks.put(key, rank);
+                        playerRankInKingdom.put(rank, key);
+                    });
+                }
                 if (kc.getNode("bannedNames").exists()) {
                     kc.getNode("bannedNames").getKeys(false).forEach(key -> {
                         String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
@@ -1247,6 +1254,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
                     passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
+                if (sc.getNode("spy").getNode(player.getUniqueId().toString()).exists()) {
+                    sc.getNode("spy").getKeys(false).forEach(key -> {
+                        String kingdom = sc.getNode("spy." + player.getUniqueId().toString()).toPrimitive().getString();
+                        spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
+                    });
+
+                }
             }
         }
     }
@@ -1264,6 +1278,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             // Helper method to check for valid path and handle exceptions
             if (kc != null) {
+                if (kc.getNode("players").exists()) {
+                    kc.getNode("players").getKeys(false).forEach(key -> {
+                        int rank = Integer.parseInt(kc.getNode("players").getNode(offline.getUniqueId().toString()).toPrimitive().getString());
+                        playerRanks.put(key, rank);
+                        playerRankInKingdom.put(rank, key);
+                    });
+                }
                 // Validate and check paths before using getNode()
                 if (kc.getNode("bannedNames").exists()) {
                     kc.getNode("bannedNames").getKeys(false).forEach(key -> {
@@ -1382,6 +1403,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 if (sc.getNode("passwords").getNode(offline.getUniqueId().toString()).exists()) {
                     passwords.put(offline.getUniqueId().toString(), sc.getNode("passwords." + offline.getUniqueId().toString()).toPrimitive().getString());
                 }
+                if (sc.getNode("spy").getNode(offline.getUniqueId().toString()).exists()) {
+                    sc.getNode("spy").getKeys(false).forEach(key -> {
+                        String kingdom = sc.getNode("spy." + offline.getUniqueId().toString()).toPrimitive().getString();
+                        spyOnKingdom.put(offline.getUniqueId().toString(), kingdom);
+                    });
+
+                }
             }
 
         }
@@ -1389,7 +1417,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
     public void restorePluginData(Player player) {
 
-        //todo: set up restore methods for playerRanks, kingdomRanks, playerRank, spyOnKingdom
+        //todo: set up restore methods for playerRanks, kingdomRanks, playerRank
 
         Configurable kc = kingdomsConfig.getConfig();
         Configurable sc = staffConfig.getConfig();
@@ -1406,6 +1434,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
 
         if (kc != null) {
+            if (kc.getNode("players").exists()) {
+                kc.getNode("players").getKeys(false).forEach(key -> {
+                    int rank = Integer.parseInt(kc.getNode("players").getNode(player.getUniqueId().toString()).toPrimitive().getString());
+                    playerRanks.put(key, rank);
+                    playerRankInKingdom.put(rank, key);
+                });
+            }
             if (kc.getNode("bannedNames").exists()) {
                 kc.getNode("bannedNames").getKeys(false).forEach(key -> {
                     String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
@@ -1529,6 +1564,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
             if (sc.getNode("passwords").getNode(player.getUniqueId().toString()).exists()) {
                 passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
+            }
+            if (sc.getNode("spy").getNode(player.getUniqueId().toString()).exists()) {
+                sc.getNode("spy").getKeys(false).forEach(key -> {
+                    String kingdom = sc.getNode("spy." + player.getUniqueId().toString()).toPrimitive().getString();
+                    spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
+                });
+
             }
         }
     }
