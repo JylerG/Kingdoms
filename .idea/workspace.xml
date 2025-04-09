@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Simplify createKingdom()">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Beautify Code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomInfoListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/listeners/KingdomInfoListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
@@ -124,30 +122,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00084" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1726589859314</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1726589859314</updated>
-    </task>
-    <task id="LOCAL-00085" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1726589953468</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1726589953469</updated>
-    </task>
-    <task id="LOCAL-00086" summary="Refactor code for clarity">
-      <option name="closed" value="true" />
-      <created>1728592523023</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1728592523024</updated>
     </task>
     <task id="LOCAL-00087" summary="Update kickPlayerFromKingdom() for clarity">
       <option name="closed" value="true" />
@@ -517,7 +491,31 @@
       <option name="project" value="LOCAL" />
       <updated>1744227334258</updated>
     </task>
-    <option name="localTasksCounter" value="133" />
+    <task id="LOCAL-00133" summary="Properly inform users of what requirements have not been met">
+      <option name="closed" value="true" />
+      <created>1744233587009</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1744233587009</updated>
+    </task>
+    <task id="LOCAL-00134" summary="Refactor watchKingdom() and unWatchKingdom() to make more sense">
+      <option name="closed" value="true" />
+      <created>1744233615941</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1744233615941</updated>
+    </task>
+    <task id="LOCAL-00135" summary="Beautify Code">
+      <option name="closed" value="true" />
+      <created>1744233671331</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1744233671331</updated>
+    </task>
+    <option name="localTasksCounter" value="136" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -529,9 +527,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Let the user know if any required plugins are not present on the server" />
-    <MESSAGE value="Fix restoreOfflineData() to not register if there is no offline data to restore" />
-    <MESSAGE value="Fix onJoin() to restore a player's stats after all code for giving the player data if it doesn't exist has been run" />
     <MESSAGE value="fix inPlayersKingdomBoard() to display players' rank when they are in a claim owned by their kingdom" />
     <MESSAGE value="Create/modify classes" />
     <MESSAGE value="Make notInPlayersKingdomBoard appear if the owning kingdom is an empty string onJoin" />
@@ -554,6 +549,9 @@
     <MESSAGE value="Fix int getPlayerRank()" />
     <MESSAGE value="Fix restore methods to restore data when the plugin is enabled" />
     <MESSAGE value="Simplify createKingdom()" />
-    <option name="LAST_COMMIT_MESSAGE" value="Simplify createKingdom()" />
+    <MESSAGE value="Properly inform users of what requirements have not been met" />
+    <MESSAGE value="Refactor watchKingdom() and unWatchKingdom() to make more sense" />
+    <MESSAGE value="Beautify Code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Beautify Code" />
   </component>
 </project>

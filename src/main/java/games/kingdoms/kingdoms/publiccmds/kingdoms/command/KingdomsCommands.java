@@ -697,8 +697,8 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Check if the player is the owner of their current kingdom
-        if (kc.getNode(playerUUID).exists()) {
-            for (String key : kc.getNode(playerUUID).getKeys(false)) {
+        if (kc.getNode("players." + playerUUID).exists()) {
+            for (String key : kc.getNode("players." + playerUUID).getKeys(false)) {
                 try {
                     int playerRank = Integer.parseInt(key);
                     if (playerRank == 1) {
@@ -724,61 +724,66 @@ public class KingdomsCommands implements CommandExecutor {
         if (!player.hasPermission("kingdoms.admin.join") && !player.hasPermission(args[1] + ".join")) {
             player.sendMessage(ChatColor.RED + "You have not been invited to " + ChatColor.WHITE + args[1]);
             return;
-        }
+        } else if (player.hasPermission(args[1] + ".join")) {
 
-        // Count current members in the kingdom
-        int memberCount = 0;
-        String kingdomName = args[1];
-        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-            String playerKingdom = kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString();
-            if (kingdomName.equalsIgnoreCase(playerKingdom)) {
-                memberCount++;
+            // Count current members in the kingdom
+            int memberCount = 0;
+            String kingdomName = args[1];
+            for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+                String playerKingdom = kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString();
+                if (kingdomName.equalsIgnoreCase(playerKingdom)) {
+                    memberCount++;
+                }
             }
-        }
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            String playerKingdom = kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString();
-            if (kingdomName.equalsIgnoreCase(playerKingdom)) {
-                memberCount++;
-            }
-        }
-
-        // Check if the kingdom has reached its max capacity
-        if (maxMembers.containsKey(kingdomName) && memberCount >= maxMembers.get(kingdomName)) {
-            player.sendMessage(ChatColor.RED + kingdomName + " is at max capacity.");
-            return;
-        }
-        if (kc.getNode(playerUUID).toPrimitive().getInt() == 0) {
-            // Find the highest rank available in the kingdom
-            int highestRank = -1;
-            String highestRankName = null;
-
-            for (String key : kc.getNode("ranksInKingdom." + kingdomName).getKeys(false)) {
-                try {
-                    int rank = Integer.parseInt(key); // Convert rank key to integer
-                    if (rank > highestRank) {
-                        highestRank = rank;
-                        highestRankName = kc.getNode("ranksInKingdom. " + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
-                    }
-                } catch (NumberFormatException ignored) {
-                    // Skip non-numeric keys
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String playerKingdom = kc.getNode("kingdoms." + p.getUniqueId().toString()).toPrimitive().getString();
+                if (kingdomName.equalsIgnoreCase(playerKingdom)) {
+                    memberCount++;
                 }
             }
 
-            // Ensure a valid highest rank was found
-            if (highestRankName == null) {
-                player.sendMessage(ChatColor.RED + "No valid rank found for " + kingdomName);
+            // Check if the kingdom has reached its max capacity
+            if (maxMembers.containsKey(kingdomName) && memberCount >= maxMembers.get(kingdomName)) {
+                player.sendMessage(ChatColor.RED + kingdomName + " is at max capacity.");
                 return;
             }
+            if (kc.getNode(playerUUID).toPrimitive().getInt() == 0) {
+                // Find the highest rank available in the kingdom
+                int highestRank = -1;
+                String highestRankName = null;
 
-            // Assign the player to the kingdom with the largest numerical rank
-            playerRankInKingdom.put(highestRank, highestRankName);
-            playerRanks.put(player.getUniqueId().toString(), highestRank);
-            kingdoms.put(playerUUID, kingdomName);
+                for (String key : kc.getNode("ranksInKingdom." + kingdomName).getKeys(false)) {
+                    try {
+                        int rank = Integer.parseInt(key); // Convert rank key to integer
+                        if (rank > highestRank) {
+                            // Fix the key path (remove the space after kingdomName)
+                            highestRank = rank;
+                            highestRankName = kc.getNode("ranksInKingdom." + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
+                            MessageManager.consoleInfo("highestRank: " + highestRank);
+                            MessageManager.consoleInfo("highestRankName: " + highestRankName);
+                        }
+                    } catch (NumberFormatException ignored) {
+                        // Skip non-numeric keys
+                    }
+                }
 
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group add " + kingdom + 8);
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " remove " + args[1] + ".join");
 
-            player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + kingdomName);
+                // Ensure a valid highest rank was found
+                if (highestRankName == null) {
+                    player.sendMessage(ChatColor.RED + "No valid rank found for " + kingdomName);
+                    return;
+                }
+
+                // Assign the player to the kingdom with the largest numerical rank
+                playerRankInKingdom.put(highestRank, highestRankName);
+                playerRanks.put(player.getUniqueId().toString(), highestRank);
+                kingdoms.put(playerUUID, kingdomName);
+
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group add " + kingdom + highestRank);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " remove " + args[1] + ".join");
+
+                player.sendMessage(ChatColor.GREEN + "You joined " + ChatColor.WHITE + kingdomName);
+            }
         }
     }
 
@@ -863,11 +868,12 @@ public class KingdomsCommands implements CommandExecutor {
                 }
 
                 //todo: add any permissions to remove from all players in a kingdom when the kingdom is disbanded
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + playerObj + " remove " + kingdom + ".setspawn");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + playerObj + " remove " + kingdom + ".claim");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + playerObj + " remove " + kingdom + ".invite");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + playerObj + " remove " + kingdom + ".kick");
-
+                for (int i = 1; i <= 100; i++) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + playerObj + " remove " + kingdom + i);
+                    HashMap<Integer, String> ranks = new HashMap<>();
+                    ranks.put(0, "");
+                    kingdomRanks.put(args[1], ranks);
+                }
                 kingdomFound = true;
                 break; // Exit the loop once the kingdom is found and disbanded
             }
