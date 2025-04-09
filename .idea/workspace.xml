@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Beautify Code">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
-    </list>
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Edit joinKingdom()" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -122,22 +112,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00087" summary="Update kickPlayerFromKingdom() for clarity">
-      <option name="closed" value="true" />
-      <created>1728597081184</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1728597081184</updated>
-    </task>
-    <task id="LOCAL-00088" summary="Update references to hashmaps for clarity">
-      <option name="closed" value="true" />
-      <created>1742661698059</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1742661698060</updated>
     </task>
     <task id="LOCAL-00089" summary="Update references to hashmaps for clarity">
       <option name="closed" value="true" />
@@ -515,7 +489,23 @@
       <option name="project" value="LOCAL" />
       <updated>1744233671331</updated>
     </task>
-    <option name="localTasksCounter" value="136" />
+    <task id="LOCAL-00136" summary="Fix information needed to restore data for playerRanks and playerRankInKingdom HashMaps">
+      <option name="closed" value="true" />
+      <created>1744235739482</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1744235739482</updated>
+    </task>
+    <task id="LOCAL-00137" summary="Edit joinKingdom()">
+      <option name="closed" value="true" />
+      <created>1744235766260</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1744235766260</updated>
+    </task>
+    <option name="localTasksCounter" value="138" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -527,8 +517,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="fix inPlayersKingdomBoard() to display players' rank when they are in a claim owned by their kingdom" />
-    <MESSAGE value="Create/modify classes" />
     <MESSAGE value="Make notInPlayersKingdomBoard appear if the owning kingdom is an empty string onJoin" />
     <MESSAGE value="Refactor code" />
     <MESSAGE value="Remove kingdomExists hashmap" />
@@ -552,6 +540,8 @@
     <MESSAGE value="Properly inform users of what requirements have not been met" />
     <MESSAGE value="Refactor watchKingdom() and unWatchKingdom() to make more sense" />
     <MESSAGE value="Beautify Code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Beautify Code" />
+    <MESSAGE value="Fix information needed to restore data for playerRanks and playerRankInKingdom HashMaps" />
+    <MESSAGE value="Edit joinKingdom()" />
+    <option name="LAST_COMMIT_MESSAGE" value="Edit joinKingdom()" />
   </component>
 </project>

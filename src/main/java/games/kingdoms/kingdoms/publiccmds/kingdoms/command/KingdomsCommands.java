@@ -934,7 +934,6 @@ public class KingdomsCommands implements CommandExecutor {
 
         //Group "8" permissions todo: can be ignored as group 8 won't have any permissions when the kingdom is initially created
 
-        config.set(player.getUniqueId().toString() + "." + 1, "King");
         //todo: This part is solely for creating roles and putting them in hierarchical order
         HashMap<Integer, String> ranks = new HashMap<>();
         ranks.put(1, "King");
