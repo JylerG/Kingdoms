@@ -467,26 +467,34 @@ public class KingdomsCommands implements CommandExecutor {
 
     private void watchKingdom(Player player, String kingdom) {
         if (!staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRMOD")) {
             return;
         }
-
-        spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
+        if (kingdoms.containsValue(kingdom)) {
+            spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
+            player.sendMessage(ChatColor.GREEN + "You are now watching " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s chat");
+        } else {
+            player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
+        }
     }
 
     private void unWatchKingdom(Player player, String kingdom) {
         if (!staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")) {
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRMOD")) {
             return;
         }
-
-        spyOnKingdom.remove(player.getUniqueId().toString(), kingdom);
+        if (spyOnKingdom.get(player.getUniqueId().toString()).equalsIgnoreCase(kingdom)) {
+            spyOnKingdom.remove(player.getUniqueId().toString(), kingdom);
+            player.sendMessage(ChatColor.RED + "You are no longer watching " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s chat");
+        } else {
+            player.sendMessage(ChatColor.RED + "You are not watching " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s chat");
+        }
     }
 
     private void kickPlayerFromKingdom(Player player, Player target, String kingdom, String[] args) {
@@ -661,7 +669,6 @@ public class KingdomsCommands implements CommandExecutor {
 
                 break; // Stop at the first found rank
             } catch (NumberFormatException ignored) {
-                // Ignore non-numeric keys
             }
         }
 
@@ -745,12 +752,12 @@ public class KingdomsCommands implements CommandExecutor {
             int highestRank = -1;
             String highestRankName = null;
 
-            for (String key : kc.getNode(kingdomName).getKeys(false)) {
+            for (String key : kc.getNode("ranksInKingdom." + kingdomName).getKeys(false)) {
                 try {
                     int rank = Integer.parseInt(key); // Convert rank key to integer
                     if (rank > highestRank) {
                         highestRank = rank;
-                        highestRankName = kc.getNode("kingdoms. " + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
+                        highestRankName = kc.getNode("ranksInKingdom. " + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
                     }
                 } catch (NumberFormatException ignored) {
                     // Skip non-numeric keys
