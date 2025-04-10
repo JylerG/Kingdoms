@@ -58,6 +58,7 @@ public class ChatCMD implements CommandExecutor {
                             MessageManager.playerBad(player, "You are not in a kingdom");
                         }
                     }
+                    plugin.savePluginData(player);
                 }
             }
         }
