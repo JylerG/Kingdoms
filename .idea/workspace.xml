@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Remove unnecessary code" />
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Update Code">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -112,14 +115,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00090" summary="Update references to hashmaps for clarity">
-      <option name="closed" value="true" />
-      <created>1742662225418</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1742662225418</updated>
     </task>
     <task id="LOCAL-00091" summary="Update references to hashmaps for clarity">
       <option name="closed" value="true" />
@@ -505,7 +500,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744235894894</updated>
     </task>
-    <option name="localTasksCounter" value="139" />
+    <task id="LOCAL-00139" summary="Update Code">
+      <option name="closed" value="true" />
+      <created>1744236195803</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1744236195804</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -532,7 +535,6 @@
     <MESSAGE value="Add CommandWrapper.java" />
     <MESSAGE value="Update savePluginData() methods" />
     <MESSAGE value="Beautify code" />
-    <MESSAGE value="Update Code" />
     <MESSAGE value="Fix int getPlayerRank()" />
     <MESSAGE value="Fix restore methods to restore data when the plugin is enabled" />
     <MESSAGE value="Simplify createKingdom()" />
@@ -542,6 +544,7 @@
     <MESSAGE value="Fix information needed to restore data for playerRanks and playerRankInKingdom HashMaps" />
     <MESSAGE value="Edit joinKingdom()" />
     <MESSAGE value="Remove unnecessary code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove unnecessary code" />
+    <MESSAGE value="Update Code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Code" />
   </component>
 </project>
