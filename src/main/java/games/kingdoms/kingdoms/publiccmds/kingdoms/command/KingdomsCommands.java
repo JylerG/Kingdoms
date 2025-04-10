@@ -752,13 +752,13 @@ public class KingdomsCommands implements CommandExecutor {
                 int highestRank = -1;
                 String highestRankName = null;
 
-                for (String key : kc.getNode("ranksInKingdom." + kingdomName).getKeys(false)) {
+                for (String key : kc.getNode("ranksInKingdoms." + kingdomName).getKeys(false)) {
                     try {
                         int rank = Integer.parseInt(key); // Convert rank key to integer
                         if (rank > highestRank) {
                             // Fix the key path (remove the space after kingdomName)
                             highestRank = rank;
-                            highestRankName = kc.getNode("ranksInKingdom." + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
+                            highestRankName = kc.getNode("ranksInKingdoms." + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
                             MessageManager.consoleInfo("highestRank: " + highestRank);
                             MessageManager.consoleInfo("highestRankName: " + highestRankName);
                         }
