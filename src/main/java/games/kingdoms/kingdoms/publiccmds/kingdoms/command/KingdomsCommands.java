@@ -69,6 +69,9 @@ public class KingdomsCommands implements CommandExecutor {
                 String kingdom = kingdoms.get(player.getUniqueId().toString());
                 String chunkID = chunk.getX() + "," + chunk.getZ();
 
+                plugin.restorePluginData();
+                plugin.restoreOfflineData();
+
                 if (args[0].equalsIgnoreCase("spawn")) {
                     teleportToSpawn(player, kingdom);
                 }
@@ -86,8 +89,6 @@ public class KingdomsCommands implements CommandExecutor {
                 }
 
                 if (args[0].equalsIgnoreCase("unclaim")) {
-                    plugin.restoreOfflineData();
-                    plugin.restorePluginData();
                     unclaimChunk(player, kingdom, chunkID);
                 }
 
@@ -104,6 +105,8 @@ public class KingdomsCommands implements CommandExecutor {
                 kingdom = kingdoms.get(player.getUniqueId().toString());
                 Location spawn = new Location(world, player.getLocation().getX(), player.getLocation().getBlockY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
 
+                plugin.restorePluginData();
+                plugin.restoreOfflineData();
 
                 if (args[0].equalsIgnoreCase("create")) {
                     createKingdom(player, args[1], args);
@@ -164,13 +167,14 @@ public class KingdomsCommands implements CommandExecutor {
                 if (args[0].equalsIgnoreCase("transfer")) {
                     transferKingdom(player, target, kingdom, args);
                 }
-                plugin.savePluginData();
+
                 if (args[0].equalsIgnoreCase("spy") || args[0].equalsIgnoreCase("watch")) {
                     watchKingdom(player, kingdom);
                 }
                 if (args[0].equalsIgnoreCase("unspy") || args[0].equalsIgnoreCase("unwatch")) {
                     unWatchKingdom(player, kingdom);
                 }
+                plugin.savePluginData();
                 break;
         }
         return true;
@@ -466,34 +470,23 @@ public class KingdomsCommands implements CommandExecutor {
     }
 
     private void watchKingdom(Player player, String kingdom) {
-        if (!staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("MOD")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRMOD")) {
-            return;
-        }
-        if (kingdoms.containsValue(kingdom)) {
-            spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
-            player.sendMessage(ChatColor.GREEN + "You are now watching " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s chat");
-        } else {
-            player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
+        if (player.hasPermission("kingdoms.spy")) {
+            if (kingdoms.containsValue(kingdom)) {
+                spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
+                player.sendMessage(ChatColor.GREEN + "You are now watching " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s chat");
+            } else {
+                player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
+            }
         }
     }
-
     private void unWatchKingdom(Player player, String kingdom) {
-        if (!staff.get(player.getUniqueId().toString()).equalsIgnoreCase("ADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("MOD")
-                && !staff.get(player.getUniqueId().toString()).equalsIgnoreCase("JRMOD")) {
-            return;
-        }
-        if (spyOnKingdom.get(player.getUniqueId().toString()).equalsIgnoreCase(kingdom)) {
-            spyOnKingdom.remove(player.getUniqueId().toString(), kingdom);
-            player.sendMessage(ChatColor.RED + "You are no longer watching " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s chat");
-        } else {
-            player.sendMessage(ChatColor.RED + "You are not watching " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s chat");
+        if (player.hasPermission("kingdoms.spy")) {
+            if (spyOnKingdom.get(player.getUniqueId().toString()).equalsIgnoreCase(kingdom)) {
+                spyOnKingdom.remove(player.getUniqueId().toString(), kingdom);
+                player.sendMessage(ChatColor.RED + "You are no longer watching " + ChatColor.WHITE + kingdom + ChatColor.RED + "'s chat");
+            } else {
+                player.sendMessage(ChatColor.RED + "You are not watching " + ChatColor.WHITE + kingdom + ChatColor.GREEN + "'s chat");
+            }
         }
     }
 
@@ -673,7 +666,7 @@ public class KingdomsCommands implements CommandExecutor {
         }
 
         // Clear the player's kingdom-related data
-        kc.set(player.getUniqueId().toString(), 0);
+        playerRanks.put(player.getUniqueId().toString(), 0);
         //todo: remove all kingdom related permissions from the user
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove kingdoms.setspawn");
         kingdoms.put(playerUUID, "");
@@ -759,8 +752,6 @@ public class KingdomsCommands implements CommandExecutor {
                             // Fix the key path (remove the space after kingdomName)
                             highestRank = rank;
                             highestRankName = kc.getNode("ranksInKingdoms." + kingdomName + "." + key).toPrimitive().getString(); // Get rank name
-                            MessageManager.consoleInfo("highestRank: " + highestRank);
-                            MessageManager.consoleInfo("highestRankName: " + highestRankName);
                         }
                     } catch (NumberFormatException ignored) {
                         // Skip non-numeric keys
