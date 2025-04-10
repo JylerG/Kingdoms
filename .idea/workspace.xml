@@ -4,16 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Make it so inPlayersKingdomBoard() properly displays a player's rank in the kingdom">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Add kingdom spy command to Permissions.java">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/permissions/Permissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/permissions/Permissions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
     </list>
@@ -124,38 +123,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00093" summary="Update Code">
-      <option name="closed" value="true" />
-      <created>1742680647199</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1742680647199</updated>
-    </task>
-    <task id="LOCAL-00094" summary="add max length for kingdom names">
-      <option name="closed" value="true" />
-      <created>1742680666297</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1742680666297</updated>
-    </task>
-    <task id="LOCAL-00095" summary="Update scoreboard to apply the color of the user's rank to their tablist appearance">
-      <option name="closed" value="true" />
-      <created>1742681389013</created>
-      <option name="number" value="00095" />
-      <option name="presentableId" value="LOCAL-00095" />
-      <option name="project" value="LOCAL" />
-      <updated>1742681389014</updated>
-    </task>
-    <task id="LOCAL-00096" summary="Create plugin jar">
-      <option name="closed" value="true" />
-      <created>1742681564481</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1742681564481</updated>
     </task>
     <task id="LOCAL-00097" summary="Let the user know if any required plugins are not present on the server">
       <option name="closed" value="true" />
@@ -517,7 +484,39 @@
       <option name="project" value="LOCAL" />
       <updated>1744243442586</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="save plugin data inside of ChatCMD.java after a command to switch chats has been run">
+      <option name="closed" value="true" />
+      <created>1744246526306</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1744246526308</updated>
+    </task>
+    <task id="LOCAL-00143" summary="Fix restore methods and make onJoin() automatically give the joining user default stats if they are missing some">
+      <option name="closed" value="true" />
+      <created>1744246634480</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1744246634480</updated>
+    </task>
+    <task id="LOCAL-00144" summary="Fix watchKingdom() and unWatchKingdom() to use permissions instead of if they are in the staff HashMap">
+      <option name="closed" value="true" />
+      <created>1744246697232</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1744246697232</updated>
+    </task>
+    <task id="LOCAL-00145" summary="Add kingdom spy command to Permissions.java">
+      <option name="closed" value="true" />
+      <created>1744246724563</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1744246724563</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -529,10 +528,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Remove kingdomExists hashmap" />
-    <MESSAGE value="Fix onMove() to tell a user if they pass through a chunk owned by a kingdom they are not a member of" />
-    <MESSAGE value="Add passwordEntered boolean" />
-    <MESSAGE value="Update kingdomInfo() to display the gui for the kingdom info page" />
     <MESSAGE value="Beautify raidMeta in kingdomInfo()" />
     <MESSAGE value="fix issues in code" />
     <MESSAGE value="Fix command syntax for dispatching the command" />
@@ -554,6 +549,10 @@
     <MESSAGE value="Update Code" />
     <MESSAGE value="Properly load user ranks by fixing a typo" />
     <MESSAGE value="Make it so inPlayersKingdomBoard() properly displays a player's rank in the kingdom" />
-    <option name="LAST_COMMIT_MESSAGE" value="Make it so inPlayersKingdomBoard() properly displays a player's rank in the kingdom" />
+    <MESSAGE value="save plugin data inside of ChatCMD.java after a command to switch chats has been run" />
+    <MESSAGE value="Fix restore methods and make onJoin() automatically give the joining user default stats if they are missing some" />
+    <MESSAGE value="Fix watchKingdom() and unWatchKingdom() to use permissions instead of if they are in the staff HashMap" />
+    <MESSAGE value="Add kingdom spy command to Permissions.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add kingdom spy command to Permissions.java" />
   </component>
 </project>

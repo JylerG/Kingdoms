@@ -905,6 +905,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             money.put(player.getUniqueId().toString(), 0L);
             chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
             kingdoms.put(player.getUniqueId().toString(), "");
+            playerRanks.put(player.getUniqueId().toString(), 0);
             passwords.put(player.getUniqueId().toString(), "");
 
             PlayerJoinListener pjl = new PlayerJoinListener();
@@ -917,25 +918,13 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 money.put(player.getUniqueId().toString(), 0L);
                 chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
                 kingdoms.put(player.getUniqueId().toString(), "");
+                playerRanks.put(player.getUniqueId().toString(), 0);
                 passwords.put(player.getUniqueId().toString(), "");
-            }
-
-            if (!playerRank.containsKey(player.getUniqueId().toString())) {
-                playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
-            }
-            if (!money.containsKey(player.getUniqueId().toString())) {
-                money.put(player.getUniqueId().toString(), 0L);
-            }
-
-            if (!money.containsKey(player.getUniqueId().toString())) {
-                money.put(player.getUniqueId().toString(), 0L);
-            }
-            if (!playerRank.containsKey(player.getUniqueId().toString())) {
-                playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
             }
 
             savePluginData(player);
+            restorePluginData(player);
 
 //            TODO: figure out if this is usable
 //             PlayerJoinListener pjl = new PlayerJoinListener();
@@ -969,7 +958,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     inPlayersKingdomBoard(player, player.getLocation().getChunk());
                 }
             }
-            restorePluginData(player);
+//            restorePluginData(player);
         }
     }
 
@@ -1286,11 +1275,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
                 if (sc.getNode("spy").getNode(player.getUniqueId().toString()).exists()) {
-                    sc.getNode("spy").getKeys(false).forEach(key -> {
-                        String kingdom = sc.getNode("spy." + player.getUniqueId().toString()).toPrimitive().getString();
-                        spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
-                    });
-
+                    spyOnKingdom.put(player.getUniqueId().toString(), sc.getNode("spy." + player.getUniqueId().toString()).toPrimitive().getString());
                 }
             }
         }
@@ -1459,11 +1444,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     passwords.put(offline.getUniqueId().toString(), sc.getNode("passwords." + offline.getUniqueId().toString()).toPrimitive().getString());
                 }
                 if (sc.getNode("spy").getNode(offline.getUniqueId().toString()).exists()) {
-                    sc.getNode("spy").getKeys(false).forEach(key -> {
-                        String kingdom = sc.getNode("spy." + offline.getUniqueId().toString()).toPrimitive().getString();
-                        spyOnKingdom.put(offline.getUniqueId().toString(), kingdom);
-                    });
-
+                    spyOnKingdom.put(offline.getUniqueId().toString(), sc.getNode("spy." + offline.getUniqueId().toString()).toPrimitive().getString());
                 }
             }
 
@@ -1621,11 +1602,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 passwords.put(player.getUniqueId().toString(), sc.getNode("passwords." + player.getUniqueId().toString()).toPrimitive().getString());
             }
             if (sc.getNode("spy").getNode(player.getUniqueId().toString()).exists()) {
-                sc.getNode("spy").getKeys(false).forEach(key -> {
-                    String kingdom = sc.getNode("spy." + player.getUniqueId().toString()).toPrimitive().getString();
-                    spyOnKingdom.put(player.getUniqueId().toString(), kingdom);
-                });
-
+                spyOnKingdom.put(player.getUniqueId().toString(), sc.getNode("spy." + player.getUniqueId().toString()).toPrimitive().getString());
             }
         }
     }
