@@ -56,6 +56,7 @@ public class Permissions implements CommandExecutor {
                         player.sendMessage(ChatColor.RED + "——————" + ChatColor.YELLOW + " PERMISSIONS " + ChatColor.RED + "——————");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.staff.modmode");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.move");
+                        player.sendMessage(ChatColor.GOLD + "kingdoms.spy");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.join");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.disband");
                         player.sendMessage(ChatColor.GOLD + "kingdoms.admin.transfer");
