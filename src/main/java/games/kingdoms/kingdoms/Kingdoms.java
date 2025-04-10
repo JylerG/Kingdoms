@@ -911,15 +911,15 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             // Update the player's tab list name
             updateTabListWithScoreboard(player);
         } else {
-            if (!kingdoms.containsKey(player.getUniqueId().toString())) {
-                kingdoms.put(player.getUniqueId().toString(), "");
-            }
-            if (!chatFocus.containsKey(player.getUniqueId().toString())) {
+            if (!moneyConfig.getConfig().getNode(player.getUniqueId().toString()).exists()
+                    || !kingdomsConfig.getConfig().getNode(player.getUniqueId().toString()).exists()) {
+                playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
+                money.put(player.getUniqueId().toString(), 0L);
                 chatFocus.put(player.getUniqueId().toString(), "GLOBAL");
-            }
-            if (!passwords.containsKey(player.getUniqueId().toString())) {
+                kingdoms.put(player.getUniqueId().toString(), "");
                 passwords.put(player.getUniqueId().toString(), "");
             }
+
             if (!playerRank.containsKey(player.getUniqueId().toString())) {
                 playerRank.put(player.getUniqueId().toString(), ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + Rank.DEFAULT);
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group set default");
@@ -1153,11 +1153,19 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             if (kc != null) {
                 if (kc.getNode("players").exists()) {
-                    //key = player's uuid as string
+                    kc.getNode("players").getKeys(false).forEach(key -> {
+                        try {
+                            int rankNum = kc.getNode("players." + key).toPrimitive().getInt();
+                            playerRankInKingdom.put(rankNum, key);
+                        } catch (NumberFormatException ignored) {
+                        }
+                    });
+                }
+                if (kc.getNode("players." + player.getUniqueId().toString()).exists()) {
+                    String kingdom = kingdoms.get(player.getUniqueId().toString());
                     kc.getNode("players").getKeys(false).forEach(key -> {
                         int rank = kc.getNode("players." + key).toPrimitive().getInt();
                         playerRanks.put(key, rank);
-                        playerRankInKingdom.put(rank, key);
                     });
                 }
                 if (kc.getNode("bannedNames").exists()) {
@@ -1312,15 +1320,19 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 if (kc.getNode("players").exists()) {
                     kc.getNode("players").getKeys(false).forEach(key -> {
                         try {
-                            int rankNum = kc.getNode("players." + key).toPrimitive().getInt();
-                            playerRanks.put(key, rankNum);
+                            int rankNum = kc.getNode("players." + offline.getUniqueId().toString() + "." + key).toPrimitive().getInt();
                             playerRankInKingdom.put(rankNum, key);
                         } catch (NumberFormatException ignored) {
-
                         }
                     });
                 }
-
+                if (kc.getNode("players." + offline.getUniqueId().toString()).exists()) {
+                    String kingdom = kingdoms.get(offline.getUniqueId().toString());
+                    kc.getNode("players").getKeys(false).forEach(key -> {
+                        int rank = kc.getNode("players." + key).toPrimitive().getInt();
+                        playerRanks.put(key, rank);
+                    });
+                }
                 // Validate and check paths before using getNode()
                 if (kc.getNode("bannedNames").exists()) {
                     kc.getNode("bannedNames").getKeys(false).forEach(key -> {
@@ -1480,10 +1492,16 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 kc.getNode("players").getKeys(false).forEach(key -> {
                     try {
                         int rankNum = kc.getNode("players." + key).toPrimitive().getInt();
-                        playerRanks.put(key, rankNum);
                         playerRankInKingdom.put(rankNum, key);
                     } catch (NumberFormatException ignored) {
                     }
+                });
+            }
+            if (kc.getNode("players." + player.getUniqueId().toString()).exists()) {
+                String kingdom = kingdoms.get(player.getUniqueId().toString());
+                kc.getNode("players").getKeys(false).forEach(key -> {
+                    int rank = kc.getNode("players." + key).toPrimitive().getInt();
+                    playerRanks.put(key, rank);
                 });
             }
             if (kc.getNode("bannedNames").exists()) {
