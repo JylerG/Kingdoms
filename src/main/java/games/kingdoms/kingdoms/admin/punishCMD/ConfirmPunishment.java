@@ -10,13 +10,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 public class ConfirmPunishment implements CommandExecutor {
 
-    final Kingdoms plugin;
-
-    public ConfirmPunishment(Kingdoms plugin) {
-        this.plugin = plugin;
-    }
+    final Kingdoms plugin = Kingdoms.getPlugin();
+    final HashMap<String, Integer> spam = plugin.getSpam();
+    final HashMap<String, Integer> threats = plugin.getThreats();
+    final HashMap<String, Integer> language = plugin.getLanguage();
+    final HashMap<String, Integer> disrespect = plugin.getDisrespect();
+    final HashMap<String, Integer> ipAdverts = plugin.getIpAdverts();
+    final HashMap<String, Integer> soliciting = plugin.getSoliciting();
+    final HashMap<String, Integer> reportAbuse = plugin.getReportAbuse();
+    final HashMap<String, Integer> mediaAdverts = plugin.getMediaAdverts();
+    final HashMap<String, Integer> discrimination = plugin.getDiscrimination();
+    final HashMap<String, String> staff = plugin.getStaff();
+    final HashMap<String, String> playerToPunish = plugin.getPlayerToPunish();
 
     private static final int CHAT_WIDTH = 600; // Adjust this value as needed to fit your server's chat width
 
@@ -77,34 +86,34 @@ public class ConfirmPunishment implements CommandExecutor {
         if (sender instanceof Player player) {
             if (args.length == 2) {
                 Player target = Bukkit.getPlayer(args[0]);
-                if (!plugin.getPlayerToPunish().containsKey(player.getUniqueId().toString())) {
+                if (!playerToPunish.containsKey(player.getUniqueId().toString())) {
                     MessageManager.playerBad(player, "You do not have anyone selected to punish");
                     return true;
                 }
 
                 //todo: increment below this
                 //Report Abuse
-                if (args[1].equalsIgnoreCase("1")) {
+                if (args[1].equalsIgnoreCase("abuse")) {
                     // Ensure the target's record exists and increment
-                    plugin.getReportAbuse().putIfAbsent(target.getUniqueId().toString(), 0);
-                    plugin.getReportAbuse().put(target.getUniqueId().toString(), plugin.getReportAbuse().get(target.getUniqueId().toString()) + 1);
-                } else if (args[1].equalsIgnoreCase("2")) {
+                    reportAbuse.putIfAbsent(target.getUniqueId().toString(), 0);
+                    reportAbuse.put(target.getUniqueId().toString(), reportAbuse.get(target.getUniqueId().toString()) + 1);
+                } else if (args[1].equalsIgnoreCase("disrespect")) {
                     // Ensure the target's record exists and increment
-                    plugin.getDisrespect().putIfAbsent(target.getUniqueId().toString(), 0);
-                    plugin.getDisrespect().put(target.getUniqueId().toString(), plugin.getDisrespect().get(target.getUniqueId().toString()) + 1);
-                } else if (args[1].equalsIgnoreCase("3")) {
+                    disrespect.putIfAbsent(target.getUniqueId().toString(), 0);
+                    disrespect.put(target.getUniqueId().toString(), disrespect.get(target.getUniqueId().toString()) + 1);
+                } else if (args[1].equalsIgnoreCase("language")) {
                     // Ensure the target's record exists and increment
-                    plugin.getLanguage().putIfAbsent(target.getUniqueId().toString(), 0);
-                    plugin.getLanguage().put(target.getUniqueId().toString(), plugin.getLanguage().get(target.getUniqueId().toString()) + 1);
+                    language.putIfAbsent(target.getUniqueId().toString(), 0);
+                    language.put(target.getUniqueId().toString(), language.get(target.getUniqueId().toString()) + 1);
                 }
 
                 //todo: send message to players in here
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    boolean isStaff = plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("MOD")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
-                            || plugin.getStaff().get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN");
+                    boolean isStaff = staff.get(p.getUniqueId().toString()).equalsIgnoreCase("JRMOD")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("MOD")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("SRMOD")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("JRADMIN")
+                            || staff.get(p.getUniqueId().toString()).equalsIgnoreCase("ADMIN");
                     //Report Abuse
                     if (args[1].equalsIgnoreCase("1")) {
 
@@ -123,7 +132,7 @@ public class ConfirmPunishment implements CommandExecutor {
                             p.sendMessage(centerMessage(ChatColor.YELLOW + "for " + ChatColor.WHITE + "Report Abuse - Violation #" + count));
                             p.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + sep);
                         } else if (count >= 5) {
-                            if (plugin.getStaff().containsKey(p.getUniqueId().toString()) || plugin.getStaff().containsKey(player.getUniqueId().toString())) {
+                            if (staff.containsKey(p.getUniqueId().toString()) || staff.containsKey(player.getUniqueId().toString())) {
                                 p.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + "[ENF] " + ChatColor.RED + ChatColor.BOLD + "[!] "
                                         + ChatColor.WHITE + target.getName() + ChatColor.GRAY + " was muted by " + ChatColor.WHITE + player.getName()
                                         + ChatColor.GRAY + " for " + ChatColor.GOLD + "Report Abuse Offense #" + count);
@@ -173,7 +182,7 @@ public class ConfirmPunishment implements CommandExecutor {
                         }
                     }
                     //TODO: put the rest below here
-                    plugin.getPlayerToPunish().remove(player.getUniqueId().toString(), target.getUniqueId().toString());
+                    playerToPunish.remove(player.getUniqueId().toString(), target.getUniqueId().toString());
                 }
             }
         }
