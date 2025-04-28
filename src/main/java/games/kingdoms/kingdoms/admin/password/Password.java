@@ -32,6 +32,12 @@ public class Password implements CommandExecutor, Listener {
     private static final int MIN_LENGTH = 5;
 
     public void promptPasswordRequirements(Player player, String attemptedPassword) {
+        boolean validPassword = attemptedPassword.length() >= MIN_LENGTH
+                && DIGIT.matcher(attemptedPassword).matches()
+                && UPPERCASE.matcher(attemptedPassword).matches()
+                && LOWERCASE.matcher(attemptedPassword).matches()
+                && SYMBOL.matcher(attemptedPassword).matches();
+
         String msg = ChatColor.GREEN + "Please enter your new password\n" +
                 "Use " + ChatColor.WHITE + "/password <your new password>\n" +
                 ChatColor.GOLD + ChatColor.BOLD + "Password Parameters\n" +
@@ -39,14 +45,14 @@ public class Password implements CommandExecutor, Listener {
                 formatRequirement(DIGIT.matcher(attemptedPassword).matches(), "Contains Numbers") +
                 formatRequirement(UPPERCASE.matcher(attemptedPassword).matches(), "Contains Uppercase Letters") +
                 formatRequirement(LOWERCASE.matcher(attemptedPassword).matches(), "Contains Lowercase Letters") +
-                formatRequirement(SYMBOL.matcher(attemptedPassword).matches(), "Contains Symbols") +
-                ChatColor.DARK_AQUA + "Please enter a valid password";
+                formatRequirement(SYMBOL.matcher(attemptedPassword).matches(), "Contains Symbols");
 
         player.sendMessage(msg);
+        player.sendMessage(ChatColor.RED + "Please enter a valid password");
     }
 
     private String formatRequirement(boolean met, String requirement) {
-        return (met ? ChatColor.GREEN + "✔ " : ChatColor.RED + "✘ ") + ChatColor.YELLOW + requirement + "\n";
+        return (met ? ChatColor.GREEN + "✔ " : ChatColor.RED + "✘ ") + requirement + "\n";
     }
 
 
