@@ -1,9 +1,10 @@
 package games.kingdoms.kingdoms.publiccmds.kingdoms.listeners;
 
 import com.github.sanctum.panther.file.Configurable;
+import com.github.sanctum.panther.file.Node;
 import games.kingdoms.kingdoms.Kingdoms;
-import games.kingdoms.kingdoms.MessageManager;
 import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomRankCache;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,6 +26,20 @@ public class KingdomInfoListener implements Listener {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
     final HashMap<String, String> kingdoms = plugin.getKingdoms();
+    final HashMap<String, Integer> playerRanks = plugin.getPlayerRanks();
+
+    public ItemStack getOfflinePlayerHead(String uuid) {
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        if (skullMeta != null) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+            skullMeta.setOwningPlayer(offlinePlayer); // <-- This will auto-fetch their skin
+            skullMeta.setDisplayName(ChatColor.GOLD + uuid + "'s Head");
+            skull.setItemMeta(skullMeta);
+        }
+        return skull;
+    }
+
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -44,6 +59,8 @@ public class KingdomInfoListener implements Listener {
         headMeta.setDisplayName(ChatColor.GOLD + "Click to go back to " + ChatColor.WHITE + kingdoms.get(player.getUniqueId().toString()) + ChatColor.GOLD + " info");
         head.setItemMeta(headMeta);
 
+        if (item == null) return;
+
         if (event.getView().getTitle().equalsIgnoreCase(ChatColor.DARK_GRAY + kingdoms.get(player.getUniqueId().toString()))) {
 
             switch (item.getType()) {
@@ -61,89 +78,160 @@ public class KingdomInfoListener implements Listener {
                     }
                     break;
                 case GOLD_BLOCK:
-                    //TODO: go to rank page
+                    //todo: rank page
                     if (clickType == ClickType.LEFT) {
-                        // Create the inventory with 54 slots
-                        Inventory rank = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + kingdoms.get(player.getUniqueId().toString()) + " -> Ranks");
-
-                        // Set up borders for the inventory (this assumes `blackBorder` is an ItemStack representing the border)
-                        for (int i : new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
-                            rank.setItem(i, blackBorder);
-                        }
-
-                        rank.setItem(0, head);
-
-                        // Get the kingdom of the player
                         String kingdom = kingdoms.get(player.getUniqueId().toString());
                         Configurable kc = KingdomsConfig.getInstance().getConfig();
 
-                        // Create a map to store player UUID and their respective rank
-                        HashMap<String, Integer> playerRanks = plugin.getPlayerRanks();
+                        Inventory rankInventory = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + kingdom + " -> Ranks");
 
-                        // Fetch online players in the kingdom
-                        for (Player p : Bukkit.getOnlinePlayers()) {
-                            if (kingdom.equals(kingdoms.get(p.getUniqueId().toString()))) {
-                                // Retrieve the rank from the configuration
-                                int playerRank = getPlayerRank(p.getUniqueId().toString());
-
-                                // Store the player's UUID and rank in the map
-                                playerRanks.put(p.getUniqueId().toString(), playerRank);
+                        // Set up borders automatically
+                        for (int i = 0; i < rankInventory.getSize(); i++) {
+                            if (i < 9 || i >= 45 || i % 9 == 0 || i % 9 == 8) {
+                                rankInventory.setItem(i, blackBorder);
                             }
                         }
 
-                        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-                            // Fetch offline players in the kingdom
-                            kc.getNode(kingdom).getKeys(false).forEach(key -> {
-                                // Retrieve the rank from the configuration
-                                int playerRank = getPlayerRank(offline.getUniqueId().toString());
+                        // Set the back button or "head" at slot 0
+                        rankInventory.setItem(0, head);
 
-                                // Store the player's UUID and rank in the map
-                                playerRanks.put(offline.getUniqueId().toString(), playerRank);
-                            });
+                        // Get all ranks for this kingdom
+                        Map<Integer, String> ranks = new HashMap<>();
 
-                            // Sort the player ranks based on the integer rank value
-                            List<Map.Entry<String, Integer>> sortedRanks = new ArrayList<>(playerRanks.entrySet());
-                            sortedRanks.sort(Comparator.comparingInt(Map.Entry::getValue));
-
-                            // Create the inventory and place the player heads based on rank
-                            int slot = 0;
-                            for (Map.Entry<String, Integer> entry : sortedRanks) {
-                                String playerUUID = entry.getKey();
-                                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
-
-                                // Create the player head item
-                                ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
-                                SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
-
-                                if (skullMeta != null) {
-                                    // For online players, set OwningPlayer using PlayerProfile
-                                    if (Bukkit.getPlayer(playerUUID) != null) {
-                                        Player onlinePlayer = Bukkit.getPlayer(playerUUID);
-                                        PlayerProfile profile = onlinePlayer.getPlayerProfile(); // Get PlayerProfile
-
-                                        // Set the player's head using the profile
-                                        skullMeta.setOwningPlayer(onlinePlayer);  // This uses the PlayerProfile internally
-                                    } else {
-                                        // For offline players, use the OfflinePlayer object
-                                        skullMeta.setOwningPlayer(offlinePlayer);  // Offline player handling
+                        Node ranksNode = kc.getNode("ranksInKingdoms").getNode(kingdom);
+                        if (ranksNode != null && ranksNode.getKeys(false) != null) {
+                            for (String key : ranksNode.getKeys(false)) {
+                                try {
+                                    int rankNumber = Integer.parseInt(key); // Convert "1" -> 1
+                                    String rankName = ranksNode.getNode(key).get(String.class); // get rank name
+                                    if (rankName != null) {
+                                        ranks.put(rankNumber, rankName);
                                     }
-                                    playerHead.setItemMeta(skullMeta); // Apply the meta to the skull item
-                                }
-
-                                // Place the skull in the next available slot
-                                if (slot < rank.getSize()) {
-                                    rank.setItem(slot, playerHead);
-                                    slot++; // Increment the slot for the next player
+                                } catch (NumberFormatException e) {
+                                    Bukkit.getLogger().warning("Invalid rank key '" + key + "' in kingdom '" + kingdom + "'");
                                 }
                             }
-
-                            // Send the inventory to the player
-                            player.openInventory(rank);
                         }
+
+                        // Sort ranks from lowest to highest
+                        List<Map.Entry<Integer, String>> sortedRanks = new ArrayList<>(ranks.entrySet());
+                        sortedRanks.sort(Comparator.comparingInt(Map.Entry::getKey));
+
+                        // Now fill the inventory with beacons
+                        int slot = 10;
+                        for (Map.Entry<Integer, String> entry : sortedRanks) {
+                            while (slot < rankInventory.getSize() && (slot % 9 == 0 || slot % 9 == 8)) {
+                                slot++; // Skip border columns
+                            }
+
+                            ItemStack beacon = new ItemStack(Material.BEACON);
+                            ItemMeta meta = beacon.getItemMeta();
+                            if (meta != null) {
+                                meta.setDisplayName(ChatColor.GOLD + entry.getValue()); // Set rank name as title
+                                beacon.setItemMeta(meta);
+                            }
+
+                            if (slot < rankInventory.getSize()) {
+                                rankInventory.setItem(slot, beacon);
+                                slot++;
+                            }
+                        }
+
+                        player.openInventory(rankInventory);
                     }
                     break;
                 case WITHER_SKELETON_SKULL:
-                    //TODO: figure out what this is
+                    //TODO: Players page
+                    if (clickType == ClickType.LEFT) {
+                        // Create the inventory
+                        Inventory players = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + kingdoms.get(player.getUniqueId().toString()) + " -> Ranks");
+
+                        // Set borders
+                        for (int i : new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
+                            players.setItem(i, blackBorder);
+                        }
+                        players.setItem(0, head);
+
+                        // Load player's kingdom
+                        String kingdom = kingdoms.get(player.getUniqueId().toString());
+
+                        // Use preexisting playerRanks
+                        HashMap<String, Integer> playerRanks = plugin.getPlayerRanks(); // <--- your existing map!
+
+                        // Build a new map of only players from this kingdom
+                        Map<String, Integer> kingdomPlayers = new HashMap<>();
+
+                        for (Map.Entry<String, Integer> entry : playerRanks.entrySet()) {
+                            String uuidString = entry.getKey();
+                            UUID uuid = UUID.fromString(uuidString);
+
+                            if (kingdom.equals(kingdoms.get(uuidString))) {
+                                kingdomPlayers.put(uuidString, entry.getValue());
+                            }
+                        }
+
+                        // Sort by rank (lowest to highest)
+                        List<Map.Entry<String, Integer>> sortedRanks = new ArrayList<>(kingdomPlayers.entrySet());
+                        sortedRanks.sort(Comparator.comparingInt(Map.Entry::getValue));
+
+                        // Fill the inventory
+                        int slot = 10;
+                        for (Map.Entry<String, Integer> entry : sortedRanks) {
+                            String playerKey = entry.getKey();
+                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerKey));
+
+                            ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
+                            SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
+
+                            if (skullMeta != null) {
+                                PlayerProfile profile;
+                                Player onlinePlayer = Bukkit.getPlayer(UUID.fromString(playerKey));
+                                if (onlinePlayer != null) {
+                                    profile = onlinePlayer.getPlayerProfile();
+                                } else {
+                                    profile = Bukkit.createPlayerProfile(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+                                }
+
+                                // Fetch the player's rank integer
+                                Integer playerRankInt = KingdomRankCache.getPlayerRank(offlinePlayer.getUniqueId());
+                                if (playerRankInt == null) {
+                                    playerRankInt = 0; // fallback if needed
+                                }
+
+                                // Fetch the rank name from config (even if not used directly here)
+                                Configurable kc = KingdomsConfig.getInstance().getConfig();
+                                String rankName = kc.getNode("ranksInKingdoms." +
+                                        kingdoms.get(player.getUniqueId().toString())
+                                        + "." + playerRankInt).toPrimitive().getString();
+
+                                // Set profile
+                                skullMeta.setOwnerProfile(profile);
+
+                                // Set display name: player name in YELLOW + BOLD
+                                String playerName = (offlinePlayer.getName() != null) ? offlinePlayer.getName() : "Unknown";
+                                skullMeta.setDisplayName(ChatColor.YELLOW.toString() + ChatColor.BOLD + playerName);
+
+                                // Set lore: "Rank: X"
+                                List<String> skullLore = new ArrayList<>();
+                                skullLore.add(ChatColor.WHITE + "Rank " + ChatColor.YELLOW + rankName);
+                                skullLore.add(" ");
+                                skullLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Click " + ChatColor.WHITE + "to manage player");
+
+                                skullMeta.setLore(skullLore);
+
+                                playerHead.setItemMeta(skullMeta);
+                            }
+
+                            if (slot < players.getSize()) {
+                                players.setItem(slot, playerHead);
+                                slot++;
+                                if ((slot + 1) % 9 == 0) slot++; // Skip border slots
+                            }
+                        }
+
+                        // Open the inventory
+                        player.openInventory(players);
+                    }
                     break;
                 case COBBLESTONE_WALL:
                     //TODO: figure out what this is
@@ -151,26 +239,14 @@ public class KingdomInfoListener implements Listener {
                 case TNT:
                     //TODO: figure out what this is
                     break;
+
             }
-        } else if (event.getView().getTitle().equalsIgnoreCase(ChatColor.DARK_GRAY + kingdoms.get(player.getUniqueId().toString()) + " -> Ranks")) {
 
-        }
-    }
-
-    // Method to get the player's rank (you'll need to implement the logic for fetching the rank)
-    private int getPlayerRank(String UUID) {
-        // Replace this with your logic to fetch the player's rank
-        // Find the rank integer stored under the player's UUID
-        int playerRank = -1;
-        for (String key : KingdomsConfig.getInstance().getConfig().getNode(UUID).getKeys(false)) {
-            try {
-                playerRank = Integer.parseInt(key);
-                MessageManager.consoleInfo("Key in getPlayerRank(String UUID): " + key + " (" + playerRank + ")");
-                break; // Stop at the first found rank
-            } catch (NumberFormatException ignored) {
-                // Ignore non-numeric keys
+            // Go to default menu if player clicks on Player Head in first slot
+        } else if (event.getView().getTitle().startsWith(ChatColor.DARK_GRAY + kingdoms.get(player.getUniqueId().toString()))) {
+            if (item.getType() == Material.PLAYER_HEAD && event.getSlot() == 0) {
+                Bukkit.dispatchCommand(player, "k info");
             }
         }
-        return playerRank;
     }
 }
