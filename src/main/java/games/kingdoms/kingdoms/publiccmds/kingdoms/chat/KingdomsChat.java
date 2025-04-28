@@ -1,7 +1,9 @@
 package games.kingdoms.kingdoms.publiccmds.kingdoms.chat;
 
+import com.github.sanctum.panther.file.Configurable;
 import games.kingdoms.kingdoms.Kingdoms;
 import games.kingdoms.kingdoms.MessageManager;
+import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,7 +18,6 @@ public class KingdomsChat implements CommandExecutor {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
     final HashMap<String, String> kingdoms = plugin.getKingdoms();
-    final HashMap<Integer, String> playerRankInKingdom = plugin.getPlayerRankInKingdom();
     final HashMap<String, Integer> kingdomRank = plugin.getKingdomRank();
     final HashMap<String, String> spyOnKingdom = plugin.getSpyOnKingdom();
 
@@ -40,9 +41,17 @@ public class KingdomsChat implements CommandExecutor {
                     if (kingdoms.get(p.getUniqueId().toString()).equals(kingdoms.get(player.getUniqueId().toString()))
                             || (spyOnKingdom.containsKey(p.getUniqueId().toString())
                             && spyOnKingdom.get(p.getUniqueId().toString()).equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString())))) {
-
+                        Configurable kc = KingdomsConfig.getInstance().getConfig();
                         String message = String.join(" ", args); // Concatenate args into a single string
-                        String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + playerRankInKingdom.get(kingdomRank.get(player.getUniqueId().toString())) + ChatColor.GOLD + player.getDisplayName() + ": " + message;                        p.sendMessage(format);
+                        kc.getNode("ranksInKingdom").getKeys(false).forEach(kingdom ->
+                                kc.getNode("ranksInKingdom." + kingdom).getKeys(false).forEach(rankInt -> {
+
+                            String playerRank = kc.getNode("players." + player.getUniqueId().toString()).toPrimitive().getString();
+
+                            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + playerRank + ChatColor.GOLD + player.getDisplayName() + ": " + message;
+                            p.sendMessage(format);
+                        }));
+
                     }
                 }
             }
