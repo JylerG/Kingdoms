@@ -161,25 +161,46 @@ public class ChatListener implements Listener {
                 event.setCancelled(true);
             }
         } else if (chatFocus.get(player.getUniqueId().toString()).equalsIgnoreCase("KINGDOM")) {
+            String playerUUID = player.getUniqueId().toString();
             Configurable kc = KingdomsConfig.getInstance().getConfig();
-            String playerRank = kc.getNode("players." + player.getUniqueId().toString()).toPrimitive().getString();
-            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + playerRank + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
-            event.setFormat(format);
-            event.setMessage(eventMessage);
 
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                String onlinePlayerKingdom = kingdoms.get(p.getUniqueId().toString());
-                String playerKingdom = kingdoms.get(player.getUniqueId().toString());
-
-                if (kingdoms.containsKey(p.getUniqueId().toString())) {
-                    if (onlinePlayerKingdom.equals(playerKingdom)
-                            || (spyOnKingdom.containsKey(p.getUniqueId().toString())
-                            && spyOnKingdom.get(p.getUniqueId().toString()).equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString())))) {
-                        p.sendMessage(event.getFormat());
-                    }
-                }
-                event.setCancelled(true);
+            // Check if the player is in a kingdom
+            if (!kingdoms.containsKey(playerUUID)) {
+                return; // player isn't in a kingdom, skip formatting
             }
+
+            String kingdomName = kingdoms.get(playerUUID);
+            String rankKey = kc.getNode("players." + playerUUID).toPrimitive().getString();
+
+            if (rankKey == null) {
+                return; // player rank not found, skip formatting
+            }
+
+            // Get the actual rank name from ranksInKingdoms
+            String playerRank = kc.getNode("ranksInKingdoms." + kingdomName + "." + rankKey).toPrimitive().getString();
+
+            if (playerRank == null) {
+                return; // no rank found, skip formatting
+            }
+
+            // Now format the chat message
+            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE +
+                    playerRank + " " + ChatColor.GOLD + player.getDisplayName() + ChatColor.WHITE + ": " + ChatColor.RESET + event.getMessage();
+            event.setFormat(format);
+        }
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            String onlinePlayerKingdom = kingdoms.get(p.getUniqueId().toString());
+            String playerKingdom = kingdoms.get(player.getUniqueId().toString());
+
+            if (kingdoms.containsKey(p.getUniqueId().toString())) {
+                if (onlinePlayerKingdom.equals(playerKingdom)
+                        || (spyOnKingdom.containsKey(p.getUniqueId().toString())
+                        && spyOnKingdom.get(p.getUniqueId().toString()).equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString())))) {
+                    p.sendMessage(event.getFormat());
+                }
+            }
+            event.setCancelled(true);
         }
     }
 }
