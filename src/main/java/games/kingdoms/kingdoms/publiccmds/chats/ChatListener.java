@@ -1,7 +1,9 @@
 package games.kingdoms.kingdoms.publiccmds.chats;
 
+import com.github.sanctum.panther.file.Configurable;
 import games.kingdoms.kingdoms.Kingdoms;
 import games.kingdoms.kingdoms.MessageManager;
+import games.kingdoms.kingdoms.admin.configs.KingdomsConfig;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +18,6 @@ import java.util.Map;
 public class ChatListener implements Listener {
 
     final Kingdoms plugin = Kingdoms.getPlugin();
-    final HashMap<Integer, String> playerRankInKingdom = plugin.getPlayerRankInKingdom();
     final HashMap<String, Integer> kingdomRank = plugin.getKingdomRank();
     final HashMap<String, String> chatFocus = plugin.getChatFocus();
     final HashMap<String, String> kingdoms = plugin.getKingdoms();
@@ -160,7 +161,9 @@ public class ChatListener implements Listener {
                 event.setCancelled(true);
             }
         } else if (chatFocus.get(player.getUniqueId().toString()).equalsIgnoreCase("KINGDOM")) {
-            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + playerRankInKingdom.get(kingdomRank.get(player.getUniqueId().toString())) + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
+            Configurable kc = KingdomsConfig.getInstance().getConfig();
+            String playerRank = kc.getNode("players." + player.getUniqueId().toString()).toPrimitive().getString();
+            String format = ChatColor.GOLD.toString() + ChatColor.BOLD + "[K] " + ChatColor.LIGHT_PURPLE + playerRank + ChatColor.GOLD + player.getDisplayName() + ": " + eventMessage;
             event.setFormat(format);
             event.setMessage(eventMessage);
 
