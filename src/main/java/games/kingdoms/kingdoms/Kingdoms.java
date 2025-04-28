@@ -24,6 +24,7 @@ import games.kingdoms.kingdoms.admin.password.Password;
 import games.kingdoms.kingdoms.admin.permissions.Permissions;
 import games.kingdoms.kingdoms.admin.punishCMD.ConfirmPunishment;
 import games.kingdoms.kingdoms.admin.punishCMD.PunishCommand;
+import games.kingdoms.kingdoms.admin.punishCMD.PunishTabCompleter;
 import games.kingdoms.kingdoms.admin.ranks.Rank;
 import games.kingdoms.kingdoms.admin.ranks.RankCMD;
 import games.kingdoms.kingdoms.admin.ranks.RankTabCompleter;
@@ -73,7 +74,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.SimplePluginManager;
-import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
@@ -102,7 +102,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     final DecimalFormat formatter = new DecimalFormat("#,###.##");
     private HashMap<String, Integer> customRank = new HashMap<>();
     private HashMap<String, Integer> kingdomRank = new HashMap<>();
-    private HashMap<Integer, String> playerRankInKingdom = new HashMap<>();
     private HashMap<String, Integer> playerRanks = new HashMap<>();
     private HashMap<String, String> spyOnKingdom = new HashMap<>();
     final ArrayList<Player> invisiblePlayers = new ArrayList<>();
@@ -155,49 +154,34 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+        //Save default config
+        getConfig().options().copyDefaults();
+        saveDefaultConfig();
 
-        try {
-            //Save default config
-            getConfig().options().copyDefaults();
-            saveDefaultConfig();
+        setupChat();
+        plugin = this;
+        pjl = new PlayerJoinListener();
 
-            setupChat();
-            plugin = this;
-            pjl = new PlayerJoinListener();
+        configInit();
 
-            configInit();
+        //Set up initial configs
+        setupConfigs();
 
-            //Set up initial configs
-            setupConfigs();
+        //Initialize ArrayLists and HashMaps
+        initMapList();
 
-            //Initialize ArrayLists and HashMaps
-            initMapList();
+        //Restore Plugin Data
+        restoreServerData();
+        restorePluginData();
 
-            //Restore Plugin Data
-            restoreServerData();
-            restorePluginData();
+        //Commands
+        commands();
 
-            //Commands
-            commands();
+        //Events
+        events();
 
-            //Events
-            events();
-
-            //Plugin successfully loaded
-            MessageManager.consoleGood("Kingdoms successfully Enabled");
-        } catch (UnknownDependencyException e) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (!isPluginLoaded("ProtocolLib")) {
-                    MessageManager.consoleBad("ProtocolLib is not installed on this server");
-                }
-                if (!isPluginLoaded("Labyrinth")) {
-                    MessageManager.consoleBad("Labyrinth is not installed on this server");
-                }
-                if (!isPluginLoaded("Vault")) {
-                    MessageManager.consoleBad("Vault is not installed on this server");
-                }
-            }
-        }
+        //Plugin successfully loaded
+        MessageManager.consoleGood("Kingdoms successfully Enabled");
 //        } catch (NullPointerException e) {
 //            MessageManager.consoleBad("NullPointerException: " + e);
 //        }
@@ -300,8 +284,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
     private void punishments() {
-        getCommand("punish").setExecutor(new PunishCommand(this));
-        getCommand("confirm").setExecutor(new ConfirmPunishment(this));
+        getCommand("punish").setExecutor(new PunishCommand());
+        getCommand("punish").setTabCompleter(new PunishTabCompleter());
+        getCommand("confirm").setExecutor(new ConfirmPunishment());
     }
 
     private void initMapList() {
@@ -316,7 +301,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         spam = new HashMap<>();
         playerToPunish = new HashMap<>();
 
-        playerRankInKingdom = new HashMap<>();
         playerRanks = new HashMap<>();
         kingdomRank = new HashMap<>();
         chatFocus = new HashMap<>();
@@ -823,7 +807,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                     String chunkOwnerKingdom = claimedChunks.get(toChunk.getX() + "," + toChunk.getZ());
 
                     // Only call inPlayersKingdomBoard if the chunk is owned by the player's kingdom
-                    if (chunkOwnerKingdom != null && chunkOwnerKingdom.equalsIgnoreCase(kingdom)) {
+                    if (chunkOwnerKingdom != null && chunkOwnerKingdom.equalsIgnoreCase(kingdom) && !chunkOwnerKingdom.isEmpty()) {
                         inPlayersKingdomBoard(player, toChunk);
                     } else {
                         notInPlayersKingdomBoard(player);
@@ -881,6 +865,14 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             team.setPrefix(prefix);
         }
         return team;
+    }
+
+    @EventHandler
+    public void setInvisiblePlayersOnJoin(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        for (int i = 0; i < plugin.getInvisiblePlayers().size(); i++) {
+            p.hidePlayer(plugin, plugin.getInvisiblePlayers().get(i));
+        }
     }
 
     @EventHandler
@@ -1025,10 +1017,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         return customRank;
     }
 
-    public HashMap<Integer, String> getPlayerRankInKingdom() {
-        return playerRankInKingdom;
-    }
-
     public static Chat getChat() {
         return chat;
     }
@@ -1141,15 +1129,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             }
 
             if (kc != null) {
-                if (kc.getNode("players").exists()) {
-                    kc.getNode("players").getKeys(false).forEach(key -> {
-                        try {
-                            int rankNum = kc.getNode("players." + key).toPrimitive().getInt();
-                            playerRankInKingdom.put(rankNum, key);
-                        } catch (NumberFormatException ignored) {
-                        }
-                    });
-                }
                 if (kc.getNode("players." + player.getUniqueId().toString()).exists()) {
                     String kingdom = kingdoms.get(player.getUniqueId().toString());
                     kc.getNode("players").getKeys(false).forEach(key -> {
@@ -1162,14 +1141,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                         String bannedNames = kc.getNode("bannedNames." + key).toPrimitive().getString();
                         this.bannedNames.put(key, bannedNames);
                     });
-                }
-                if (kc.getNode(player.getUniqueId().toString()) != null) {
-                    if (kc.getNode(player.getUniqueId().toString()).exists()) {
-                        kc.getNode(player.getUniqueId().toString()).getKeys(false).forEach(key -> {
-                            String value = kc.getNode(player.getUniqueId().toString() + "." + key).toPrimitive().getString();
-                            this.playerRankInKingdom.put(Integer.valueOf(key), value);
-                        });
-                    }
                 }
                 if (kc.getNode("invites").getNode(player.getUniqueId().toString()).exists()) {
                     kc.getNode("invites").getKeys(false).forEach(key -> {
@@ -1302,15 +1273,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
 
             // Helper method to check for valid path and handle exceptions
             if (kc != null) {
-                if (kc.getNode("players").exists()) {
-                    kc.getNode("players").getKeys(false).forEach(key -> {
-                        try {
-                            int rankNum = kc.getNode("players." + offline.getUniqueId().toString() + "." + key).toPrimitive().getInt();
-                            playerRankInKingdom.put(rankNum, key);
-                        } catch (NumberFormatException ignored) {
-                        }
-                    });
-                }
                 if (kc.getNode("players." + offline.getUniqueId().toString()).exists()) {
                     String kingdom = kingdoms.get(offline.getUniqueId().toString());
                     kc.getNode("players").getKeys(false).forEach(key -> {
@@ -1327,26 +1289,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 }
                 if (kc.getNode("kingdoms").getNode(offline.getUniqueId().toString()).exists()) {
                     kingdoms.put(offline.getUniqueId().toString(), kc.getNode("kingdoms." + offline.getUniqueId().toString()).toPrimitive().getString());
-                }
-                String playerUUID = offline.getUniqueId().toString();
-
-                if (kingdoms.containsKey(playerUUID)) {
-                    String kingdomName = kingdoms.get(playerUUID);
-
-                    if (kc.getNode(kingdomName).exists()) {
-                        for (String key : kc.getNode(kingdomName).getKeys(false)) {
-                            try {
-                                int rankValue = Integer.parseInt(key); // Convert rank key to an integer
-                                String rankName = kc.getNode(kingdomName + "." + key).toPrimitive().getString();
-
-                                if (rankName != null) {
-                                    playerRankInKingdom.put(rankValue, rankName);
-                                    MessageManager.consoleInfo("Restored rank for " + playerUUID + ": " + rankName + " (Rank " + rankValue + ")");
-                                }
-                            } catch (NumberFormatException ignored) {
-                            }
-                        }
-                    }
                 }
 //                if (kc.getNode("ranksInKingdoms." + kingdoms.get(offline.getUniqueId().toString())).exists()) {
 //                    kc.getNode("ranksInKingdoms").getKeys(false).forEach(key ->
@@ -1469,15 +1411,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         }
 
         if (kc != null) {
-            if (kc.getNode("players").exists()) {
-                kc.getNode("players").getKeys(false).forEach(key -> {
-                    try {
-                        int rankNum = kc.getNode("players." + key).toPrimitive().getInt();
-                        playerRankInKingdom.put(rankNum, key);
-                    } catch (NumberFormatException ignored) {
-                    }
-                });
-            }
             if (kc.getNode("players." + player.getUniqueId().toString()).exists()) {
                 String kingdom = kingdoms.get(player.getUniqueId().toString());
                 kc.getNode("players").getKeys(false).forEach(key -> {
@@ -1635,7 +1568,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         saveData(staffConfig.getConfig(), chatFocus, "focus.");
         saveData(staffConfig.getConfig(), passwords, "passwords.");
         saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
-        saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
     }
 
     public void savePluginData() {
@@ -1666,7 +1598,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
             saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
-            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + player.getUniqueId().toString() + ".");
         }
 
         for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
@@ -1696,7 +1627,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             saveData(staffConfig.getConfig(), chatFocus, "focus.");
             saveData(staffConfig.getConfig(), passwords, "passwords.");
             saveData(staffConfig.getConfig(), spyOnKingdom, "spy.");
-            saveData(kingdomsConfig.getConfig(), playerRankInKingdom, "players." + offline.getUniqueId().toString() + ".");
         }
     }
 
@@ -1734,7 +1664,7 @@ public final class Kingdoms extends JavaPlugin implements Listener {
     }
 
 
-    private <K, V> void saveNestedData(Configurable config, Map<K, V> data, Map<K, String> kingdoms, String pathPrefix) {
+    private <K, V> void savePlayerData(Configurable config, Map<K, V> data, Map<K, String> kingdoms, String pathPrefix) {
         if (!data.isEmpty() && config != null) {
             for (Map.Entry<K, V> entry : data.entrySet()) {
                 K key = entry.getKey(); // Key, e.g., player's UUID
