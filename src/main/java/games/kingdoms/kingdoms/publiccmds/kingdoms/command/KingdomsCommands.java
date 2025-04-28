@@ -40,7 +40,6 @@ public class KingdomsCommands implements CommandExecutor {
     final HashMap<String, Integer> maxClaims = plugin.getMaxClaims();
     final HashMap<String, String> claims = plugin.getClaims();
     final HashMap<String, Integer> kingdomRank = plugin.getKingdomRank();
-    final HashMap<Integer, String> playerRankInKingdom = plugin.getPlayerRankInKingdom();
     final HashMap<String, String> claimedChunks = plugin.getClaimedChunks();
     final HashMap<String, Integer> claimPrice = plugin.getClaimPrice();
     final HashMap<String, String> inviteList = plugin.getInviteList();
@@ -381,53 +380,11 @@ public class KingdomsCommands implements CommandExecutor {
     private void transferKingdom(Player player, Player target, String kingdom, String[] args) {
         String playerUUID = player.getUniqueId().toString();
         String targetUUID = target.getUniqueId().toString();
+        Configurable kc = KingdomsConfig.getInstance().getConfig();
 
-        // Check if the player has the necessary permission for admin transfers
-        if (!player.hasPermission("kingdoms.admin.transfer")) {
-            // Check for the correct number of arguments
-            if (args.length != 3) {
-                player.sendMessage(ChatColor.GOLD + "Usage: /kingdom transfer NAME <player>");
-                return;
-            }
-            if (!bannedNames.containsValue(kingdom)) {
-                player.sendMessage(kingdom + ChatColor.RED + " doesn't exist");
-                return;
-            }
-            // Check if the player is in a kingdom
-            if (!kingdoms.containsKey(playerUUID)) {
-                player.sendMessage(target.getName() + ChatColor.RED + " is not in a kingdom");
-                return;
-            }
+        // Player has admin transfer permission
+        boolean isAdminTransfer = player.hasPermission("kingdoms.admin.transfer");
 
-            if (!kingdoms.get(playerUUID).equals(args[1])) {
-                player.sendMessage(ChatColor.RED + "You are not a member of " + ChatColor.WHITE + args[1]);
-            }
-
-            // Check if the player is the owner of the specified kingdom
-            if (!playerRankInKingdom.get(1).equals(playerUUID)) {
-                player.sendMessage(ChatColor.RED + "You are not the owner of " + ChatColor.GOLD + kingdoms.get(playerUUID));
-                return;
-            }
-
-            // Check if the target player is a member of the specified kingdom
-            if (!kingdoms.get(targetUUID).equals(kingdom)) {
-                player.sendMessage(target.getName() + ChatColor.RED + " is not a member of " + ChatColor.WHITE + kingdom);
-                return;
-            }
-
-            // Transfer kingdom ownership
-            playerRankInKingdom.put(2, playerUUID);
-            playerRankInKingdom.put(1, targetUUID);
-            //todo: remove any relevant permissions from the player and give them to the target user
-            // MAKE SURE TO USE PEX WHEN DOING THIS
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove " + kingdom + ".setspawn");
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + target.getName() + " add " + kingdom + ".setspawn");
-            player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
-            target.sendMessage(player.getName() + ChatColor.GREEN + " transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to you");
-            return;
-        }
-
-        // Admin transfer logic
         if (args.length != 3) {
             player.sendMessage(ChatColor.GOLD + "Usage: /kingdom transfer NAME <player>");
             return;
@@ -438,34 +395,70 @@ public class KingdomsCommands implements CommandExecutor {
             return;
         }
 
-        // Check if the player is in a kingdom
-        if (!kingdoms.containsKey(playerUUID)) {
-            player.sendMessage(target.getName() + ChatColor.RED + " is not in a kingdom");
+        // Check if the player and target are in kingdoms
+        if (!kingdoms.containsKey(playerUUID) || !kingdoms.containsKey(targetUUID)) {
+            player.sendMessage(ChatColor.RED + "One of the players is not in a kingdom.");
             return;
         }
 
-        // Check if the target player is in the specified kingdom
+        if (!kingdoms.get(playerUUID).equals(kingdom) && !isAdminTransfer) {
+            player.sendMessage(ChatColor.RED + "You are not a member of " + ChatColor.WHITE + kingdom);
+            return;
+        }
+
         if (!kingdoms.get(targetUUID).equals(kingdom)) {
-            player.sendMessage(target.getName() + ChatColor.RED + " is not in " + ChatColor.WHITE + kingdom);
+            player.sendMessage(target.getName() + ChatColor.RED + " is not a member of " + ChatColor.WHITE + kingdom);
             return;
         }
 
-        // Find the current owner (rank 1)
-        String currentOwnerUUID = playerRankInKingdom.get(1); // Rank 1 is the current owner
-        if (currentOwnerUUID == null) {
-            player.sendMessage(ChatColor.RED + "No owner found for the kingdom.");
+        // If not admin, check if player is the current owner
+        if (!isAdminTransfer) {
+            if (!(kc.getNode("players." + playerUUID).toPrimitive().getInt() == 1)) {
+                player.sendMessage(ChatColor.RED + "You are not the owner of " + ChatColor.GOLD + kingdoms.get(playerUUID));
+                return;
+            }
+        }
+
+        // --- Transfer logic ---
+        String kingdomName = args[1];
+
+        // Get all rank keys
+        Set<String> rankKeys = kc.getNode("ranksInKingdoms." + kingdomName).getKeys(false);
+        List<Integer> rankInts = new ArrayList<>();
+
+        for (String key : rankKeys) {
+            try {
+                rankInts.add(Integer.parseInt(key));
+            } catch (NumberFormatException ignored) {}
+        }
+
+        if (rankInts.size() < 2) {
+            player.sendMessage(ChatColor.RED + "Not enough ranks to perform a transfer.");
             return;
         }
 
-        // Demote the current owner to the lowest rank (highest numeric rank)
-        // Assuming that ranks are represented by integers, you'll need to find the highest rank
-        String highestRank = Collections.max(playerRankInKingdom.values());
-        playerRankInKingdom.put(Integer.valueOf(highestRank), currentOwnerUUID);  // Set the current owner to the lowest rank
+        Collections.sort(rankInts);
 
-        // Promote the target player to the owner (rank 1)
-        playerRankInKingdom.put(1, targetUUID);  // Set the target player as the new owner
+        int highestRank = rankInts.get(rankInts.size() - 1); // highest numeric value
+        int ownerRank = rankInts.get(0); // owner is the lowest number (1)
 
-        // Inform players about the transfer
+        String highestRankName = kc.getNode("ranksInKingdoms." + kingdomName + "." + highestRank).toPrimitive().getString();
+        String ownerRankName = kc.getNode("ranksInKingdoms." + kingdomName + "." + ownerRank).toPrimitive().getString();
+
+        // --- Set new ranks ---
+        playerRanks.put(playerUUID, highestRank); // demote current owner to highest numeric rank
+        playerRanks.put(targetUUID, ownerRank);   // promote target to owner (rank 1)
+
+        // Update their permission groups (PEX commands)
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " group set " + kingdomName + highestRank);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + target.getName() + " group set " + kingdomName + ownerRank);
+
+        // --- Logs ---
+        MessageManager.consoleInfo(player.getName() + " was demoted to rank " + highestRank + " (" + highestRankName + ")");
+        MessageManager.consoleInfo(target.getName() + " was promoted to rank " + ownerRank + " (" + ownerRankName + ")");
+        MessageManager.consoleInfo("Kingdom ownership of " + kingdomName + " transferred from " + player.getName() + " to " + target.getName());
+
+        // --- Inform players ---
         player.sendMessage(ChatColor.GREEN + "You transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to " + ChatColor.WHITE + target.getName());
         target.sendMessage(player.getName() + ChatColor.GREEN + " transferred " + ChatColor.WHITE + kingdom + ChatColor.GREEN + " to you");
     }
@@ -693,7 +686,6 @@ public class KingdomsCommands implements CommandExecutor {
         //todo: remove all kingdom related permissions from the user
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getName() + " remove kingdoms.setspawn");
         kingdoms.put(playerUUID, "");
-        playerRankInKingdom.put(0, "");
         canClaim.put(playerUUID, "");
         canUnclaim.put(playerUUID, "");
 
@@ -782,7 +774,6 @@ public class KingdomsCommands implements CommandExecutor {
             }
 
             // Assign to the kingdom
-            playerRankInKingdom.put(highestRank, highestRankName);
             playerRanks.put(playerUUID, highestRank);
             kingdoms.put(playerUUID, kingdomName);
 
@@ -856,6 +847,8 @@ public class KingdomsCommands implements CommandExecutor {
                 if (kc.getNode(kingdom).exists()) {
                     kc.getNode(kingdom).getKeys(false).forEach(key -> {
                         Integer value = kc.getNode(kingdoms.get(player.getUniqueId().toString()) + "." + key).toPrimitive().getInt();
+                        MessageManager.consoleInfo("DisbandKingdom.key: " + key);
+                        MessageManager.consoleInfo("DisbandKingdom.value: " + value);
                         customRank.remove(key, value);
                         MessageManager.consoleInfo("Kingdom.key" + config.get(kingdom + "." + key));
                         MessageManager.consoleInfo("Kingdom.playerObj" + config.get(kingdom + "." + playerObj));
@@ -865,7 +858,7 @@ public class KingdomsCommands implements CommandExecutor {
                 kc.set(player.getUniqueId().toString(), 0);
                 kingdoms.put(playerObj, "");
                 inviteList.put(playerObj, "");
-                playerRankInKingdom.put(0, "");
+                playerRanks.put(playerObj, 0);
 
                 // Update claimed chunks associated with the kingdom
                 for (Map.Entry<String, String> chunk : claimedChunks.entrySet()) {
@@ -955,7 +948,7 @@ public class KingdomsCommands implements CommandExecutor {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex user " + player.getUniqueId().toString() + " group add " + kingdom + 1);
 
         // Assign the player to the kingdom with the highest rank
-        playerRankInKingdom.put(1, "King");
+        playerRanks.put(player.getUniqueId().toString(), 1);
         kingdoms.put(player.getUniqueId().toString(), args[1]);
 
         player.sendMessage(ChatColor.GREEN + "You created " + ChatColor.WHITE + args[1]);

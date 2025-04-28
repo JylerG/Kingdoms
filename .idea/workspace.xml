@@ -4,15 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Add kingdom spy command to Permissions.java">
+    <list default="true" id="a63a2afa-6f20-4ca7-acea-bf61b9bca684" name="Changes" comment="Edit the appearance of roles/hashmaps' data being given to the users if they dont exist in moneyConfig or kingdomsConfig">
+      <change afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/punishCMD/PunishTabCompleter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/Kingdoms.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/password/Password.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/permissions/Permissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/permissions/Permissions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/punishCMD/ConfirmPunishment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/punishCMD/ConfirmPunishment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/punishCMD/PunishCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/admin/punishCMD/PunishCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/chats/ChatListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/chat/KingdomsChat.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped-obf.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-remapped.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/Kingdoms-1.0.0-shaded.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/Kingdoms.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/chats/ChatCMD.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/punishCMD/PunishCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/admin/punishCMD/PunishCommand.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/games/kingdoms/kingdoms/publiccmds/kingdoms/command/KingdomsCommands.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-Kingdoms.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-Kingdoms.jar" afterDir="false" />
     </list>
@@ -65,6 +72,8 @@
 }</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="games.kingdoms.kingdoms" />
+      <recent name="games.kingdoms.kingdoms.admin.punishCMD" />
       <recent name="games.kingdoms.kingdoms.publiccmds.help" />
       <recent name="games.kingdoms.kingdoms.publiccmds.chats" />
     </key>
@@ -123,22 +132,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714260092408</updated>
-    </task>
-    <task id="LOCAL-00097" summary="Let the user know if any required plugins are not present on the server">
-      <option name="closed" value="true" />
-      <created>1742682553845</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1742682553845</updated>
-    </task>
-    <task id="LOCAL-00098" summary="Fix restoreOfflineData() to not register if there is no offline data to restore">
-      <option name="closed" value="true" />
-      <created>1742684129152</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1742684129152</updated>
     </task>
     <task id="LOCAL-00099" summary="Fix restoreOfflineData() to not register if there is no offline data to restore">
       <option name="closed" value="true" />
@@ -516,7 +509,23 @@
       <option name="project" value="LOCAL" />
       <updated>1744246724563</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="Update joinKingdom(), comment out (un)watchKingdom(), and comment out (un)watchKingdom() ability to be used">
+      <option name="closed" value="true" />
+      <created>1744248821076</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1744248821079</updated>
+    </task>
+    <task id="LOCAL-00147" summary="Edit the appearance of roles/hashmaps' data being given to the users if they dont exist in moneyConfig or kingdomsConfig">
+      <option name="closed" value="true" />
+      <created>1744248905012</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1744248905012</updated>
+    </task>
+    <option name="localTasksCounter" value="148" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -528,8 +537,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Beautify raidMeta in kingdomInfo()" />
-    <MESSAGE value="fix issues in code" />
     <MESSAGE value="Fix command syntax for dispatching the command" />
     <MESSAGE value="Beautify joinKingdom()" />
     <MESSAGE value="Make savePluginData() properly save playerRankInKingdom" />
@@ -553,6 +560,8 @@
     <MESSAGE value="Fix restore methods and make onJoin() automatically give the joining user default stats if they are missing some" />
     <MESSAGE value="Fix watchKingdom() and unWatchKingdom() to use permissions instead of if they are in the staff HashMap" />
     <MESSAGE value="Add kingdom spy command to Permissions.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add kingdom spy command to Permissions.java" />
+    <MESSAGE value="Update joinKingdom(), comment out (un)watchKingdom(), and comment out (un)watchKingdom() ability to be used" />
+    <MESSAGE value="Edit the appearance of roles/hashmaps' data being given to the users if they dont exist in moneyConfig or kingdomsConfig" />
+    <option name="LAST_COMMIT_MESSAGE" value="Edit the appearance of roles/hashmaps' data being given to the users if they dont exist in moneyConfig or kingdomsConfig" />
   </component>
 </project>
