@@ -6,76 +6,118 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-public class PunishCommand implements CommandExecutor, Listener {
+import java.util.HashMap;
 
-    final Kingdoms plugin;
-    public PunishCommand(Kingdoms plugin) {
-        this.plugin = plugin;
-    }
+public class PunishCommand implements CommandExecutor {
+
+    final Kingdoms plugin = Kingdoms.getPlugin();
+    final HashMap<String, Integer> spam = plugin.getSpam();
+    final HashMap<String, Integer> threats = plugin.getThreats();
+    final HashMap<String, Integer> language = plugin.getLanguage();
+    final HashMap<String, Integer> disrespect = plugin.getDisrespect();
+    final HashMap<String, Integer> ipAdverts = plugin.getIpAdverts();
+    final HashMap<String, Integer> soliciting = plugin.getSoliciting();
+    final HashMap<String, Integer> reportAbuse = plugin.getReportAbuse();
+    final HashMap<String, Integer> mediaAdverts = plugin.getMediaAdverts();
+    final HashMap<String, Integer> discrimination = plugin.getDiscrimination();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         String dash = "-";
-        String sep = dash + dash + dash + dash + dash + dash + dash + dash + dash + dash
+        String ruleStart = ChatColor.GRAY.toString() + ChatColor.BOLD + "—";
+                String sep = dash + dash + dash + dash + dash + dash + dash + dash + dash + dash
                 + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash
                 + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash
                 + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash + dash;
         if (sender instanceof Player player) {
             if (player.hasPermission("kingdoms.jrmod.punish")
                     || player.hasPermission("kingdoms.mod.punish")
-                    || player.hasPermission("kingdoms.srmod.punish")
                     || player.hasPermission("kingdoms.admin.punish")) {
                 if (args.length == 0) {
                     //todo: list available punishments
-                    player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + dash + dash + dash + ChatColor.WHITE + ChatColor.BOLD + " Server Rules " + ChatColor.AQUA + ChatColor.BOLD + dash + dash + dash);
-                    player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "1" + ChatColor.WHITE + " Abusing /Report");
-                    player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "2" + ChatColor.WHITE + " Disrespect");
-                    player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "3" + ChatColor.WHITE + " Inapp. Language");
-                    player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "4" + ChatColor.WHITE + " IP Adverts");
-                    player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "5" + ChatColor.WHITE + " Media Adverts");
-                    player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "6" + ChatColor.WHITE + " Soliciting");
-                    player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "7" + ChatColor.WHITE + " Spam");
+                    player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + "———" + ChatColor.WHITE + ChatColor.BOLD + " Server Rules " + ChatColor.AQUA + ChatColor.BOLD + "———");
+                    player.sendMessage(ruleStart + ChatColor.WHITE + " Abusing /Report");
+                    player.sendMessage(ruleStart + ChatColor.WHITE + " Disrespect");
+                    player.sendMessage(ruleStart + ChatColor.WHITE + " Inapp. Language");
+                    player.sendMessage(ruleStart + ChatColor.WHITE + " IP Adverts");
+                    player.sendMessage(ruleStart + ChatColor.WHITE + " Media Adverts");
+                    player.sendMessage(ruleStart + ChatColor.WHITE + " Soliciting");
+                    player.sendMessage(ruleStart + ChatColor.WHITE + " Spam");
+                    return true;
                 } else if (args.length == 1) {
                     player.sendMessage(ChatColor.GOLD + "Usage: /punish <user> <reason>");
+                    return true;
                 } else if (args.length == 2) {
-                    Player target = Bukkit.getPlayer(args[0]);
+                    OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                     if (target == null) {
-                        player.sendMessage(args[0] + ChatColor.RED + " is not online");
+                        player.sendMessage(args[0] + ChatColor.RED + " has never played on " + ChatColor.GOLD + "Kingdoms");
+                        return true;
+                    }
+                    if ((spam.get(target.getUniqueId().toString()) == 0
+                            && threats.get(target.getUniqueId().toString()) == 0
+                            && language.get(target.getUniqueId().toString()) == 0
+                            && disrespect.get(target.getUniqueId().toString()) == 0
+                            && ipAdverts.get(target.getUniqueId().toString()) == 0
+                            && soliciting.get(target.getUniqueId().toString()) == 0
+                            && reportAbuse.get(target.getUniqueId().toString()) == 0
+                            && mediaAdverts.get(target.getUniqueId().toString()) == 0
+                            && discrimination.get(target.getUniqueId().toString()) == 0
+                            //todo: Add additional hashmaps here
+                    )) {
+                        player.sendMessage(target.getName() + ChatColor.RED + " has no punishment logs");
                         return true;
                     }
 
                     if (args[1].equalsIgnoreCase("get")) {
                         //todo: add all punishments below here
                         player.sendMessage(ChatColor.DARK_GREEN + target.getName() + ChatColor.GREEN + "'s Punishments");
-                        player.sendMessage(ChatColor.GOLD + "Spam: " + ChatColor.WHITE + plugin.getSpam().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Threats: " + ChatColor.WHITE + plugin.getThreats().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Language: " + ChatColor.WHITE + plugin.getLanguage().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Disrespect: " + ChatColor.WHITE + plugin.getDisrespect().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Ip Adverts: " + ChatColor.WHITE + plugin.getIpAdverts().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Soliciting: " + ChatColor.WHITE + plugin.getSoliciting().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Report Abuse: " + ChatColor.WHITE + plugin.getReportAbuse().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Media Adverts: " + ChatColor.WHITE + plugin.getMediaAdverts().get(target.getUniqueId().toString()));
-                        player.sendMessage(ChatColor.GOLD + "Discrimination: " + ChatColor.WHITE + plugin.getDiscrimination().get(target.getUniqueId().toString()));
+                        if (spam.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.WHITE + "Spam " + ChatColor.GOLD + spam.get(target.getUniqueId().toString()));
+                        }
+                        if (threats.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.WHITE + "Threats " + ChatColor.GOLD + threats.get(target.getUniqueId().toString()));
+                        }
+                        if (language.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.WHITE + "Language " + ChatColor.GOLD + language.get(target.getUniqueId().toString()));
+                        }
+                        if (disrespect.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.WHITE + "Disrespect " + ChatColor.GOLD + disrespect.get(target.getUniqueId().toString()));
+                        }
+                        if (ipAdverts.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.GOLD + "Ip Adverts " + ChatColor.WHITE + ipAdverts.get(target.getUniqueId().toString()));
+                        }
+                        if (soliciting.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.GOLD + "Soliciting " + ChatColor.WHITE + soliciting.get(target.getUniqueId().toString()));
+                        }
+                        if (reportAbuse.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.GOLD + "Report Abuse " + ChatColor.WHITE + reportAbuse.get(target.getUniqueId().toString()));
+                        }
+                        if (mediaAdverts.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.GOLD + "Media Adverts " + ChatColor.WHITE + mediaAdverts.get(target.getUniqueId().toString()));
+                        }
+                        if (discrimination.get(target.getUniqueId().toString()) != 0) {
+                            player.sendMessage(ChatColor.GRAY + "— " + ChatColor.GOLD + "Discrimination " + ChatColor.WHITE + discrimination.get(target.getUniqueId().toString()));
+                        }
                         return true;
                     }
 
                     if (args[1].equalsIgnoreCase("reset") && target != null && player.hasPermission("kingdoms.admin.punish.reset")) {
-                        plugin.getReportAbuse().put(target.getUniqueId().toString(), 0);
-                        plugin.getDiscrimination().put(target.getUniqueId().toString(), 0);
-                        plugin.getDisrespect().put(target.getUniqueId().toString(), 0);
-                        plugin.getIpAdverts().put(target.getUniqueId().toString(), 0);
-                        plugin.getMediaAdverts().put(target.getUniqueId().toString(), 0);
-                        plugin.getLanguage().put(target.getUniqueId().toString(), 0);
-                        plugin.getSoliciting().put(target.getUniqueId().toString(), 0);
-                        plugin.getSpam().put(target.getUniqueId().toString(), 0);
-                        plugin.getThreats().put(target.getUniqueId().toString(), 0);
+                        reportAbuse.put(target.getUniqueId().toString(), 0);
+                        discrimination.put(target.getUniqueId().toString(), 0);
+                        disrespect.put(target.getUniqueId().toString(), 0);
+                        ipAdverts.put(target.getUniqueId().toString(), 0);
+                        mediaAdverts.put(target.getUniqueId().toString(), 0);
+                        language.put(target.getUniqueId().toString(), 0);
+                        soliciting.put(target.getUniqueId().toString(), 0);
+                        spam.put(target.getUniqueId().toString(), 0);
+                        threats.put(target.getUniqueId().toString(), 0);
                         player.sendMessage(ChatColor.GREEN + "You reset " + ChatColor.WHITE + target.getName() + ChatColor.GREEN + "'s punishments to " + ChatColor.WHITE + 0);
                         return true;
                     }
@@ -88,8 +130,13 @@ public class PunishCommand implements CommandExecutor, Listener {
                     plugin.getPlayerToPunish().put(player.getUniqueId().toString(), target.getUniqueId().toString());
 
                     //Report Abuse
-                    if (args[1].equalsIgnoreCase("1")) {
-                        Player finalTarget = target;
+                    if (args[1].equalsIgnoreCase("report")
+                            || args[1].equalsIgnoreCase("reportabuse")
+                            || args[1].equalsIgnoreCase("report abuse")
+                            || args[1].equalsIgnoreCase("abuse")
+                            || args[1].equalsIgnoreCase("1")
+                    ) {
+                        OfflinePlayer finalTarget = target;
                         if (!plugin.getReportAbuse().containsKey(finalTarget.getUniqueId().toString())) {
                             plugin.getReportAbuse().put(finalTarget.getUniqueId().toString(), 0);
                         }
@@ -104,9 +151,10 @@ public class PunishCommand implements CommandExecutor, Listener {
                             TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
                             confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
                             confirm.setBold(true);
-                            confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 1"));
+                            confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " abuse"));
                             player.spigot().sendMessage(confirm);
                             player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
+                            return true;
                         } else {
                             if (count > 1 && count < 5) {
 
@@ -118,7 +166,7 @@ public class PunishCommand implements CommandExecutor, Listener {
                                 TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
                                 confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
                                 confirm.setBold(true);
-                                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 1"));
+                                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " abuse"));
                                 player.spigot().sendMessage(confirm);
                                 player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
 
@@ -134,63 +182,69 @@ public class PunishCommand implements CommandExecutor, Listener {
                                 confirm.setBold(true);
                                 player.spigot().sendMessage(confirm);
                                 player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-                                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 1"));
+                                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " abuse"));
                             }
                         }
+                        return true;
                     }
                     //Disrespect
-                        else if (args[1].equalsIgnoreCase("2")) {
-                            Player finalTarget = target;
-                            if (!plugin.getDisrespect().containsKey(finalTarget.getUniqueId().toString())) {
-                                plugin.getDisrespect().put(finalTarget.getUniqueId().toString(), 0);
-                            }
-                            int count = plugin.getDisrespect().get(finalTarget.getUniqueId().toString()) + 1;
-                            if (count == 1) {
-
-                                player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-                                player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Punishing " + ChatColor.WHITE + ChatColor.BOLD + finalTarget.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "...");
-                                player.sendMessage("Rule " + ChatColor.YELLOW + "Disrespect " + ChatColor.GRAY + "(ID: 2)");
-                                player.sendMessage("This is offense " + ChatColor.YELLOW + "#" + count + ChatColor.WHITE + " for this player, which will result in ");
-                                player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "-> " + ChatColor.RED + "Mute for 30m");
-                                TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
-                                confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                                confirm.setBold(true);
-                                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 2"));
-                                player.spigot().sendMessage(confirm);
-                                player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-
-                            } else if (count > 1 && count < 5) {
-
-                                player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-                                player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Punishing " + ChatColor.WHITE + ChatColor.BOLD + finalTarget.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "...");
-                                player.sendMessage("Rule " + ChatColor.YELLOW + "Disrespect " + ChatColor.GRAY + "(ID: 2)");
-                                player.sendMessage("This is offense " + ChatColor.YELLOW + "#" + count + ChatColor.WHITE + " for this player, which will result in ");
-                                player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "-> " + ChatColor.RED + "Mute for 1h");
-                                TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
-                                confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                                confirm.setBold(true);
-                                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 2"));
-                                player.spigot().sendMessage(confirm);
-                                player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-
-                            } else if (count >= 5) {
-
-                                player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-                                player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Punishing " + ChatColor.WHITE + ChatColor.BOLD + finalTarget.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "...");
-                                player.sendMessage("Rule " + ChatColor.YELLOW + "Disrespect " + ChatColor.GRAY + "(ID: 2)");
-                                player.sendMessage("This is offense " + ChatColor.YELLOW + "#" + count + ChatColor.WHITE + " for this player, which will result in ");
-                                player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "-> " + ChatColor.RED + "Mute for 1d");
-                                TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
-                                confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                                confirm.setBold(true);
-                                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " 2"));
-                                player.spigot().sendMessage(confirm);
-                                player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
-                            }
+                    else if (args[1].equalsIgnoreCase("disrespect")
+                            || args[1].equalsIgnoreCase("2")) {
+                        OfflinePlayer finalTarget = target;
+                        if (!plugin.getDisrespect().containsKey(finalTarget.getUniqueId().toString())) {
+                            plugin.getDisrespect().put(finalTarget.getUniqueId().toString(), 0);
                         }
+                        int count = plugin.getDisrespect().get(finalTarget.getUniqueId().toString()) + 1;
+                        if (count == 1) {
+
+                            player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
+                            player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Punishing " + ChatColor.WHITE + ChatColor.BOLD + finalTarget.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "...");
+                            player.sendMessage("Rule " + ChatColor.YELLOW + "Disrespect " + ChatColor.GRAY + "(ID: 2)");
+                            player.sendMessage("This is offense " + ChatColor.YELLOW + "#" + count + ChatColor.WHITE + " for this player, which will result in ");
+                            player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "-> " + ChatColor.RED + "Mute for 30m");
+                            TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
+                            confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                            confirm.setBold(true);
+                            confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " disrespect"));
+                            player.spigot().sendMessage(confirm);
+                            player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
+
+                        } else if (count > 1 && count < 5) {
+
+                            player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
+                            player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Punishing " + ChatColor.WHITE + ChatColor.BOLD + finalTarget.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "...");
+                            player.sendMessage("Rule " + ChatColor.YELLOW + "Disrespect " + ChatColor.GRAY + "(ID: 2)");
+                            player.sendMessage("This is offense " + ChatColor.YELLOW + "#" + count + ChatColor.WHITE + " for this player, which will result in ");
+                            player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "-> " + ChatColor.RED + "Mute for 1h");
+                            TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
+                            confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                            confirm.setBold(true);
+                            confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " disrespect"));
+                            player.spigot().sendMessage(confirm);
+                            player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
+
+                        } else if (count >= 5) {
+
+                            player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
+                            player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Punishing " + ChatColor.WHITE + ChatColor.BOLD + finalTarget.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "...");
+                            player.sendMessage("Rule " + ChatColor.YELLOW + "Disrespect " + ChatColor.GRAY + "(ID: 2)");
+                            player.sendMessage("This is offense " + ChatColor.YELLOW + "#" + count + ChatColor.WHITE + " for this player, which will result in ");
+                            player.sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD + "-> " + ChatColor.RED + "Mute for 1d");
+                            TextComponent confirm = new TextComponent("[Click to confirm this punishment.]");
+                            confirm.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                            confirm.setBold(true);
+                            confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + finalTarget.getName() + " disrespect"));
+                            player.spigot().sendMessage(confirm);
+                            player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
+                        }
+                        return true;
+                    }
                     //Inappropriate Language
-                    else if (args[1].equalsIgnoreCase("3")) {
-                        Player finalTarget = target;
+                    else if (args[1].equalsIgnoreCase("language")
+                            || args[1].equalsIgnoreCase("lang")
+                            || args[1].equalsIgnoreCase("3")
+                    ) {
+                        OfflinePlayer finalTarget = target;
                         if (!plugin.getLanguage().containsKey(finalTarget.getUniqueId().toString())) {
                             plugin.getLanguage().put(finalTarget.getUniqueId().toString(), 0);
                         }
@@ -246,28 +300,34 @@ public class PunishCommand implements CommandExecutor, Listener {
                                 player.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + sep);
                             }
                         }
-                    } //IP Adverts
+                        return true;
+                    }
+                    //IP Adverts
                     else if (args[1].equalsIgnoreCase("4")) {
 
+                        return true;
                     } //Media Adverts
                     else if (args[1].equalsIgnoreCase("5")) {
 
+                        return true;
                     } //Soliciting
                     else if (args[1].equalsIgnoreCase("6")) {
 
+                        return true;
                     } //Spam
                     else if (args[1].equalsIgnoreCase("7")) {
 
+                        return true;
                     }
+                    //todo: put mod/srmod/admin punishments below here
                     if (player.hasPermission("kingdoms.mod.punish")
-                            || player.hasPermission("kingdoms.srmod.punish")
                             || player.hasPermission("kingdoms.admin.punish")) {
                         if (args.length == 0) {
                             //todo: list available punishments
-                            player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "8" + ChatColor.WHITE + " Discrimination");
-                            player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "9" + ChatColor.WHITE + " Threats");
-                            player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "10" + ChatColor.WHITE + " DDOS Threats");
-                            player.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "11" + ChatColor.WHITE + " Dox Threats");
+                            player.sendMessage(ruleStart + ChatColor.WHITE + " Discrimination");
+                            player.sendMessage(ruleStart + ChatColor.WHITE + " Threats");
+                            player.sendMessage(ruleStart + ChatColor.WHITE + " DDOS Threats");
+                            player.sendMessage(ruleStart + ChatColor.WHITE + " Dox Threats");
                         } else if (args.length == 1) {
                             player.sendMessage(ChatColor.GOLD + "Usage: /punish <user> <reason>");
                         } else if (args.length == 2) {
@@ -279,26 +339,10 @@ public class PunishCommand implements CommandExecutor, Listener {
                         } else if (args.length > 2) {
                             player.sendMessage(ChatColor.GOLD + "Usage: /punish <user> <reason>");
                         }
-                    } else if (player.hasPermission("kingdoms.srmod.punish")
-                            || player.hasPermission("kingdoms.admin.punish")) {
-                        //TODO: put srmod/admin punishments here
-                        if (args.length == 0) {
-                            //todo: list available punishments
-                        } else if (args.length == 1) {
-                            player.sendMessage(ChatColor.GOLD + "Usage: /punish <user> <reason>");
-                        } else if (args.length == 2) {
-                            target = Bukkit.getPlayer(args[0]);
-                            if (target == null) {
-                                player.sendMessage(args[0] + " is not online");
-                                return true;
-                            }
-                        } else if (args.length > 2) {
-                            player.sendMessage(ChatColor.GOLD + "Usage: /punish <user> <reason>");
-                        }
+                        //todo: put admin punishments below here
                     } else if (player.hasPermission("kingdoms.admin.punish")) {
-                        //TODO: put admin punishments here
                         if (args.length == 0) {
-                            //todo: list available punishments
+                            //todo: list available punishments for admins
                         } else if (args.length == 1) {
                             player.sendMessage(ChatColor.GOLD + "Usage: /punish <user> <reason>");
                         } else if (args.length == 2) {
