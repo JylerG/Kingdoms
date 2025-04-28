@@ -46,6 +46,7 @@ import games.kingdoms.kingdoms.publiccmds.kingdoms.chat.KingdomsChatTabCompleter
 import games.kingdoms.kingdoms.publiccmds.kingdoms.command.KingdomsCommands;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomInfoListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.listeners.KingdomUpgradeListener;
+import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomRankCache;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.related.KingdomsListener;
 import games.kingdoms.kingdoms.publiccmds.kingdoms.tabcompletion.KingdomInviteTabCompleter;
 import games.kingdoms.kingdoms.publiccmds.nightvision.Commands;
@@ -167,6 +168,9 @@ public final class Kingdoms extends JavaPlugin implements Listener {
         //Set up initial configs
         setupConfigs();
 
+        //load ranks onEnable
+        loadRankCache();
+
         //Initialize ArrayLists and HashMaps
         initMapList();
 
@@ -203,6 +207,11 @@ public final class Kingdoms extends JavaPlugin implements Listener {
                 restoreOfflineData();
             }
         }
+    }
+
+    private void loadRankCache() {
+        KingdomRankCache.loadPlayerRanks(KingdomsConfig.getInstance().getConfig());
+        KingdomRankCache.loadRanks(KingdomsConfig.getInstance().getConfig());
     }
 
     private boolean setupChat() {
@@ -540,7 +549,6 @@ public final class Kingdoms extends JavaPlugin implements Listener {
             Score kingdom = obj.getScore(ChatColor.GOLD.toString() + ChatColor.BOLD + "Kingdom " + ChatColor.WHITE + ChatColor.BOLD + kingdoms.get(player.getUniqueId().toString()));
             kingdom.setScore(7);
 
-            //todo: Figure out why this double counts
             //Initialize memberCount and ensure it is reset for each chunk
             int memberCount = 0;
 
