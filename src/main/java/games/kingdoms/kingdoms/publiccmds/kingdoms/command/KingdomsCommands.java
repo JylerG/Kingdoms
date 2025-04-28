@@ -228,7 +228,60 @@ public class KingdomsCommands implements CommandExecutor {
         blackBorder.setItemMeta(blackBorderMeta);
 
         ItemMeta skullMeta = skull.getItemMeta();
-        skullMeta.setDisplayName(title + " ");
+        //Initialize memberCount and ensure it is reset for each chunk
+        int memberCount = 0;
+
+        // Get the chunk coordinates (the key used to store the claimed chunk data)
+
+        // Find the kingdom that owns this chunk
+        // Create a set to track players that have already been counted
+        Set<UUID> countedPlayers = new HashSet<>();
+
+        // Loop through all online players
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            // Skip the player if they've already been counted
+            if (countedPlayers.contains(onlinePlayer.getUniqueId())) {
+                continue;
+            }
+
+            // Get the player's kingdom
+            String playerKingdom = kingdoms.get(onlinePlayer.getUniqueId().toString());
+
+            // Check if the player belongs to the same kingdom as the one that owns the chunk
+            if (playerKingdom.equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString()))) {
+                memberCount++;
+                // Mark this player as counted
+                countedPlayers.add(onlinePlayer.getUniqueId());
+            }
+        }
+
+
+        // Loop through all offline players (if needed)
+        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+            // Loop through all online players
+            // Skip the player if they've already been counted
+            if (countedPlayers.contains(offline.getUniqueId())) {
+                continue;
+            }
+
+            // Get the player's kingdom
+            String playerKingdom = kingdoms.get(offline.getUniqueId().toString());
+
+            // Check if the player belongs to the same kingdom as the one that owns the chunk
+            if (playerKingdom.equalsIgnoreCase(kingdoms.get(player.getUniqueId().toString()))) {
+                memberCount++;
+                // Mark this player as counted
+                countedPlayers.add(offline.getUniqueId());
+            }
+        }
+        // Set the score for the scoreboard with the updated memberCount
+        int maxAllowedMembers = maxMembers.getOrDefault(kingdoms.get(player.getUniqueId().toString()), 0); // Get max members, default to 0 if none
+
+        skullMeta.setDisplayName(title + "Players " + ChatColor.WHITE + memberCount + "/" + maxAllowedMembers);
+        List<String> skullLore = new ArrayList<>();
+        skullLore.add(ChatColor.GOLD.toString() + ChatColor.BOLD + "Click " + ChatColor.WHITE + "to view all kingdom members");
+
+        skullMeta.setLore(skullLore);
         skull.setItemMeta(skullMeta);
 
         ItemMeta infoMeta = Info.getItemMeta();
@@ -429,7 +482,8 @@ public class KingdomsCommands implements CommandExecutor {
         for (String key : rankKeys) {
             try {
                 rankInts.add(Integer.parseInt(key));
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
 
         if (rankInts.size() < 2) {
@@ -716,7 +770,8 @@ public class KingdomsCommands implements CommandExecutor {
                         return;
                     }
                     break;
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
 
@@ -765,7 +820,8 @@ public class KingdomsCommands implements CommandExecutor {
                         highestRank = rank;
                         highestRankName = kc.getNode("ranksInKingdoms." + kingdomName + "." + key).toPrimitive().getString();
                     }
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
 
             if (highestRankName == null) {
